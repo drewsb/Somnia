@@ -63,7 +63,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/Leader Board"
+                    android:id="@+id/Leaderboard"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -71,7 +71,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="tab leader board" />
+                        android:text="tab leaderboard" />
 
                 </LinearLayout>
             </FrameLayout>
