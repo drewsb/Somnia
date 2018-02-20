@@ -2,43 +2,28 @@ package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 
-/**
- * Created by Fatman on 2/19/2018.
- */
+import java.util.List;
 
-public class PageAdapter extends FragmentStatePagerAdapter{
-    int numTabs;
+class PagerAdapter extends FragmentPagerAdapter {
 
-    public PageAdapter(FragmentManager fragmentManager, int numTabs)
+    List<Fragment> fragments;
+
+    public PagerAdapter(FragmentManager fm, List<Fragment> fragments)
     {
-        super(fragmentManager);
-
-        this.numTabs = numTabs;
+        super(fm);
+        this.fragments = fragments;
     }
 
     @Override
-    public Fragment getItem(int pos)
-    {
-        switch (pos)
-        {
-            case 0:
-                MyAlarmFragment myAlarmFragment = new MyAlarmFragment();
-                return myAlarmFragment;
-            case 1:
-                FriendsFragment friendsFragment = new FriendsFragment();
-                return friendsFragment;
-            case 2:
-                LeaderBoardFragment leaderBoardFragment = new LeaderBoardFragment();
-                return leaderBoardFragment;
-            default:
-                return null;
-        }
+    public Fragment getItem(int position) {
+        return fragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return this.numTabs;
+        // Show number of tabs
+        return fragments.size();
     }
 }
