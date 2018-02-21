@@ -39,4 +39,79 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="369dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_time_picker"
+        tools:layout_editor_absoluteX="8dp">
+
+        <Button
+            android:id="@+id/DoWSelectSunday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:text="S" />
+
+        <Button
+            android:id="@+id/DoWSelectMonday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:text="M" />
+
+        <Button
+            android:id="@+id/DoWSelectTuesday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:text="T" />
+
+        <Button
+            android:id="@+id/DoWSelectWednesday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:text="W" />
+
+        <Button
+            android:id="@+id/DoWSelectThursday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:text="T" />
+
+        <Button
+            android:id="@+id/DoWSelectFriday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:text="F" />
+
+        <Button
+            android:id="@+id/DoWSelectSaturday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:text="S" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

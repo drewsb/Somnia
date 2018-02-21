@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TimePicker;
+import android.widget.ToggleButton;
 
 public class AlarmEditActivity extends AppCompatActivity {
 
@@ -28,13 +30,13 @@ public class AlarmEditActivity extends AppCompatActivity {
         picker.setIs24HourView(DateFormat.is24HourFormat(this));
     }
 
-    protected void onCancel(final View v) {
+    public void onCancel(View view) {
         Intent i = new Intent();
         setResult(RESULT_CANCELED, i);
         finish();
     }
 
-    protected void onAccept(final View v) {
+    public void onAccept(View view) {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute());
 
@@ -43,4 +45,14 @@ public class AlarmEditActivity extends AppCompatActivity {
         setResult(RESULT_OK, i);
         finish();
     }
+
+    public void onDayOfWeekClick(View view) {
+        ToggleButton b = (ToggleButton) view;
+        if (b.isChecked()) {
+            b.setBackgroundColor(0xff999999);
+        } else {
+            b.setBackgroundColor(0xffffffff);
+        }
+    }
+
 }
