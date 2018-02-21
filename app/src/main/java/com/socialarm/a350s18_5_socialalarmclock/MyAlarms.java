@@ -2,6 +2,7 @@ package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,13 @@ public class MyAlarms extends Fragment {
 
     View v;
     AlarmList.Builder alarms;
+
+    public static MyAlarms newInstance() {
+        MyAlarms fragment = new MyAlarms();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public MyAlarms() {
         // Required empty public constructor
@@ -104,5 +112,20 @@ public class MyAlarms extends Fragment {
         adapter.addAll(times);
         ListView lv = v.findViewById(R.id.my_alarm_list);
         lv.setAdapter(adapter);
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }
