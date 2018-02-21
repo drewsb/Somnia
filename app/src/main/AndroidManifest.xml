@@ -20,6 +20,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchFriendActivity"></activity>
+        <activity android:name=".AlarmEditActivity" />
+        <activity android:name=".AlarmEvent">
+            <intent-filter>
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

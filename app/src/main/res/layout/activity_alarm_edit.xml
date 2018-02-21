@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.AlarmEditActivity">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onCancel"
+        android:text="Cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onAccept"
+        android:text="OK"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TimePicker
+        android:id="@+id/alarm_time_picker"
+        android:layout_width="336dp"
+        android:layout_height="178dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:timePickerMode="spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="369dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_time_picker"
+        tools:layout_editor_absoluteX="8dp">
+
+
+        <ToggleButton
+            android:id="@+id/DoWSelectSunday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:textOff="S"
+            android:textOn="S" />
+
+        <ToggleButton
+            android:id="@+id/DoWSelectMonday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:textOff="M"
+            android:textOn="M" />
+
+        <ToggleButton
+            android:id="@+id/DoWSelectTuesday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:textOff="T"
+            android:textOn="T" />
+
+        <ToggleButton
+            android:id="@+id/DoWSelectWednesday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:textOff="W"
+            android:textOn="W" />
+
+        <ToggleButton
+            android:id="@+id/DoWSelectThursday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:textOff="T"
+            android:textOn="T" />
+
+        <ToggleButton
+            android:id="@+id/DoWSelectFriday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:textOff="F"
+            android:textOn="F" />
+
+        <ToggleButton
+            android:id="@+id/DoWSelectSaturday"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDayOfWeekClick"
+            android:textOff="S"
+            android:textOn="S" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
