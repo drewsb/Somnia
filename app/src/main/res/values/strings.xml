@@ -3,4 +3,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_alarms_tab_text">My alarms</string>
+    <string name="friends_tab_text">Friends</string>
+    <string name="leaderboard_tab_text">Leader Board</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
