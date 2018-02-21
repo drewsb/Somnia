@@ -18,4 +18,105 @@
     <string name="leaderboard_tab_text">Leader Board</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_search_friend">SearchFriendActivity</string>
+
+    <!-- Leaderboard usage -->
+
+    <string-array name="times_options_array">
+        <item>This Week</item>
+        <item>This Month</item>
+        <item>All Time</item>
+    </string-array>
+
+    <string-array name="sorting_options_array">
+        <item>Times Overslept</item>
+        <item>Times Snoozed</item>
+        <item>Times Woken up</item>
+    </string-array>
+
+    <string-array name="leaderboard_name_array">
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+        <item>Liam Dugan</item>
+        <item>Henry Zhu</item>
+        <item>Drew Boyette</item>
+        <item>Alex Perry</item>
+    </string-array>
+
+    <string-array name="leaderboard_oversleep_count">
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+    </string-array>
+
 </resources>
