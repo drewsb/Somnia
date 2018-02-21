@@ -13,6 +13,8 @@ public class AlarmEditActivity extends AppCompatActivity {
 
     AlarmsOpenHelper dbHelper;
 
+    private int days_of_week;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,7 @@ public class AlarmEditActivity extends AppCompatActivity {
 
     public void onAccept(View view) {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
-        long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute());
+        long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(), days_of_week);
 
         Intent i = new Intent();
         i.putExtra("new_alarm", row);
@@ -52,6 +54,29 @@ public class AlarmEditActivity extends AppCompatActivity {
             b.setBackgroundColor(0xff999999);
         } else {
             b.setBackgroundColor(0xffffffff);
+        }
+        switch (b.getId()) {
+            case R.id.DoWSelectSunday:
+                days_of_week ^= AlarmsOpenHelper.SUNDAY;
+                break;
+            case R.id.DoWSelectMonday:
+                days_of_week ^= AlarmsOpenHelper.MONDAY;
+                break;
+            case R.id.DoWSelectTuesday:
+                days_of_week ^= AlarmsOpenHelper.TUESDAY;
+                break;
+            case R.id.DoWSelectWednesday:
+                days_of_week ^= AlarmsOpenHelper.WEDNESDAY;
+                break;
+            case R.id.DoWSelectThursday:
+                days_of_week ^= AlarmsOpenHelper.THURSDAY;
+                break;
+            case R.id.DoWSelectFriday:
+                days_of_week ^= AlarmsOpenHelper.FRIDAY;
+                break;
+            case R.id.DoWSelectSaturday:
+                days_of_week ^= AlarmsOpenHelper.SATURDAY;
+                break;
         }
     }
 

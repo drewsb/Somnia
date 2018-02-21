@@ -50,68 +50,76 @@
         app:layout_constraintTop_toBottomOf="@+id/alarm_time_picker"
         tools:layout_editor_absoluteX="8dp">
 
-        <Button
+
+        <ToggleButton
             android:id="@+id/DoWSelectSunday"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDayOfWeekClick"
-            android:text="S" />
+            android:textOff="S"
+            android:textOn="S" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/DoWSelectMonday"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDayOfWeekClick"
-            android:text="M" />
+            android:textOff="M"
+            android:textOn="M" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/DoWSelectTuesday"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDayOfWeekClick"
-            android:text="T" />
+            android:textOff="T"
+            android:textOn="T" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/DoWSelectWednesday"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDayOfWeekClick"
-            android:text="W" />
+            android:textOff="W"
+            android:textOn="W" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/DoWSelectThursday"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDayOfWeekClick"
-            android:text="T" />
+            android:textOff="T"
+            android:textOn="T" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/DoWSelectFriday"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDayOfWeekClick"
-            android:text="F" />
+            android:textOff="F"
+            android:textOn="F" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/DoWSelectSaturday"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDayOfWeekClick"
-            android:text="S" />
+            android:textOff="S"
+            android:textOn="S" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
