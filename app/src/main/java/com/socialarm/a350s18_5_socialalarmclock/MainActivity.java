@@ -1,91 +1,106 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.net.Uri;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.facebook.login.LoginManager;
+import android.support.v4.app.Fragment;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements FriendsFragment.OnFragmentInteractionListener,
+        MyAlarmFragment.OnFragmentInteractionListener, LeaderBoardFragment.OnFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MainActivity";
+    private PagerAdapter pagerAdapter;
+    private ViewPager viewPager;
     private Intent i;
     private Bundle extras;
+    private static final String TAG = "MainActivity";
 
+    @Override
+    public void onFragmentInteraction(Uri uri){
+        //you can leave it empty
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SetupTabs();
-
-        setContentView(R.layout.activity_menu);
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        i = getIntent();
-        extras = i.getExtras();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-
-            }
-        };
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Log.d(TAG, extras.getString("first_name"));
+        i = getIntent();
+        extras = i.getExtras();
+
+        //Retrieve user's name and email
         String name = extras.getString("first_name") + " " + extras.getString("last_name");
         String email = extras.getString("email");
 
         TextView nameView =  headerView.findViewById(R.id.nameView);
         TextView emailView = headerView.findViewById(R.id.emailView);
 
+        //Set profile pic image
         new DownloadImageTask((ImageView) headerView.findViewById(R.id.profileView))
                 .execute(extras.getString("profile_pic"));
 
         nameView.setText(name);
         emailView.setText(email);
+
+        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(MyAlarmFragment.newInstance());
+        fragments.add(FriendsFragment.newInstance());
+        fragments.add(LeaderBoardFragment.newInstance());
+
+        // Create the adapter that will return a fragment
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
+
+        // Set up the ViewPager with the sections adapter.
+        viewPager = findViewById(R.id.viewPagerContainer);
+        viewPager.setAdapter(pagerAdapter);
+
+        TabLayout tabLayout = findViewById(R.id.tabs);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
     }
 
-
-    private void SetupTabs() {
-        TabHost top_tab = (TabHost)findViewById(R.id.top_tab);
-    }
-
+    /*
+    Control navigation drawer display
+     */
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -101,17 +116,20 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_settings) {
             //TODO: Implement
-        } else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) { //Logout and return to LoginActivity
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    /*
+        DownloadImageTask is a private class used to convert URL's into a Bitmap asynchronously
+     */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 

@@ -1,13 +1,11 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -18,7 +16,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -49,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setReadPermissions(permissions);
 
         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
-        if (loggedIn) {
+        if (loggedIn) { //If already logged in
             sendRequest(AccessToken.getCurrentAccessToken());
         }
 
@@ -80,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    //Retrieve user data from JSON object
     private Bundle getFacebookData(JSONObject object) {
         Bundle bundle = new Bundle();
 
@@ -126,7 +124,6 @@ public class LoginActivity extends AppCompatActivity {
             protected void onCurrentAccessTokenChanged(
                     AccessToken oldAccessToken,
                     AccessToken currentAccessToken) {
-
                 if (currentAccessToken == null){
                     //User logged out
                     userInfo.clearToken();
@@ -136,13 +133,15 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
+    /*
+        Submit read permissions and retrieve user data. Send data as a bundle and
+        transition to the MainActivity
+     */
     private void sendRequest(AccessToken token){
         GraphRequest request = GraphRequest.newMeRequest(token,
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        Log.v(TAG, response.toString());
-
                         Bundle facebookData = getFacebookData(object);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtras(facebookData);
@@ -154,7 +153,5 @@ public class LoginActivity extends AppCompatActivity {
         request.setParameters(parameters);
         request.executeAsync();
     }
-
-
 }
 
