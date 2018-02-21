@@ -8,4 +8,20 @@
     <string name="leaderboard_tab_text">Leader Board</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- Leaderboard usage -->
+
+    <string-array name="times_options_array">
+        <item>Today</item>
+        <item>This Week</item>
+        <item>This Month</item>
+        <item>All Time</item>
+    </string-array>
+
+    <string-array name="sorting_options_array">
+        <item>Times Overslept</item>
+        <item>Times Snoozed</item>
+        <item>Times Woken up</item>
+    </string-array>
+
 </resources>

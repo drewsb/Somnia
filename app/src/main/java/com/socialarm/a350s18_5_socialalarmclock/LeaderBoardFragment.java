@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 public class LeaderBoardFragment extends Fragment {
 
@@ -51,6 +54,91 @@ public class LeaderBoardFragment extends Fragment {
         // specify an adapter (see also next example)
         mAdapter = new LeaderboardRowAdapter(null);
         mRecyclerView.setAdapter(mAdapter);
+
+        Spinner spinner = (Spinner) myView.findViewById(R.id.spinner_options_time);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.times_options_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view,
+                                       int position, long row_id) {
+                switch(position){
+                    case 0:
+                        System.out.println("Hi");
+                        break;
+                    case 1:
+                        System.out.println("My");
+                        break;
+                    case 2:
+                        System.out.println("Name");
+                        break;
+                    default:
+                        System.out.println("Bob");
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+
+        Spinner spinner_sort = (Spinner) myView.findViewById(R.id.spinner_options_sort_by);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter_sort = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.sorting_options_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner_sort.setAdapter(adapter_sort);
+
+        spinner_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view,
+                                       int position, long row_id) {
+                switch(position){
+                    case 0:
+                        System.out.println("Hi3");
+                        break;
+                    case 1:
+                        System.out.println("My3");
+                        break;
+                    case 2:
+                        System.out.println("Name3");
+                        break;
+                    default:
+                        System.out.println("Bob3");
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
 
         return myView;
     }

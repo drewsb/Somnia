@@ -32,7 +32,7 @@ public class LeaderboardRowAdapter extends RecyclerView.Adapter<LeaderboardRowAd
                                                    int viewType) {
         // create a new view
         TextView v = (TextView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_main, parent, false); // TODO: Change this?
+                .inflate(R.layout.fragment_leader_board, parent, false); // TODO: Change this?
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }

@@ -2,7 +2,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.socialarm.a350s18_5_socialalarmclock.LeaderBoardFragment">
+
+    <LinearLayout
+        android:id="@+id/spinner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_horizontal">
+
+        <Spinner
+            android:id="@+id/spinner_options_time"
+            android:layout_width="75dp"
+            android:layout_height="match_parent" />
+
+        <Spinner
+            android:id="@+id/spinner_options_sort_by"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"/>
+
+    </LinearLayout>
 
     <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView
