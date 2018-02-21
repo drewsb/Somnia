@@ -1,103 +1,75 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import org.json.JSONObject;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via facebook email/password.
  */
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
     private CallbackManager callbackManager;
     private LoginButton loginButton;
-    private static final String EMAIL = "email";
+    private static final String[] permissions = new String[]{"public_profile", "email", "user_friends"};
+    private final UserInfo userInfo = new UserInfo(LoginActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
-        if(loggedIn) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-        }
-
         callbackManager = CallbackManager.Factory.create();
 
-
         loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList(EMAIL));
-        // If you are using in a fragment, call loginButton.setFragment(this);
+        loginButton.setReadPermissions(permissions);
+
+        boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
+        if (loggedIn) {
+            sendRequest(AccessToken.getCurrentAccessToken());
+        }
 
         // Callback registration
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, loginResult.toString());
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                sendRequest(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
-                // App code
+                Log.v("LoginActivity", "cancel");
             }
 
             @Override
-            public void onError(FacebookException exception) {
-                // App code
+            public void onError(FacebookException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Login attempt failed.");
+                deleteAccessToken();
             }
         });
     }
@@ -106,6 +78,81 @@ public class LoginActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private Bundle getFacebookData(JSONObject object) {
+        Bundle bundle = new Bundle();
+
+        try {
+            String id = object.getString("id");
+            URL profile_pic;
+            try {
+                profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
+                Log.i("profile_pic", profile_pic + "");
+                bundle.putString("profile_pic", profile_pic.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+            bundle.putString("idFacebook", id);
+            if (object.has("user_friends")) {
+                bundle.putString("user_friends", object.getString("user_friends"));
+            }
+            if (object.has("first_name"))
+                bundle.putString("first_name", object.getString("first_name"));
+            if (object.has("last_name"))
+                bundle.putString("last_name", object.getString("last_name"));
+            if (object.has("email"))
+                bundle.putString("email", object.getString("email"));
+            if (object.has("gender"))
+                bundle.putString("gender", object.getString("gender"));
+
+
+            userInfo.saveFacebookUserInfo(object.getString("first_name"),
+                    object.getString("last_name"),object.getString("email"),
+                    object.getString("gender"), profile_pic.toString());
+
+        } catch (Exception e) {
+            Log.d(TAG, "BUNDLE Exception : "+e.toString());
+        }
+
+        Log.d(TAG, bundle.toString());
+        return bundle;
+    }
+
+    private void deleteAccessToken() {
+        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+
+                if (currentAccessToken == null){
+                    //User logged out
+                    userInfo.clearToken();
+                    LoginManager.getInstance().logOut();
+                }
+            }
+        };
+    }
+
+    private void sendRequest(AccessToken token){
+        GraphRequest request = GraphRequest.newMeRequest(token,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.v(TAG, response.toString());
+
+                        Bundle facebookData = getFacebookData(object);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtras(facebookData);
+                        startActivity(intent);
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,first_name,last_name,email,picture,gender,birthday,friendlists,friends");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
 
