@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements FriendsFragment.OnFragmentInteractionListener, MyAlarmFragment.OnFragmentInteractionListener, LeaderBoardFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements FriendsFragment.OnFragmentInteractionListener, MyAlarms.OnFragmentInteractionListener, LeaderBoardFragment.OnFragmentInteractionListener {
 
     private PagerAdapter pagerAdapter;
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         setSupportActionBar(toolbar);
 
         List<Fragment> fragments = new ArrayList<Fragment>();
-        fragments.add(MyAlarmFragment.newInstance());
+        fragments.add(MyAlarms.newInstance());
         fragments.add(FriendsFragment.newInstance());
         fragments.add(LeaderBoardFragment.newInstance());
 
