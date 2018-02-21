@@ -9,15 +9,24 @@ import android.database.sqlite.SQLiteStatement;
 
 
 public class AlarmsOpenHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "somnia.db";
+
+    public static final int SUNDAY = 1;
+    public static final int MONDAY = 2;
+    public static final int TUESDAY = 4;
+    public static final int WEDNESDAY = 8;
+    public static final int THURSDAY = 16;
+    public static final int FRIDAY = 32;
+    public static final int SATURDAY = 64;
 
     private static final String CREATE_ALARMS_TABLE =
       "CREATE TABLE " + LocalDBContract.Alarm.TABLE_NAME + " (" +
       LocalDBContract.Alarm._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
       LocalDBContract.Alarm.COLUMN_NAME_HOUR + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_MINUTE + " INTEGER, " +
-      LocalDBContract.Alarm.COLUMN_NAME_ENABLED + " TINYINT);";
+      LocalDBContract.Alarm.COLUMN_NAME_ENABLED + " TINYINT, " +
+      LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + " TINYINT);";
     private static final String DELETE_ALARMS_TABLE =
        "DROP TABLE IF EXISTS " + LocalDBContract.Alarm.TABLE_NAME;
 
@@ -31,26 +40,26 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         qb.setTables(LocalDBContract.Alarm.TABLE_NAME);
         String sort = LocalDBContract.Alarm.COLUMN_NAME_HOUR + ", " + LocalDBContract.Alarm.COLUMN_NAME_MINUTE;
         Cursor c = qb.query(db_read, null, null, null, null, null, sort);
-        //db_read.close();
         return c;
     }
 
-    public long addAlarm(int hour, int minute) {
+    public long addAlarm(int hour, int minute, int active_alarms) {
         SQLiteDatabase db_write = getWritableDatabase();
         String query = "INSERT INTO " + LocalDBContract.Alarm.TABLE_NAME + " " +
                        "(" + LocalDBContract.Alarm.COLUMN_NAME_HOUR + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_MINUTE + ", " +
-                       LocalDBContract.Alarm.COLUMN_NAME_ENABLED + ") VALUES (?, ?, ?)";
+                       LocalDBContract.Alarm.COLUMN_NAME_ENABLED + ", " +
+                       LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + ") VALUES (?, ?, ?, ?)";
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, hour);
         stmt.bindLong(2, minute);
         stmt.bindLong(3, 0);
+        stmt.bindLong(4, active_alarms);
         long ret = stmt.executeInsert();
-        //db_write.close();
         return ret;
     }
 
-    public int setActive(long row_id, boolean enable) {
+    public void setActive(long row_id, boolean enable) {
         SQLiteDatabase db_write = getWritableDatabase();
         String query = "UPDATE " + LocalDBContract.Alarm.TABLE_NAME + " " +
                        "SET " + LocalDBContract.Alarm.COLUMN_NAME_ENABLED + "=?" +
@@ -58,9 +67,7 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, enable ? 1 : 0);
         stmt.bindLong(2,row_id);
-        int r = stmt.executeUpdateDelete();
-        //db_write.close();
-        return r;
+        stmt.executeUpdateDelete();
     }
 
     @Override
