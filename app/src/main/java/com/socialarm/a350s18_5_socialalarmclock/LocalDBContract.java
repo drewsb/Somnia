@@ -12,5 +12,6 @@ public class LocalDBContract {
         public static final String COLUMN_NAME_HOUR = "hour";
         public static final String COLUMN_NAME_MINUTE = "minute";
         public static final String COLUMN_NAME_ENABLED = "enabled";
+        public static final String COLUMN_NAME_DAY_OF_WEEK = "day_of_week";
     }
 }

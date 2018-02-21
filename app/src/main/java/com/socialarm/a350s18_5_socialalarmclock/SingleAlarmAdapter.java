@@ -38,10 +38,31 @@ public class SingleAlarmAdapter extends CursorAdapter {
         final int hour = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_HOUR));
         final int minute = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
         final int enabled = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
+        final int days_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
         final int id = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm._ID));
+
+        int enabled_color = 0xFF000000;
+        int disabled_color = 0xFF999999;
+
 
         toggle.setChecked(enabled == 1);
         time.setText(String.format("%02d:%02d", hour, minute));
+
+        TextView sunday = view.findViewById(R.id.Sunday);
+        sunday.setTextColor((days_of_week & AlarmsOpenHelper.SUNDAY) != 0 ? enabled_color : disabled_color);
+        TextView monday = view.findViewById(R.id.Monday);
+        monday.setTextColor((days_of_week & AlarmsOpenHelper.MONDAY) != 0 ? enabled_color : disabled_color);
+        TextView tuesday = view.findViewById(R.id.Tuesday);
+        tuesday.setTextColor((days_of_week & AlarmsOpenHelper.TUESDAY) != 0 ? enabled_color : disabled_color);
+        TextView wednesday = view.findViewById(R.id.Wednesday);
+        wednesday.setTextColor((days_of_week & AlarmsOpenHelper.WEDNESDAY) != 0 ? enabled_color : disabled_color);
+        TextView thursday = view.findViewById(R.id.Thursday);
+        thursday.setTextColor((days_of_week & AlarmsOpenHelper.THURSDAY) != 0 ? enabled_color : disabled_color);
+        TextView friday = view.findViewById(R.id.Friday);
+        friday.setTextColor((days_of_week & AlarmsOpenHelper.FRIDAY) != 0 ? enabled_color : disabled_color);
+        TextView saturday = view.findViewById(R.id.Saturday);
+        saturday.setTextColor((days_of_week & AlarmsOpenHelper.SATURDAY) != 0 ? enabled_color : disabled_color);
+
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

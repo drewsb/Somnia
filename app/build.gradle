@@ -5,7 +5,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.socialarm.a350s18_5_socialalarmclock"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -18,10 +18,12 @@ android {
         }
     }
     sourceSets { main { java.srcDirs = ['src/main/java', 'src/main/proto'] } }
+    productFlavors {
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:support-v4:26.1.0'

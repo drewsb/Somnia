@@ -17,4 +17,5 @@
     <string name="friends_tab_text">Friends</string>
     <string name="leaderboard_tab_text">Leader Board</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_search_friend">SearchFriendActivity</string>
 </resources>
