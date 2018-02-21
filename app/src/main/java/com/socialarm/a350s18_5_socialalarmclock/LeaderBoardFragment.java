@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class LeaderBoardFragment extends Fragment {
 
@@ -52,7 +53,9 @@ public class LeaderBoardFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new LeaderboardRowAdapter(null);
+        String[] lbNames = getResources().getStringArray(R.array.leaderboard_name_array);
+        String[] lbOversleeps = getResources().getStringArray(R.array.leaderboard_oversleep_count);
+        mAdapter = new LeaderboardRowAdapter(lbNames, lbOversleeps);
         mRecyclerView.setAdapter(mAdapter);
 
         Spinner spinner = (Spinner) myView.findViewById(R.id.spinner_options_time);
@@ -73,21 +76,24 @@ public class LeaderBoardFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View view,
                                        int position, long row_id) {
+                Context context = getContext();
+                CharSequence text = "Times Overslept Selected";
+                int duration = Toast.LENGTH_SHORT;
                 switch(position){
                     case 0:
-                        System.out.println("Hi");
+                        text = "This Week Selected";
                         break;
                     case 1:
-                        System.out.println("My");
+                        text = "This Month Selected";
                         break;
                     case 2:
-                        System.out.println("Name");
+                        text = "All Time Selected";
                         break;
                     default:
-                        System.out.println("Bob");
                         break;
                 }
-
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
 
             @Override
@@ -116,21 +122,24 @@ public class LeaderBoardFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View view,
                                        int position, long row_id) {
+                Context context = getContext();
+                CharSequence text = "Times Overslept Selected";
+                int duration = Toast.LENGTH_SHORT;
                 switch(position){
                     case 0:
-                        System.out.println("Hi3");
+                        text = "Times Overslept Selected";
                         break;
                     case 1:
-                        System.out.println("My3");
+                        text = "Times Snoozed Selected";
                         break;
                     case 2:
-                        System.out.println("Name3");
+                        text = "Times Woken up Selected";
                         break;
                     default:
-                        System.out.println("Bob3");
                         break;
                 }
-
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
 
             @Override
