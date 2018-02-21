@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FriendsFragment.OnFragmentInteractionListener,
-        MyAlarmFragment.OnFragmentInteractionListener, LeaderBoardFragment.OnFragmentInteractionListener,
+        MyAlarms.OnFragmentInteractionListener, LeaderBoardFragment.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
 
     private PagerAdapter pagerAdapter;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         emailView.setText(email);
 
         List<Fragment> fragments = new ArrayList<Fragment>();
-        fragments.add(MyAlarmFragment.newInstance());
+        fragments.add(MyAlarms.newInstance());
         fragments.add(FriendsFragment.newInstance());
         fragments.add(LeaderBoardFragment.newInstance());
 
