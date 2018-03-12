@@ -137,6 +137,9 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
+            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
