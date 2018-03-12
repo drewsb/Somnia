@@ -134,6 +134,9 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             startActivity(intent);
         } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
             Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+
+            //pass facebook data to statistics activity
+            intent.putExtras(this.getIntent().getExtras());
             startActivity(intent);
         }
 
