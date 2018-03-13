@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "908282254284",
+    "firebase_url": "https://somnia-20d87.firebaseio.com",
+    "project_id": "somnia-20d87",
+    "storage_bucket": "somnia-20d87.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908282254284:android:41c6116f82de5d6c",
+        "android_client_info": {
+          "package_name": "com.socialarm.a350s18_5_socialalarmclock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "908282254284-hmvrdoibajuo8h5b49ku0tcnd494c6lv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHXZzuyK20j_tato0ic3zBiO4IexXaBoY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

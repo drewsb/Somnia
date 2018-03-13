@@ -4,13 +4,23 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 public class LeaderBoardFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public LeaderBoardFragment() {
         // Required empty public constructor
@@ -32,7 +42,114 @@ public class LeaderBoardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_leader_board, container, false);
+        View myView = inflater.inflate(R.layout.fragment_leader_board, container, false);
+
+        mRecyclerView = myView.findViewById(R.id.my_recycler_view);
+
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this.getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        String[] lbNames = getResources().getStringArray(R.array.leaderboard_name_array);
+        String[] lbOversleeps = getResources().getStringArray(R.array.leaderboard_oversleep_count);
+        mAdapter = new LeaderboardRowAdapter(lbNames, lbOversleeps);
+        mRecyclerView.setAdapter(mAdapter);
+
+        Spinner spinner = (Spinner) myView.findViewById(R.id.spinner_options_time);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.times_options_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view,
+                                       int position, long row_id) {
+                Context context = getContext();
+                CharSequence text = "Times Overslept Selected";
+                int duration = Toast.LENGTH_SHORT;
+                switch(position){
+                    case 0:
+                        text = "This Week Selected";
+                        break;
+                    case 1:
+                        text = "This Month Selected";
+                        break;
+                    case 2:
+                        text = "All Time Selected";
+                        break;
+                    default:
+                        break;
+                }
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+
+        Spinner spinner_sort = (Spinner) myView.findViewById(R.id.spinner_options_sort_by);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter_sort = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.sorting_options_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner_sort.setAdapter(adapter_sort);
+
+        spinner_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view,
+                                       int position, long row_id) {
+                Context context = getContext();
+                CharSequence text = "Times Overslept Selected";
+                int duration = Toast.LENGTH_SHORT;
+                switch(position){
+                    case 0:
+                        text = "Times Overslept Selected";
+                        break;
+                    case 1:
+                        text = "Times Snoozed Selected";
+                        break;
+                    case 2:
+                        text = "Times Woken up Selected";
+                        break;
+                    default:
+                        break;
+                }
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        return myView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

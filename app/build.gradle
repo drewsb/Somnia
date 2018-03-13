@@ -31,16 +31,20 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:design:26.1.0'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.google.firebase:firebase-auth:11.8.0'
+    compile 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.google.protobuf:protobuf-lite:3.0.0'
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.0.0'
+        artifact = "com.google.protobuf:protoc:3.0.0"
     }
     plugins {
-        javalite {
-            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        lite {
+            artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
         }
     }
     generateProtoTasks {
@@ -49,8 +53,10 @@ protobuf {
                 remove java
             }
             task.plugins {
-                javalite {}
+                lite { }
             }
         }
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
