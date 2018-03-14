@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private LoginButton loginButton;
     private static final String[] permissions = new String[]{"public_profile", "email", "user_friends"};
-    private final UserInfo userInfo = new UserInfo(this);
+    private final UserInfo userInfo = new UserInfo(LoginActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +176,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 }
 

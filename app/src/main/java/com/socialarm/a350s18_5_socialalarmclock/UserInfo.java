@@ -15,6 +15,7 @@ public class UserInfo {
 
     // Constructor
     public UserInfo(Activity activity) {
+        this.activity = activity;
     }
 
     public void saveAccessToken(String token) {
