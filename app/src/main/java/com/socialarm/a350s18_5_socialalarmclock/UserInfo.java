@@ -15,7 +15,6 @@ public class UserInfo {
 
     // Constructor
     public UserInfo(Activity activity) {
-        this.activity = activity;
     }
 
     public void saveAccessToken(String token) {
@@ -50,10 +49,9 @@ public class UserInfo {
         Log.d("MyApp", "Shared Name : "+first_name+"\nLast Name : "+last_name+"\nEmail : "+email+"\nGender : "+gender+"\nProfile Pic : "+profileURL);
     }
 
-    public void getFacebookUserInfo(){
+    public void getFacebookUserInfo() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        Log.d("MyApp", "Name : "+prefs.getString("fb_name",null)+"\nEmail : "+prefs.getString("fb_email",null));
+        Log.d("MyApp", "Name : " + prefs.getString("fb_name", null) + "\nEmail : " + prefs.getString("fb_email", null));
     }
-
 
 }

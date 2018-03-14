@@ -1,6 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -19,6 +20,11 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
 
@@ -27,13 +33,15 @@ import org.json.JSONObject;
  */
 public class LoginActivity extends AppCompatActivity {
 
+    public final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     private static final String TAG = "LoginActivity";
 
     // UI references.
     private CallbackManager callbackManager;
     private LoginButton loginButton;
     private static final String[] permissions = new String[]{"public_profile", "email", "user_friends"};
-    private final UserInfo userInfo = new UserInfo(LoginActivity.this);
+    private final UserInfo userInfo = new UserInfo(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +94,6 @@ public class LoginActivity extends AppCompatActivity {
             URL profile_pic;
             try {
                 profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
-                Log.i("profile_pic", profile_pic + "");
                 bundle.putString("profile_pic", profile_pic.toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -113,8 +120,6 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, "BUNDLE Exception : "+e.toString());
         }
-
-        Log.d(TAG, bundle.toString());
         return bundle;
     }
 
@@ -143,6 +148,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Bundle facebookData = getFacebookData(object);
+                        final User user = new User(facebookData);
+                        checkUserExists(user);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtras(facebookData);
                         startActivity(intent);
@@ -152,6 +159,24 @@ public class LoginActivity extends AppCompatActivity {
         parameters.putString("fields", "id,first_name,last_name,email,picture,gender,birthday,friendlists,friends");
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    private void checkUserExists(final User user){
+        final DocumentReference docRef = db.collection("users").document(user.getId());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if(!document.exists()) {
+                        UserDatabase.addUser(user);
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
     }
 }
 
