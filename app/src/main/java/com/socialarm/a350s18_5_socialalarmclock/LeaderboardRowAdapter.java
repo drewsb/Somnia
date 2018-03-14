@@ -17,6 +17,7 @@ public class LeaderboardRowAdapter extends RecyclerView.Adapter<LeaderboardRowAd
     static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         LeaderboardRow row; // TODO: Customize this to be a Profile object
+                            // TODO: Figure out how we query the DB and then
         ViewHolder(LeaderboardRow v) {
             super(v);
             row = v;

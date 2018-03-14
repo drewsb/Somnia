@@ -28,9 +28,12 @@
     </string-array>
 
     <string-array name="sorting_options_array">
-        <item>Times Overslept</item>
-        <item>Times Snoozed</item>
-        <item>Times Woken up</item>
+        <item>Most Oversleeps</item>
+        <item>Least Oversleeps</item>
+        <item>Most Snoozes</item>
+        <item>Least Snoozes</item>
+        <item>Most Wakes</item>
+        <item>Least Wakes</item>
     </string-array>
 
     <string-array name="leaderboard_name_array">
