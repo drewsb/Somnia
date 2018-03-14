@@ -43,6 +43,18 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor getAlarm(int alarm_id) {
+        SQLiteDatabase db_read = getReadableDatabase();
+
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        qb.setTables(LocalDBContract.Alarm.TABLE_NAME);
+        String where = LocalDBContract.Alarm._ID + " = " + alarm_id;
+        qb.appendWhere(where);
+        Cursor c = qb.query(db_read, null, null, null, null, null, null);
+        c.moveToFirst();
+        return c;
+    }
+
     public long addAlarm(int hour, int minute, int active_alarms) {
         SQLiteDatabase db_write = getWritableDatabase();
         String query = "INSERT INTO " + LocalDBContract.Alarm.TABLE_NAME + " " +

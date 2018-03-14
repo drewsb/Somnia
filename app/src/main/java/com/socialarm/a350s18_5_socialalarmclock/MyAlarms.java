@@ -35,7 +35,7 @@ public class MyAlarms extends Fragment {
         super.onCreate(savedInstanceState);
 
         dbHelper = new AlarmsOpenHelper(getActivity());
-        dbHelper.onCreate(dbHelper.getWritableDatabase());
+        //dbHelper.onCreate(dbHelper.getWritableDatabase());
     }
 
     @Override
