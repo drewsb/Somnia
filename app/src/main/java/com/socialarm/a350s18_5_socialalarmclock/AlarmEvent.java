@@ -63,7 +63,7 @@ public class AlarmEvent extends AppCompatActivity {
         final int days_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
         final int id = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm._ID));
 
-        Calendar trigger_time = SingleAlarmAdapter.getNextTrigger(hour, minute, days_of_week);
+        Calendar trigger_time = AlarmsUtil.getNextTrigger(hour, minute, days_of_week);
         long tTime = trigger_time.getTimeInMillis();
         Intent intent = new Intent(this, AlarmEvent.class);
         intent.putExtra("Alarm", id);
