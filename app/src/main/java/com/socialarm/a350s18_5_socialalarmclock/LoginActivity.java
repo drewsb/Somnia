@@ -1,6 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -19,6 +20,11 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
 
@@ -26,6 +32,8 @@ import org.json.JSONObject;
  * A login screen that offers login via facebook email/password.
  */
 public class LoginActivity extends AppCompatActivity {
+
+    public final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private static final String TAG = "LoginActivity";
 
@@ -86,7 +94,6 @@ public class LoginActivity extends AppCompatActivity {
             URL profile_pic;
             try {
                 profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
-                Log.i("profile_pic", profile_pic + "");
                 bundle.putString("profile_pic", profile_pic.toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -113,8 +120,6 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, "BUNDLE Exception : "+e.toString());
         }
-
-        Log.d(TAG, bundle.toString());
         return bundle;
     }
 
@@ -143,6 +148,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Bundle facebookData = getFacebookData(object);
+                        final User user = new User(facebookData);
+                        UserDatabase.checkUserExists(user);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtras(facebookData);
                         startActivity(intent);
