@@ -149,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Bundle facebookData = getFacebookData(object);
                         final User user = new User(facebookData);
-                        checkUserExists(user);
+                        UserDatabase.checkUserExists(user);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtras(facebookData);
                         startActivity(intent);
@@ -159,23 +159,6 @@ public class LoginActivity extends AppCompatActivity {
         parameters.putString("fields", "id,first_name,last_name,email,picture,gender,birthday,friendlists,friends");
         request.setParameters(parameters);
         request.executeAsync();
-    }
-
-    private void checkUserExists(final User user){
-        final DocumentReference docRef = db.collection("users").document(user.getId());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if(!document.exists()) {
-                        UserDatabase.addUser(user);
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
     }
 }
 
