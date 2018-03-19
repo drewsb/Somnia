@@ -29,8 +29,7 @@ public class SingleAlarmAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View v = inflater.inflate(R.layout.single_alarm_layout, parent, false);
-        return v;
+        return inflater.inflate(R.layout.single_alarm_layout, parent, false);
     }
 
     @Override

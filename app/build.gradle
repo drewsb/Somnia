@@ -32,10 +32,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile 'com.google.firebase:firebase-core:11.8.0'
-    compile 'com.google.firebase:firebase-auth:11.8.0'
-    compile 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.google.protobuf:protobuf-lite:3.0.0'
+    compile 'com.google.firebase:firebase-firestore:11.8.0'
+    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.jjoe64:graphview:4.2.1'
 }
 
 protobuf {
@@ -58,5 +59,4 @@ protobuf {
         }
     }
 }
-
 apply plugin: 'com.google.gms.google-services'

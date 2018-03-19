@@ -16,18 +16,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>        <meta-data
+        </activity>
+
+        <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
@@ -47,15 +48,20 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchFriendActivity"></activity>
+        <activity android:name=".SearchFriendActivity" />
         <activity android:name=".AlarmEditActivity" />
         <activity android:name=".AlarmEvent">
             <intent-filter>
-                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!-- <action android:name="android.intent.action.MAIN" /> -->
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".StatisticsActivity"
+            android:label="@string/title_activity_statistics"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

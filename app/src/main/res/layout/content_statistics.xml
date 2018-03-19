@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.StatisticsActivity"
+    tools:showIn="@layout/activity_statistics">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profileView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/ic_launcher_round"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FFFFFF"
+            />
+
+        <TextView
+            android:id="@+id/nameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            />
+
+        <TextView
+            android:id="@+id/emailView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            />
+
+        <TextView
+            android:id="@+id/statisticsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"/>
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/oversleptGraph"
+            android:layout_width="match_parent"
+            android:layout_height="200dip" />
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/snoozeGraph"
+            android:layout_width="match_parent"
+            android:layout_height="200dip" />
+        
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
