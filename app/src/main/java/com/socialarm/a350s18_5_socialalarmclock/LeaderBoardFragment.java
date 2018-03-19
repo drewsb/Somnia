@@ -14,6 +14,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 public class LeaderBoardFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
@@ -22,14 +31,29 @@ public class LeaderBoardFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private MyProfile profile;
+
+    /*
+        state related to the leaderboard
+     */
+    enum Duration { THIS_WEEK, THIS_MONTH, ALL_TIME }
+    private Duration statDuration = Duration.THIS_WEEK; // default to this week
+
+    enum SleepStatType { OVERSLEEP, SNOOZE, WAKE_UP }
+    private SleepStatType statType = SleepStatType.OVERSLEEP; // default to oversleep
+
+    enum SortDirection { MOST, LEAST }
+    private SortDirection sortDirection = SortDirection.MOST; // default to most
+
     public LeaderBoardFragment() {
         // Required empty public constructor
     }
 
-    public static LeaderBoardFragment newInstance() {
+    public static LeaderBoardFragment newInstance(MyProfile profile) {
         LeaderBoardFragment fragment = new LeaderBoardFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.profile = profile;
         return fragment;
     }
 
@@ -41,6 +65,7 @@ public class LeaderBoardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_leader_board, container, false);
 
@@ -67,33 +92,112 @@ public class LeaderBoardFragment extends Fragment {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+
+        // Create the first spinner's action listener
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
             }
 
             @Override
             public void onItemSelected(AdapterView<?> arg0, View view,
                                        int position, long row_id) {
-                Context context = getContext();
-                CharSequence text = "Times Overslept Selected";
-                int duration = Toast.LENGTH_SHORT;
                 switch(position){
                     case 0:
-                        text = "This Week Selected";
+                        statDuration = Duration.THIS_WEEK;
                         break;
                     case 1:
-                        text = "This Month Selected";
+                        statDuration = Duration.THIS_MONTH;
                         break;
                     case 2:
-                        text = "All Time Selected";
+                        statDuration = Duration.ALL_TIME;
                         break;
                     default:
                         break;
                 }
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+                // Fetch the friends list
+                ArrayList<Friend> friendsList = profile.fetchFriendsList(true);
+
+                // create array of leaderboard entries
+                ArrayList<LeaderboardEntry> leaderboardEntries = new ArrayList<LeaderboardEntry>();
+
+                // Loop through friends list and query the DB for the right statistic
+                for (Friend f : friendsList) {
+                    int desiredStatistic = -1;
+
+                    switch (statDuration) {
+                        case THIS_WEEK:
+                            switch(statType) {
+                                case OVERSLEEP:
+                                    desiredStatistic = f.getTimesOversleptPastWeek(true);
+                                    break;
+                                case SNOOZE:
+                                    desiredStatistic = f.getTimesSnoozedPastWeek(true);
+                                    break;
+                                case WAKE_UP:
+                                    desiredStatistic = f.getTimesWokenUpPastWeek(true);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case THIS_MONTH:
+                            switch(statType) {
+                                case OVERSLEEP:
+                                    desiredStatistic = f.getTimesOversleptPastMonth(true);
+                                    break;
+                                case SNOOZE:
+                                    desiredStatistic = f.getTimesSnoozedPastMonth(true);
+                                    break;
+                                case WAKE_UP:
+                                    desiredStatistic = f.getTimesWokenUpPastMonth(true);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case ALL_TIME:
+                            switch(statType) {
+                                case OVERSLEEP:
+                                    desiredStatistic = f.getTimesOversleptAllTime(true);
+                                    break;
+                                case SNOOZE:
+                                    desiredStatistic = f.getTimesSnoozedAllTime(true);
+                                    break;
+                                case WAKE_UP:
+                                    desiredStatistic = f.getTimesWokenUpAllTime(true);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                    // insert the string name and the int into a list in the desired sort order
+                    leaderboardEntries.add(new LeaderboardEntry(f.getName(), desiredStatistic, sortDirection));
+                }
+
+                Collections.sort(leaderboardEntries);
+
+                // get the values into arrays
+                ArrayList<String> sortedFriendNames = new ArrayList<String>();
+                ArrayList<String> sortedStatistic = new ArrayList<String>();
+
+                for (LeaderboardEntry entry : leaderboardEntries) {
+                    sortedFriendNames.add(entry.name);
+                    sortedStatistic.add(entry.statistic.toString());
+                }
+
+                String[] friendNames = sortedFriendNames.toArray(new String[sortedFriendNames.size()]);
+                String[] stats = sortedStatistic.toArray(new String[sortedStatistic.size()]);
+
+                // instantiate a new leaderboardRowAdapter with this data
+                mAdapter = new LeaderboardRowAdapter(friendNames, stats);
+
+
+                mRecyclerView.setAdapter(mAdapter);
             }
 
             @Override
@@ -116,30 +220,122 @@ public class LeaderBoardFragment extends Fragment {
         spinner_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
             }
 
             @Override
             public void onItemSelected(AdapterView<?> arg0, View view,
                                        int position, long row_id) {
-                Context context = getContext();
-                CharSequence text = "Times Overslept Selected";
-                int duration = Toast.LENGTH_SHORT;
                 switch(position){
                     case 0:
-                        text = "Times Overslept Selected";
+                        statType = SleepStatType.OVERSLEEP;
+                        sortDirection = SortDirection.MOST;
                         break;
                     case 1:
-                        text = "Times Snoozed Selected";
+                        statType = SleepStatType.OVERSLEEP;
+                        sortDirection = SortDirection.LEAST;
                         break;
                     case 2:
-                        text = "Times Woken up Selected";
+                        statType = SleepStatType.SNOOZE;
+                        sortDirection = SortDirection.MOST;
                         break;
+                    case 3:
+                        statType = SleepStatType.SNOOZE;
+                        sortDirection = SortDirection.LEAST;
+                        break;
+                    case 4:
+                        statType = SleepStatType.WAKE_UP;
+                        sortDirection = SortDirection.MOST;
+                        break;
+                    case 5:
+                        statType = SleepStatType.WAKE_UP;
+                        sortDirection = SortDirection.LEAST;
                     default:
                         break;
                 }
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+
+                // Fetch the friends list
+                ArrayList<Friend> friendsList = profile.fetchFriendsList(true);
+
+                // create array of leaderboard entries
+                ArrayList<LeaderboardEntry> leaderboardEntries = new ArrayList<LeaderboardEntry>();
+
+                // Loop through friends list and query the DB for the right statistic
+                for (Friend f : friendsList) {
+                    int desiredStatistic = -1;
+
+                    switch (statDuration) {
+                        case THIS_WEEK:
+                            switch(statType) {
+                                case OVERSLEEP:
+                                    desiredStatistic = f.getTimesOversleptPastWeek(true);
+                                    break;
+                                case SNOOZE:
+                                    desiredStatistic = f.getTimesSnoozedPastWeek(true);
+                                    break;
+                                case WAKE_UP:
+                                    desiredStatistic = f.getTimesWokenUpPastWeek(true);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case THIS_MONTH:
+                            switch(statType) {
+                                case OVERSLEEP:
+                                    desiredStatistic = f.getTimesOversleptPastMonth(true);
+                                    break;
+                                case SNOOZE:
+                                    desiredStatistic = f.getTimesSnoozedPastMonth(true);
+                                    break;
+                                case WAKE_UP:
+                                    desiredStatistic = f.getTimesWokenUpPastMonth(true);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case ALL_TIME:
+                            switch(statType) {
+                                case OVERSLEEP:
+                                    desiredStatistic = f.getTimesOversleptAllTime(true);
+                                    break;
+                                case SNOOZE:
+                                    desiredStatistic = f.getTimesSnoozedAllTime(true);
+                                    break;
+                                case WAKE_UP:
+                                    desiredStatistic = f.getTimesWokenUpAllTime(true);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                    // insert the string name and the int into a list in the desired sort order
+                    leaderboardEntries.add(new LeaderboardEntry(f.getName(), desiredStatistic, sortDirection));
+                }
+
+                Collections.sort(leaderboardEntries);
+
+                // get the values into arrays
+                ArrayList<String> sortedFriendNames = new ArrayList<String>();
+                ArrayList<String> sortedStatistic = new ArrayList<String>();
+
+                for (LeaderboardEntry entry : leaderboardEntries) {
+                    sortedFriendNames.add(entry.name);
+                    sortedStatistic.add(entry.statistic.toString());
+                }
+
+                String[] friendNames = sortedFriendNames.toArray(new String[sortedFriendNames.size()]);
+                String[] stats = sortedStatistic.toArray(new String[sortedStatistic.size()]);
+
+                // instantiate a new leaderboardRowAdapter with this data
+                mAdapter = new LeaderboardRowAdapter(friendNames, stats);
+
+
+                mRecyclerView.setAdapter(mAdapter);
             }
 
             @Override
