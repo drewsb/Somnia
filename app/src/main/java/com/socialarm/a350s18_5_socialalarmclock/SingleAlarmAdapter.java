@@ -3,8 +3,11 @@ package com.socialarm.a350s18_5_socialalarmclock;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +17,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class SingleAlarmAdapter extends CursorAdapter {
@@ -28,14 +29,20 @@ public class SingleAlarmAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return inflater.inflate(R.layout.single_alarm_layout, parent, false);
+        View v = inflater.inflate(R.layout.single_alarm_layout, parent, false);
+        return v;
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public boolean isEnabled(int position) {
+        return true;
+    }
+
+    @Override
+    public void bindView(View view, final Context context, Cursor cursor) {
         final Context internal_context = context;
-        TextView time = view.findViewById(R.id.alarm_time);
-        Switch toggle = view.findViewById(R.id.alarm_on_off);
+        final TextView time = view.findViewById(R.id.alarm_time);
+        final Switch toggle = view.findViewById(R.id.alarm_on_off);
 
         final int hour = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_HOUR));
         final int minute = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
@@ -77,7 +84,6 @@ public class SingleAlarmAdapter extends CursorAdapter {
                     intent.putExtra("Alarm", id);
                     PendingIntent Alarm = PendingIntent.getActivity(internal_context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
                     AlarmManager manager = (AlarmManager) internal_context.getSystemService(Context.ALARM_SERVICE);
-                    //manager.setExact(AlarmManager.RTC_WAKEUP, tTime, Alarm);
                     manager.setAlarmClock(new AlarmManager.AlarmClockInfo(tTime, Alarm), Alarm);
                     dbHelper.setActive(id, true);
                 } else {
@@ -90,6 +96,46 @@ public class SingleAlarmAdapter extends CursorAdapter {
                 }
             }
         });
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.d("LV", "item clicked");
+                if (!toggle.isChecked()) {
+                    return false;
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(internal_context);
+                builder.setTitle("Disable next alarm?");
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Do nothing.
+                    }
+                });
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Cancel current alarm.
+                        Intent intent = new Intent(internal_context, AlarmEvent.class);
+                        intent.putExtra("alarm", id);
+                        PendingIntent Alarm = PendingIntent.getActivity(internal_context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                        AlarmManager manager = (AlarmManager) internal_context.getSystemService(Context.ALARM_SERVICE);
+                        manager.cancel(Alarm);
+
+                        // Set next alarm.
+                        Calendar trigger_time = AlarmsUtil.skipNextTrigger(hour, minute, days_of_week);
+
+                        long tTime = trigger_time.getTimeInMillis();
+                        Intent new_intent = new Intent(internal_context, AlarmEvent.class);
+                        intent.putExtra("Alarm", id);
+                        PendingIntent new_alarm = PendingIntent.getActivity(internal_context, 0, new_intent, PendingIntent.FLAG_ONE_SHOT);
+                        manager.setAlarmClock(new AlarmManager.AlarmClockInfo(tTime, new_alarm), new_alarm);
+                    }
+                });
+                builder.show();
+                return true;
+            }
+        });
+
+        view.setTag(id);
     }
 
 }

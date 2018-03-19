@@ -32,6 +32,24 @@ class AlarmsUtil {
         return trigger_time;
     }
 
+    static Calendar skipNextTrigger(int hour, int minute, int days_of_week) {
+        Calendar trigger_time = getNextTrigger(hour, minute, days_of_week);
+        Set<Integer> calendar_days = getCalendarDays(days_of_week);
+
+        trigger_time.add(Calendar.DAY_OF_MONTH, 1); // Set for tomorrow
+
+        for (int i = 0; i < 7; ++i) {
+            if (!calendar_days.contains(trigger_time.get(Calendar.DAY_OF_WEEK))) {
+                trigger_time.add(Calendar.DAY_OF_MONTH, 1);
+            } else {
+                break;
+            }
+        }
+
+        return trigger_time;
+
+    }
+
     static Set<Integer> getCalendarDays(int days_of_week) {
         Set<Integer> calendar_days = new HashSet<Integer>();
         if ((days_of_week & AlarmsOpenHelper.SUNDAY) != 0) {
