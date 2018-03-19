@@ -1,6 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -66,7 +67,10 @@ public class StatisticsActivity extends AppCompatActivity {
     {
         //set number statistics
         TextView statisticsView = findViewById(R.id.statisticsView);
+        statisticsView.setBackgroundColor(Color.LTGRAY);
         statisticsView.append("Average wake up time: " + "" + "\n");
+        statisticsView.append("Average snooze time: " + "" + "\n");
+        statisticsView.append("Average overslept time: " + "" + "\n");
     }
 
     enum GraphDrawState {
@@ -117,6 +121,8 @@ public class StatisticsActivity extends AppCompatActivity {
             }
         });
 
+        //------------------------------------
+
         GraphView snoozeGraph = (GraphView) findViewById(R.id.snoozeGraph);
         snoozeGraph.removeAllSeries();
 
@@ -133,9 +139,23 @@ public class StatisticsActivity extends AppCompatActivity {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
-                    // transform number to time
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE");
-                    return simpleDateFormat.format(Calendar.getInstance().getTime());
+                    switch (graphDrawState)
+                    {
+                        case WEEK: {
+                            // transform number to time
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE");
+                            return simpleDateFormat.format(Calendar.getInstance().getTime());
+                        }
+                        case MONTH: {
+                            // transform number to time
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/dd");
+                            return simpleDateFormat.format(Calendar.getInstance().getTime());
+                        }
+                        case YEAR: {
+                            // transform number to time
+                            return "";
+                        }
+                    }
                 } else {
                     return super.formatLabel(value, isValueX);
                 }
