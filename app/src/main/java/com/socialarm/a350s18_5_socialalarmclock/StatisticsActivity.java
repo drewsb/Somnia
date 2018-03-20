@@ -9,6 +9,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -17,17 +19,29 @@ import android.widget.TextView;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.lang.reflect.Array;
+import java.text.DateFormatSymbols;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import static com.socialarm.a350s18_5_socialalarmclock.StatisticsActivity.GraphDrawState.MONTH;
-import static com.socialarm.a350s18_5_socialalarmclock.StatisticsActivity.GraphDrawState.WEEK;
-import static com.socialarm.a350s18_5_socialalarmclock.StatisticsActivity.GraphDrawState.YEAR;
+import static com.socialarm.a350s18_5_socialalarmclock.Statistic.TimeDifference.MONTH;
+import static com.socialarm.a350s18_5_socialalarmclock.Statistic.TimeDifference.WEEK;
+import static com.socialarm.a350s18_5_socialalarmclock.Statistic.TimeDifference.YEAR;
 
 public class StatisticsActivity extends AppCompatActivity {
+
+    Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +51,12 @@ public class StatisticsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent i = getIntent();
-        Bundle extras = i.getExtras();
+        extras = i.getExtras();
+
+        String id = extras.getString("idFacebook");
+
+        Log.v("AYYO", id);
+        Statistic.GetEvents(id, (events) -> Log.v("AAAAAAAA", events.toString()) );
 
         DrawUserInfo(extras);
 
@@ -73,92 +92,125 @@ public class StatisticsActivity extends AppCompatActivity {
         statisticsView.append("Average overslept time: " + "" + "\n");
     }
 
-    enum GraphDrawState {
-        WEEK,
-        MONTH,
-        YEAR
-    }
-
-    private void DrawGraphs(final GraphDrawState graphDrawState)
+    private void DrawGraphs(final Statistic.TimeDifference graphDrawState)
     {
-        //edit graphs
-        GraphView oversleptGraph = (GraphView) findViewById(R.id.oversleptGraph);
-        oversleptGraph.removeAllSeries();
+        String user_id = "1521517281462"; //alex's user id
 
-        LineGraphSeries<DataPoint> oversleptSeries = new LineGraphSeries<>(new DataPoint[]{
-                new DataPoint(1, 1),
-                new DataPoint(2, 5),
-                new DataPoint(3, 3)
-        });
+        Statistic.GetEventsSince(graphDrawState, user_id, events -> {
 
-        oversleptGraph.addSeries(oversleptSeries);
+            //edit graphs
+            GraphView oversleptGraph = (GraphView) findViewById(R.id.oversleptGraph);
+            oversleptGraph.removeAllSeries();
 
-        // set date label formatter
-        oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) {
+            //set titles
+            oversleptGraph.setTitle("Overslept");
+            oversleptGraph.getGridLabelRenderer().setHorizontalAxisTitle("Days");
+            oversleptGraph.getGridLabelRenderer().setVerticalAxisTitle("Times overslept");
 
-                    switch (graphDrawState)
-                    {
-                        case WEEK: {
-                            // transform number to time
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE");
-                            return simpleDateFormat.format(Calendar.getInstance().getTime());
-                        }
-                        case MONTH: {
-                            // transform number to time
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/dd");
-                            return simpleDateFormat.format(Calendar.getInstance().getTime());
-                        }
-                        case YEAR: {
-                            // transform number to time
-                            return "";
-                        }
+            // activate horizontal scrolling
+            oversleptGraph.getViewport().setScrollable(true);
+
+            //populate data points
+            HashMap<Long, Long> oversleptMap = new HashMap<Long, Long>();
+            for(Event event : events) {
+                //go through and check type and populate
+                if(event.getAction().equals("overslept"))
+                {
+                    //round to nearest day
+                    Date date = new Date(event.getTimestamp());
+                    date.setHours(0);
+                    date.setMinutes(0);
+                    date.setSeconds(0);
+                    long time = date.getTime();
+                    if(oversleptMap.containsKey(time)) {
+                        oversleptMap.put(time, oversleptMap.get(time) + 1);
+                    } else {
+                        oversleptMap.put(time, 1L);
                     }
                 }
-                return super.formatLabel(value, isValueX);
             }
-        });
 
-        //------------------------------------
+            //convert to array
+            List<DataPoint> oversleptDataPoints = new ArrayList<DataPoint>();
+            for(Map.Entry<Long, Long> entry : oversleptMap.entrySet())
+            {
+                oversleptDataPoints.add(new DataPoint(entry.getKey(), entry.getValue()));
+            }
 
-        GraphView snoozeGraph = (GraphView) findViewById(R.id.snoozeGraph);
-        snoozeGraph.removeAllSeries();
+            LineGraphSeries<DataPoint> oversleptSeries = new LineGraphSeries<DataPoint>(oversleptDataPoints.toArray(new DataPoint[oversleptDataPoints.size()]));
 
-        LineGraphSeries<DataPoint> snoozeSeries = new LineGraphSeries<>(new DataPoint[]{
-                new DataPoint(1, 1),
-                new DataPoint(2, 5),
-                new DataPoint(3, 3)
-        });
+            oversleptGraph.addSeries(oversleptSeries);
 
-        snoozeGraph.addSeries(snoozeSeries);
+            // set date label formatter
+            switch (graphDrawState)
+            {
+                case WEEK:
+                    oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("EEE")));
+                    break;
+                case MONTH:
+                    oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("dd")));
+                    break;
+                case YEAR:
+                    oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("mm/yyyy")));
+                    break;
+            }
 
-        // set date label formatter
-        snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) {
-                    switch (graphDrawState)
-                    {
-                        case WEEK: {
-                            // transform number to time
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE");
-                            return simpleDateFormat.format(Calendar.getInstance().getTime());
-                        }
-                        case MONTH: {
-                            // transform number to time
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/dd");
-                            return simpleDateFormat.format(Calendar.getInstance().getTime());
-                        }
-                        case YEAR: {
-                            // transform number to time
-                            return "";
-                        }
+            //------------------------------------
+
+            GraphView snoozeGraph = (GraphView) findViewById(R.id.snoozeGraph);
+            snoozeGraph.removeAllSeries();
+
+            //set titles
+            snoozeGraph.setTitle("Snoozes");
+            snoozeGraph.getGridLabelRenderer().setHorizontalAxisTitle("Days");
+            snoozeGraph.getGridLabelRenderer().setVerticalAxisTitle("Times snoozed");
+
+            // activate horizontal scrolling
+            snoozeGraph.getViewport().setScrollable(true);
+
+            //populate data points
+            HashMap<Long, Long> snoozeMap = new HashMap<Long, Long>();
+            for(Event event : events) {
+                //go through and check type and populate
+                if(event.getAction().equals("snooze"))
+                {
+                    //round to nearest day
+                    Date date = new Date(event.getTimestamp());
+                    date.setHours(0);
+                    date.setMinutes(0);
+                    date.setSeconds(0);
+                    long time = date.getTime();
+                    if(snoozeMap.containsKey(time)) {
+                        snoozeMap.put(time, snoozeMap.get(time) + 1);
+                    } else {
+                        snoozeMap.put(time, 1L);
                     }
-                } else {
-                    return super.formatLabel(value, isValueX);
                 }
+            }
+
+            //convert to array
+            List<DataPoint> snoozeDataPoints = new ArrayList<DataPoint>();
+            for(Map.Entry<Long, Long> entry : snoozeMap.entrySet())
+            {
+                snoozeDataPoints.add(new DataPoint(entry.getKey(), entry.getValue()));
+            }
+
+            LineGraphSeries<DataPoint> snoozeSeries = new LineGraphSeries<DataPoint>(snoozeDataPoints.toArray(new DataPoint[snoozeDataPoints.size()]));
+
+            snoozeGraph.addSeries(snoozeSeries);
+
+            // set date label formatter
+            switch (graphDrawState)
+            {
+                case WEEK:
+                    snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("EEE")));
+                    break;
+                case MONTH:
+                    snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("dd")));
+                    break;
+                case YEAR:
+                    snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("mm/yyyy")));
+                    break;
             }
         });
     }

@@ -20,6 +20,10 @@ android {
     sourceSets { main { java.srcDirs = ['src/main/java', 'src/main/proto'] } }
     productFlavors {
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -37,6 +41,7 @@ dependencies {
     compile 'com.google.firebase:firebase-core:11.8.0'
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.jjoe64:graphview:4.2.1'
+    compile 'com.google.api-client:google-api-client:1.23.0'
 }
 
 protobuf {

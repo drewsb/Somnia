@@ -78,27 +78,11 @@
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="Overslept"
-            android:layout_gravity="center_horizontal"
-            />
-
         <com.jjoe64.graphview.GraphView
             android:id="@+id/oversleptGraph"
             android:layout_width="match_parent"
             android:layout_height="200dip"
             android:layout_gravity="bottom"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="Snoozes"
-            android:layout_gravity="center_horizontal"
-            />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/snoozeGraph"
