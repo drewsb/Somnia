@@ -5,28 +5,27 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import java.util.List;
+
 public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.ViewHolder> {
 
-    private String[] myNames;
-    private String[] myOversleeps;
+    private List<User> users;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        LeaderboardRow row; // TODO: Customize this to be a Profile object
-                            // TODO: Figure out how we query the DB and then
-        ViewHolder(LeaderboardRow v) {
+        FriendRow row;
+        ViewHolder(FriendRow v) {
             super(v);
             row = v;
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    FriendRowAdapter(String[] names, String[] oversleeps) {
-        myNames = names;
-        myOversleeps = oversleeps;
+    FriendRowAdapter(List<User> users) {
+        this.users = users;
     }
 
     // Create new views (invoked by the layout manager)
@@ -35,8 +34,8 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
                                                           int viewType) {
         // create a new view
         RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_leader_board, parent, false); // TODO: Change this?
-        LeaderboardRow newRow = new LeaderboardRow(v.getContext(), null);
+                .inflate(R.layout.fragment_friends, parent, false); // TODO: Change this?
+        FriendRow newRow = new FriendRow(v.getContext(), null);
 
         ViewHolder rh = new ViewHolder(newRow);
         return rh;
@@ -47,17 +46,13 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.row.setName(myNames[position]);
-        holder.row.setTime(myOversleeps[position]);
+        holder.row.setName(users.get(position));
+        holder.row.setStatisticButton(users.get(position));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        if (myNames == null) {
-            return 0;
-        } else {
-            return Math.min(myNames.length, myOversleeps.length);
-        }
+        return users.size();
     }
 }

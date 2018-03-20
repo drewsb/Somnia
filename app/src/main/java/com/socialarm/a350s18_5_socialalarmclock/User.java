@@ -7,19 +7,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by drewboyette on 3/13/18.
  */
 
-public class User {
+public class User implements Serializable {
 
     private String id;
     private String first_name;
     private String last_name;
-    private String[] friend_ids;
+    private List<String> friend_ids;
 
     public User() {}
 
@@ -38,13 +40,12 @@ public class User {
             JSONObject jobj = new JSONObject(user_friends);
             JSONArray arr = jobj.getJSONArray("data");
 
-            ArrayList<String> friendArrayList = new ArrayList<String>();
+            friend_ids = new ArrayList<String>();
 
             for (int i = 0; i < arr.length();i++) {
-                friendArrayList.add(arr.getJSONObject(i).getString("id"));
+                friend_ids.add(arr.getJSONObject(i).getString("id"));
             }
 
-            this.friend_ids = friendArrayList.toArray(new String[friendArrayList.size()]);
         } catch (JSONException e) {
 
         }
@@ -62,6 +63,6 @@ public class User {
         return last_name;
     }
 
-    public String[] getFriend_ids() { return friend_ids; }
+    public List<String> getFriend_ids() { return friend_ids; }
 
 }

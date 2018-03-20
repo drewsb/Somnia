@@ -24,11 +24,14 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,7 +44,7 @@ import static com.socialarm.a350s18_5_socialalarmclock.Statistic.TimeDifference.
 
 public class StatisticsActivity extends AppCompatActivity {
 
-    Bundle extras;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,35 +54,36 @@ public class StatisticsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent i = getIntent();
-        extras = i.getExtras();
+        Bundle extras = i.getExtras();
 
-        String id = extras.getString("idFacebook");
+        user = (User) i.getSerializableExtra("user");
 
-        Log.v("AYYO", id);
-        Statistic.GetEvents(id, (events) -> Log.v("AAAAAAAA", events.toString()) );
-
-        DrawUserInfo(extras);
+        DrawUserInfo();
 
         DrawNumberStats();
 
         DrawGraphs(WEEK);
     }
 
-    private void DrawUserInfo(Bundle extras)
+    private void DrawUserInfo()
     {
-        //Set profile pic image
-        new DownloadImageTask((ImageView) findViewById(R.id.profileView))
-                .execute(extras.getString("profile_pic"));
+        try {
+            URL profile_pic = new URL("https://graph.facebook.com/" + user.getId() + "/picture?type=large");
+
+            //Set profile pic image
+            new DownloadImageTask((ImageView) findViewById(R.id.profileView))
+                    .execute(profile_pic.toString());
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
         //Retrieve user's name and email
-        String name = extras.getString("first_name") + " " + extras.getString("last_name");
-        String email = extras.getString("email");
+        String name = user.getFirst_name() + " " + user.getLast_name();
 
         TextView nameView = findViewById(R.id.nameView);
-        TextView emailView = findViewById(R.id.emailView);
 
         nameView.setText(name);
-        emailView.setText(email);
     }
 
     private void DrawNumberStats()
@@ -94,7 +98,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void DrawGraphs(final Statistic.TimeDifference graphDrawState)
     {
-        String user_id = "1521517281462"; //alex's user id
+        String user_id = user.getId(); //get user id
 
         Statistic.GetEventsSince(graphDrawState, user_id, events -> {
 
@@ -132,12 +136,23 @@ public class StatisticsActivity extends AppCompatActivity {
 
             //convert to array
             List<DataPoint> oversleptDataPoints = new ArrayList<DataPoint>();
+            Double max = 0.0;
             for(Map.Entry<Long, Long> entry : oversleptMap.entrySet())
             {
                 oversleptDataPoints.add(new DataPoint(entry.getKey(), entry.getValue()));
+                if(entry.getValue() > max)
+                {
+                    max = entry.getValue().doubleValue();
+                }
             }
 
             LineGraphSeries<DataPoint> oversleptSeries = new LineGraphSeries<DataPoint>(oversleptDataPoints.toArray(new DataPoint[oversleptDataPoints.size()]));
+
+            //manually set range from 0 to max
+            oversleptGraph.getViewport().setMinY(0.0);
+            oversleptGraph.getViewport().setMaxY(max);
+
+            oversleptGraph.getViewport().setYAxisBoundsManual(true);
 
             oversleptGraph.addSeries(oversleptSeries);
 
@@ -190,12 +205,23 @@ public class StatisticsActivity extends AppCompatActivity {
 
             //convert to array
             List<DataPoint> snoozeDataPoints = new ArrayList<DataPoint>();
+            max = 0.0;
             for(Map.Entry<Long, Long> entry : snoozeMap.entrySet())
             {
                 snoozeDataPoints.add(new DataPoint(entry.getKey(), entry.getValue()));
+                if(entry.getValue() > max)
+                {
+                    max = entry.getValue().doubleValue();
+                }
             }
 
             LineGraphSeries<DataPoint> snoozeSeries = new LineGraphSeries<DataPoint>(snoozeDataPoints.toArray(new DataPoint[snoozeDataPoints.size()]));
+
+            //manually set range from 0 to max
+            snoozeGraph.getViewport().setMinY(0.0);
+            snoozeGraph.getViewport().setMaxY(max);
+
+            snoozeGraph.getViewport().setYAxisBoundsManual(true);
 
             snoozeGraph.addSeries(snoozeSeries);
 
