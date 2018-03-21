@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.socialarm.a350s18_5_socialalarmclock.LeaderBoardFragment.*;
 
 /**
  * Created by drewboyette on 3/13/18.
@@ -64,5 +65,4 @@ public class User implements Serializable {
     }
 
     public List<String> getFriend_ids() { return friend_ids; }
-
 }

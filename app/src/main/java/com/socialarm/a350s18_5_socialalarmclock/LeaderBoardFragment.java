@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -31,7 +32,7 @@ public class LeaderBoardFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private MyProfile profile;
+    private User user;
 
     /*
         state related to the leaderboard
@@ -49,11 +50,11 @@ public class LeaderBoardFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static LeaderBoardFragment newInstance(MyProfile profile) {
+    public static LeaderBoardFragment newInstance(User user) {
         LeaderBoardFragment fragment = new LeaderBoardFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
-        fragment.profile = profile;
+        fragment.user = user;
         return fragment;
     }
 
@@ -68,293 +69,181 @@ public class LeaderBoardFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_leader_board, container, false);
-
         mRecyclerView = myView.findViewById(R.id.my_recycler_view);
-
         mRecyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
+        // use a linear layout manager for the spinners
         mLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
-        String[] lbNames = getResources().getStringArray(R.array.leaderboard_name_array);
-        String[] lbOversleeps = getResources().getStringArray(R.array.leaderboard_oversleep_count);
-        mAdapter = new LeaderboardRowAdapter(lbNames, lbOversleeps);
-        mRecyclerView.setAdapter(mAdapter);
-
-        Spinner spinner = (Spinner) myView.findViewById(R.id.spinner_options_time);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
-                R.array.times_options_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-
+        // Create the first spinner with its drop down
+        Spinner times_spinner = createSpinnerWithDropDown(R.id.spinner_options_time,
+                R.array.times_options_array, myView);
 
         // Create the first spinner's action listener
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
+        times_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view, int position, long row_id) {
+
+                // update state based on first spinner choice
+                updateStatDuration(position);
+
+                // make database call and display statistic asynchronously
+                Statistic.getLeaderboardEventsSince(user.getFriend_ids(),
+                        statDuration, statType, sortDirection, entries -> {displayRanking(entries);});
+
             }
 
             @Override
-            public void onItemSelected(AdapterView<?> arg0, View view,
-                                       int position, long row_id) {
-                switch(position){
-                    case 0:
-                        statDuration = Duration.THIS_WEEK;
-                        break;
-                    case 1:
-                        statDuration = Duration.THIS_MONTH;
-                        break;
-                    case 2:
-                        statDuration = Duration.ALL_TIME;
-                        break;
-                    default:
-                        break;
-                }
-                // Fetch the friends list
-                ArrayList<Friend> friendsList = profile.fetchFriendsList(true);
-
-                // create array of leaderboard entries
-                ArrayList<LeaderboardEntry> leaderboardEntries = new ArrayList<LeaderboardEntry>();
-
-                // Loop through friends list and query the DB for the right statistic
-                for (Friend f : friendsList) {
-                    int desiredStatistic = -1;
-
-                    switch (statDuration) {
-                        case THIS_WEEK:
-                            switch(statType) {
-                                case OVERSLEEP:
-                                    desiredStatistic = f.getTimesOversleptPastWeek(true);
-                                    break;
-                                case SNOOZE:
-                                    desiredStatistic = f.getTimesSnoozedPastWeek(true);
-                                    break;
-                                case WAKE_UP:
-                                    desiredStatistic = f.getTimesWokenUpPastWeek(true);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case THIS_MONTH:
-                            switch(statType) {
-                                case OVERSLEEP:
-                                    desiredStatistic = f.getTimesOversleptPastMonth(true);
-                                    break;
-                                case SNOOZE:
-                                    desiredStatistic = f.getTimesSnoozedPastMonth(true);
-                                    break;
-                                case WAKE_UP:
-                                    desiredStatistic = f.getTimesWokenUpPastMonth(true);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case ALL_TIME:
-                            switch(statType) {
-                                case OVERSLEEP:
-                                    desiredStatistic = f.getTimesOversleptAllTime(true);
-                                    break;
-                                case SNOOZE:
-                                    desiredStatistic = f.getTimesSnoozedAllTime(true);
-                                    break;
-                                case WAKE_UP:
-                                    desiredStatistic = f.getTimesWokenUpAllTime(true);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-
-                    // insert the string name and the int into a list in the desired sort order
-                    leaderboardEntries.add(new LeaderboardEntry(f.getName(), desiredStatistic, sortDirection));
-                }
-
-                Collections.sort(leaderboardEntries);
-
-                // get the values into arrays
-                ArrayList<String> sortedFriendNames = new ArrayList<String>();
-                ArrayList<String> sortedStatistic = new ArrayList<String>();
-
-                for (LeaderboardEntry entry : leaderboardEntries) {
-                    sortedFriendNames.add(entry.name);
-                    sortedStatistic.add(entry.statistic.toString());
-                }
-
-                String[] friendNames = sortedFriendNames.toArray(new String[sortedFriendNames.size()]);
-                String[] stats = sortedStatistic.toArray(new String[sortedStatistic.size()]);
-
-                // instantiate a new leaderboardRowAdapter with this data
-                mAdapter = new LeaderboardRowAdapter(friendNames, stats);
-
-
-                mRecyclerView.setAdapter(mAdapter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
 
+        // Create the spinner with its drop down
+        Spinner sort_spinner = createSpinnerWithDropDown(R.id.spinner_options_sort_by,
+                R.array.sorting_options_array, myView);
 
-        Spinner spinner_sort = (Spinner) myView.findViewById(R.id.spinner_options_sort_by);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter_sort = ArrayAdapter.createFromResource(this.getContext(),
-                R.array.sorting_options_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner_sort.setAdapter(adapter_sort);
+        sort_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view, int position, long row_id) {
 
-        spinner_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
+                // update state based on second spinner choice
+                updateStatTypeAndSortDirection(position);
+
+                // make database call and display statistic asynchronously
+                Statistic.getLeaderboardEventsSince(user.getFriend_ids(),
+                        statDuration, statType, sortDirection, entries -> {displayRanking(entries);});
             }
 
             @Override
-            public void onItemSelected(AdapterView<?> arg0, View view,
-                                       int position, long row_id) {
-                switch(position){
-                    case 0:
-                        statType = SleepStatType.OVERSLEEP;
-                        sortDirection = SortDirection.MOST;
-                        break;
-                    case 1:
-                        statType = SleepStatType.OVERSLEEP;
-                        sortDirection = SortDirection.LEAST;
-                        break;
-                    case 2:
-                        statType = SleepStatType.SNOOZE;
-                        sortDirection = SortDirection.MOST;
-                        break;
-                    case 3:
-                        statType = SleepStatType.SNOOZE;
-                        sortDirection = SortDirection.LEAST;
-                        break;
-                    case 4:
-                        statType = SleepStatType.WAKE_UP;
-                        sortDirection = SortDirection.MOST;
-                        break;
-                    case 5:
-                        statType = SleepStatType.WAKE_UP;
-                        sortDirection = SortDirection.LEAST;
-                    default:
-                        break;
-                }
-
-                // Fetch the friends list
-                ArrayList<Friend> friendsList = profile.fetchFriendsList(true);
-
-                // create array of leaderboard entries
-                ArrayList<LeaderboardEntry> leaderboardEntries = new ArrayList<LeaderboardEntry>();
-
-                // Loop through friends list and query the DB for the right statistic
-                for (Friend f : friendsList) {
-                    int desiredStatistic = -1;
-
-                    switch (statDuration) {
-                        case THIS_WEEK:
-                            switch(statType) {
-                                case OVERSLEEP:
-                                    desiredStatistic = f.getTimesOversleptPastWeek(true);
-                                    break;
-                                case SNOOZE:
-                                    desiredStatistic = f.getTimesSnoozedPastWeek(true);
-                                    break;
-                                case WAKE_UP:
-                                    desiredStatistic = f.getTimesWokenUpPastWeek(true);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case THIS_MONTH:
-                            switch(statType) {
-                                case OVERSLEEP:
-                                    desiredStatistic = f.getTimesOversleptPastMonth(true);
-                                    break;
-                                case SNOOZE:
-                                    desiredStatistic = f.getTimesSnoozedPastMonth(true);
-                                    break;
-                                case WAKE_UP:
-                                    desiredStatistic = f.getTimesWokenUpPastMonth(true);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case ALL_TIME:
-                            switch(statType) {
-                                case OVERSLEEP:
-                                    desiredStatistic = f.getTimesOversleptAllTime(true);
-                                    break;
-                                case SNOOZE:
-                                    desiredStatistic = f.getTimesSnoozedAllTime(true);
-                                    break;
-                                case WAKE_UP:
-                                    desiredStatistic = f.getTimesWokenUpAllTime(true);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-
-                    // insert the string name and the int into a list in the desired sort order
-                    leaderboardEntries.add(new LeaderboardEntry(f.getName(), desiredStatistic, sortDirection));
-                }
-
-                Collections.sort(leaderboardEntries);
-
-                // get the values into arrays
-                ArrayList<String> sortedFriendNames = new ArrayList<String>();
-                ArrayList<String> sortedStatistic = new ArrayList<String>();
-
-                for (LeaderboardEntry entry : leaderboardEntries) {
-                    sortedFriendNames.add(entry.name);
-                    sortedStatistic.add(entry.statistic.toString());
-                }
-
-                String[] friendNames = sortedFriendNames.toArray(new String[sortedFriendNames.size()]);
-                String[] stats = sortedStatistic.toArray(new String[sortedStatistic.size()]);
-
-                // instantiate a new leaderboardRowAdapter with this data
-                mAdapter = new LeaderboardRowAdapter(friendNames, stats);
-
-
-                mRecyclerView.setAdapter(mAdapter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
 
         return myView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    /**
+     * Based on spinner selection update the fragment's "statDuration" field
+     *
+     * @param selection the index in the time_spinner
+     */
+    private void updateStatDuration(int selection) {
+        switch(selection){
+            case 0:
+                statDuration = Duration.THIS_WEEK;
+                break;
+            case 1:
+                statDuration = Duration.THIS_MONTH;
+                break;
+            case 2:
+                statDuration = Duration.ALL_TIME;
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Based on spinner selection update the fragment's "statType" and "sortDirection" fields
+     *
+     * @param selection the index in the sort_spinner
+     */
+    private void updateStatTypeAndSortDirection(int selection) {
+        switch(selection){
+            case 0:
+                statType = SleepStatType.OVERSLEEP;
+                sortDirection = SortDirection.MOST;
+                break;
+            case 1:
+                statType = SleepStatType.OVERSLEEP;
+                sortDirection = SortDirection.LEAST;
+                break;
+            case 2:
+                statType = SleepStatType.SNOOZE;
+                sortDirection = SortDirection.MOST;
+                break;
+            case 3:
+                statType = SleepStatType.SNOOZE;
+                sortDirection = SortDirection.LEAST;
+                break;
+            case 4:
+                statType = SleepStatType.WAKE_UP;
+                sortDirection = SortDirection.MOST;
+                break;
+            case 5:
+                statType = SleepStatType.WAKE_UP;
+                sortDirection = SortDirection.LEAST;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Create and attach a dropdown menu to a spinner
+     *
+     * @param view ID for the view the spinner is in
+     * @param options what should the dropdown menu display?
+     * @param myView the parent view of the spinner
+     * @return the spinner
+     */
+    private Spinner createSpinnerWithDropDown(int view, int options, View myView) {
+
+        Spinner spinner = (Spinner) myView.findViewById(view);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
+                options, android.R.layout.simple_spinner_item);
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        return spinner;
+    }
+
+    /**
+     * This function takes in a sorted list of leaderboard entries and displays them
+     *
+     * displayRanking is usually used as a callback after fetching from the DB
+     *
+     * @param entries the list of leaderboard entries
+     */
+    public void displayRanking(List<LeaderboardEntry> entries) {
+
+        // get the values into arrays
+        ArrayList<String> sortedFriendNames = new ArrayList<String>();
+        ArrayList<String> sortedStatistic = new ArrayList<String>();
+
+        for (LeaderboardEntry entry : entries) {
+            sortedFriendNames.add(entry.name);
+            sortedStatistic.add(entry.statistic.toString());
+        }
+
+        String[] friendNames = sortedFriendNames.toArray(new String[sortedFriendNames.size()]);
+        String[] stats = sortedStatistic.toArray(new String[sortedStatistic.size()]);
+
+        // instantiate a new leaderboardRowAdapter with this data
+        mAdapter = new LeaderboardRowAdapter(friendNames, stats);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    // ---------------------------------------
+
+    /**
+     *   Possibly could rename method, update argument and hook method into UI event
+     *   if we wanted to have a global onButtonPressed
+     */
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
 
+    /**
+     * Have to implement this one
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -366,6 +255,9 @@ public class LeaderBoardFragment extends Fragment {
         }
     }
 
+    /**
+     * Forced to implement this one also
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -377,13 +269,8 @@ public class LeaderBoardFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

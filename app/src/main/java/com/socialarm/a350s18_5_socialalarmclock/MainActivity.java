@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     private ViewPager viewPager;
     private Intent i;
     private Bundle extras;
-    private MyProfile myProfile;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -73,10 +72,6 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         String name = extras.getString("first_name") + " " + extras.getString("last_name");
         String email = extras.getString("email");
 
-        // Initialize the MyProfile global object
-        // TODO: Change this when database is finished being implemented, since we will need more info than just a name
-        myProfile = new MyProfile(name);
-
         TextView nameView =  headerView.findViewById(R.id.nameView);
         TextView emailView = headerView.findViewById(R.id.emailView);
 
@@ -103,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             List<Fragment> fragments = new ArrayList<Fragment>();
             fragments.add(MyAlarms.newInstance());
             fragments.add(FriendsFragment.newInstance(user));
-            fragments.add(LeaderBoardFragment.newInstance(myProfile));
+            fragments.add(LeaderBoardFragment.newInstance(user));
 
             // Create the adapter that will return a fragment
             pagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);

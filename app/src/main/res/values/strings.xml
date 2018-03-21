@@ -32,95 +32,10 @@
         <item>Least Oversleeps</item>
         <item>Most Snoozes</item>
         <item>Least Snoozes</item>
-        <item>Most Wakes</item>
-        <item>Least Wakes</item>
+        <!--<item>Most Wakes</item>  Will put back in when we have the right events-->
+        <!--<item>Least Wakes</item>-->
     </string-array>
 
-    <string-array name="leaderboard_name_array">
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-    </string-array>
-
-    <string-array name="leaderboard_oversleep_count">
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-    </string-array>
     <string name="title_activity_statistics">StatisticsActivity</string>
 
 
