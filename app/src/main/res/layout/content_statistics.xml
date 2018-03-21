@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -22,15 +21,13 @@
             android:layout_height="80dp"
             android:src="@mipmap/ic_launcher_round"
             app:civ_border_width="2dp"
-            app:civ_border_color="#FFFFFF"
-            />
+            app:civ_border_color="#FFFFFF" />
 
         <TextView
             android:id="@+id/nameView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            />
+            android:layout_margin="@dimen/text_margin" />
 
         <TextView
             android:id="@+id/statisticsView"
@@ -52,19 +49,19 @@
             <RadioButton android:id="@+id/oversleptGraphWeek"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Week"
+                android:text="@string/radio_button_text_1"
                 android:onClick="onRadioOverSleptGraph"/>
 
             <RadioButton android:id="@+id/oversleptGraphMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Month"
+                android:text="@string/radio_button_text_2"
                 android:onClick="onRadioOverSleptGraph"/>
 
             <RadioButton android:id="@+id/oversleptGraphYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Year"
+                android:text="@string/radio_button_text_3"
                 android:onClick="onRadioOverSleptGraph"/>
 
             </RadioGroup>
@@ -73,28 +70,20 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
 
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/oversleptGraph"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                />
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/oversleptGraph"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
 
-        </LinearLayout>
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/snoozeGraph"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/snoozeGraph"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"/>
         </LinearLayout>
 
     </LinearLayout>

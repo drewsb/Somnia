@@ -13,6 +13,8 @@ import static android.support.v4.content.ContextCompat.startActivity;
 
 /**
  * Created by liamdugan on 2018/02/21.
+ *
+ * Friend row is similar to leaderboard row
  */
 
 public class FriendRow extends LinearLayout {
@@ -27,12 +29,13 @@ public class FriendRow extends LinearLayout {
 
     public void setName(final User user) {
         TextView nameView = myView.findViewById(R.id.friend_row_name_text);
-        nameView.setText(user.getFirst_name() + " " + user.getLast_name());
+        String name = user.getFirst_name() + " " + user.getLast_name();
+        nameView.setText(name);
     }
 
     public void setStatisticButton(final User user) {
         Button friend_button = myView.findViewById(R.id.friend_statisitic_button);
-        friend_button.setText("Stats");
+        friend_button.setText(R.string.friend_stat_button_text);
         friend_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
