@@ -34,8 +34,6 @@ public class FriendsFragment extends Fragment {
     public static FriendsFragment newInstance(User user) {
         FriendsFragment fragment = new FriendsFragment();
         Bundle args = new Bundle();
-        if(user == null)
-            Log.v("FFFFFFFFFFFF", "AAASSSSSAAAAAA");
         args.putSerializable("user", user);
         fragment.setArguments(args);
         return fragment;
@@ -62,9 +60,6 @@ public class FriendsFragment extends Fragment {
         // get user
         Bundle extras = getArguments();
         User user = (User) extras.getSerializable("user");
-
-        if(user == null)
-            Log.v("FFFFFFFFFFFF", "AAAAAAAAA");
 
         // fetch friends
         Statistic.GetFriends(user, friends -> {
