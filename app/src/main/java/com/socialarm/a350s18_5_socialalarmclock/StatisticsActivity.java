@@ -90,10 +90,65 @@ public class StatisticsActivity extends AppCompatActivity {
     {
         //set number statistics
         TextView statisticsView = findViewById(R.id.statisticsView);
-        statisticsView.setBackgroundColor(Color.LTGRAY);
-        statisticsView.append("Average wake up time: " + "" + "\n");
-        statisticsView.append("Average snooze time: " + "" + "\n");
-        statisticsView.append("Average overslept time: " + "" + "\n");
+
+        //fetch events for user
+        Statistic.GetEventsSince(Statistic.TimeDifference.YEAR, user.getId(), events -> {
+            Map<Long, Long> wakeup_map = new HashMap<Long, Long>();
+            Map<Long, Long> snooze_map = new HashMap<Long, Long>();
+            Map<Long, Long> overslept_map = new HashMap<Long, Long>();
+            for(Event e : events)
+            {
+                String action = e.getAction();
+                Long ts = e.getTimestamp();
+                Map<Long, Long> map = wakeup_map;
+                if(action.equals("wakeup"))
+                {
+                    map = wakeup_map;
+                }
+                else if(action.equals("snooze"))
+                {
+                    map = snooze_map;
+                }
+                else if(action.equals("overslept"))
+                {
+                    map = overslept_map;
+                }
+
+                if(map.containsKey(ts)) {
+                    map.put(ts, map.get(ts));
+                } else {
+                    map.put(ts, 1L);
+                }
+            }
+
+            //calculate average
+            double wakeup_avg = 0;
+            double snooze_avg = 0;
+            double overslept_avg = 0;
+
+            for(Map.Entry<Long, Long> entry : wakeup_map.entrySet())
+            {
+                wakeup_avg += entry.getValue().doubleValue();
+            }
+
+            for(Map.Entry<Long, Long> entry : snooze_map.entrySet())
+            {
+                snooze_avg += entry.getValue().doubleValue();
+            }
+
+            for(Map.Entry<Long, Long> entry : overslept_map.entrySet())
+            {
+                overslept_avg += entry.getValue().doubleValue();
+            }
+
+            wakeup_avg /= wakeup_map.size() > 0 ? wakeup_map.size() : 1;
+            snooze_avg /= snooze_map.size() > 0 ? snooze_map.size() : 1;
+            overslept_avg /= overslept_map.size() > 0 ? overslept_map.size() : 1;
+
+            statisticsView.append("Average wake up time: " + wakeup_avg + "\n");
+            statisticsView.append("Average snooze time: " + snooze_avg + "\n");
+            statisticsView.append("Average overslept time: " + overslept_avg + "\n");
+        });
     }
 
     private void DrawGraphs(final Statistic.TimeDifference graphDrawState)
@@ -113,6 +168,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
             // activate horizontal scrolling
             oversleptGraph.getViewport().setScrollable(true);
+            oversleptGraph.getGridLabelRenderer().setPadding(100);
 
             //populate data points
             HashMap<Long, Long> oversleptMap = new HashMap<Long, Long>();
@@ -147,6 +203,9 @@ public class StatisticsActivity extends AppCompatActivity {
             }
 
             LineGraphSeries<DataPoint> oversleptSeries = new LineGraphSeries<DataPoint>(oversleptDataPoints.toArray(new DataPoint[oversleptDataPoints.size()]));
+            oversleptSeries.setDrawDataPoints(true);
+            oversleptSeries.setDataPointsRadius(10);
+            oversleptSeries.setThickness(8);
 
             //manually set range from 0 to max
             oversleptGraph.getViewport().setMinY(0.0);
@@ -166,7 +225,8 @@ public class StatisticsActivity extends AppCompatActivity {
                     oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("dd")));
                     break;
                 case YEAR:
-                    oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("mm/yyyy")));
+                    oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("yyyy")));
+                    oversleptGraph.getGridLabelRenderer().setNumHorizontalLabels(2);
                     break;
             }
 
@@ -179,6 +239,7 @@ public class StatisticsActivity extends AppCompatActivity {
             snoozeGraph.setTitle("Snoozes");
             snoozeGraph.getGridLabelRenderer().setHorizontalAxisTitle("Days");
             snoozeGraph.getGridLabelRenderer().setVerticalAxisTitle("Times snoozed");
+            snoozeGraph.getGridLabelRenderer().setPadding(100);
 
             // activate horizontal scrolling
             snoozeGraph.getViewport().setScrollable(true);
@@ -216,6 +277,9 @@ public class StatisticsActivity extends AppCompatActivity {
             }
 
             LineGraphSeries<DataPoint> snoozeSeries = new LineGraphSeries<DataPoint>(snoozeDataPoints.toArray(new DataPoint[snoozeDataPoints.size()]));
+            snoozeSeries.setDrawDataPoints(true);
+            snoozeSeries.setDataPointsRadius(10);
+            snoozeSeries.setThickness(8);
 
             //manually set range from 0 to max
             snoozeGraph.getViewport().setMinY(0.0);
@@ -235,7 +299,8 @@ public class StatisticsActivity extends AppCompatActivity {
                     snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("dd")));
                     break;
                 case YEAR:
-                    snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("mm/yyyy")));
+                    snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("yyyy")));
+                    snoozeGraph.getGridLabelRenderer().setNumHorizontalLabels(2);
                     break;
             }
         });
