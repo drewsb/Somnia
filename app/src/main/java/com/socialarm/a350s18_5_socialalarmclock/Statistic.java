@@ -63,7 +63,7 @@ public final class Statistic {
                                                  final LeaderboardEntryLambda lbeLambda) {
         List<LeaderboardEntry> entryList = new ArrayList<>();
 
-        // TODO: This is literally slower than a dead sloth, refactor at later iteration someone please
+        // TODO: This is literally slower than a dead sloth, we should query all events and sort them in single pass, will refactor
         for (String friend_id : friends_list) {
             GetAllEvents(events -> {
                 GetUser(friend_id, friend -> {
@@ -127,19 +127,14 @@ public final class Statistic {
     }
 
     private static boolean isCorrectType(Event event, SleepStatType statType) {
-        String eventType = null;
         switch(statType) {
             case SNOOZE:
-                eventType = "snooze";
-                break;
+                return event.getAction().equals("snooze");
             case OVERSLEEP:
-                eventType = "overslept";
-                break;
+                return event.getAction().equals("overslept");
             default:
-                eventType = "overslept";
+                return event.getAction().equals("overslept");
         }
-
-        return event.getAction().equals(eventType);
     }
 
     private static boolean isCorrectUser(Event event, String user_id) {
