@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
@@ -21,6 +21,18 @@ public class AlarmEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm_edit);
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         picker.setIs24HourView(DateFormat.is24HourFormat(this));
+
+        NumberPicker interval = findViewById(R.id.interval_selector);
+        interval.setMinValue(1);
+        interval.setMaxValue(30);
+        interval.setWrapSelectorWheel(true);
+        interval.setValue(5);
+
+        NumberPicker count = findViewById(R.id.snooze_count);
+        count.setMinValue(1);
+        count.setMaxValue(5);
+        count.setWrapSelectorWheel(true);
+        count.setValue(3);
 
         dbHelper = new AlarmsOpenHelper(this);
     }
@@ -40,7 +52,10 @@ public class AlarmEditActivity extends AppCompatActivity {
 
     public void onAccept(View view) {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
-        long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(), days_of_week);
+        NumberPicker interval = findViewById(R.id.interval_selector);
+        NumberPicker count = findViewById(R.id.snooze_count);
+        long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),
+                days_of_week, interval.getValue(), count.getValue());
 
         Intent i = new Intent();
         i.putExtra("new_alarm", row);
