@@ -16,8 +16,7 @@ public class LeaderboardRowAdapter extends RecyclerView.Adapter<LeaderboardRowAd
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        LeaderboardRow row; // TODO: Customize this to be a Profile object
-                            // TODO: Figure out how we query the DB and then
+        LeaderboardRow row;
         ViewHolder(LeaderboardRow v) {
             super(v);
             row = v;
@@ -36,7 +35,7 @@ public class LeaderboardRowAdapter extends RecyclerView.Adapter<LeaderboardRowAd
                                                    int viewType) {
         // create a new view
         RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_leader_board, parent, false); // TODO: Change this?
+                .inflate(R.layout.fragment_leader_board, parent, false);
         LeaderboardRow newRow = new LeaderboardRow(v.getContext(), null);
 
         ViewHolder rh = new ViewHolder(newRow);

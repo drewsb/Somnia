@@ -17,7 +17,7 @@ public class LeaderboardEntry implements Comparable<LeaderboardEntry> {
 
     @Override
     public int compareTo(LeaderboardEntry entry) {
-        if (entry == null) { // TODO: Is this the desired behavior? not sure
+        if (entry == null) {
             return -1;
         }
         switch (sortDirection) {

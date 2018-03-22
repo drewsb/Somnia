@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 public class LeaderboardRow extends LinearLayout {
 
-    private LinearLayout myView; // TODO: Have this contain a profile object and
+    private LinearLayout myView;
 
     public LeaderboardRow(Context context, AttributeSet attrs) {
         super(context, attrs);
