@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         emailView.setText(email);
 
         Statistic.GetUser(extras.getString("idFacebook"), user -> {
-            //TESTING
+            //TESTING (Adds event entries to db)
             /*
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.MONTH, Calendar.MARCH);
