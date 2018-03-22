@@ -86,6 +86,17 @@ public class StatisticsActivity extends AppCompatActivity {
         nameView.setText(name);
     }
 
+    //appends one to value if key exists and starts with 1 if not
+    private <A, B> void IncrementMapDefault(Map<A, B> map, A key, B default_value)
+    {
+        //compute put entries with same timestamp in map
+        if(map.containsKey(key)) {
+            map.put(key, map.get(key));
+        } else {
+            map.put(key, default_value);
+        }
+    }
+
     private void DrawNumberStats()
     {
         //set number statistics
@@ -100,7 +111,7 @@ public class StatisticsActivity extends AppCompatActivity {
             {
                 String action = e.getAction();
                 Long ts = e.getTimestamp();
-                Map<Long, Long> map = wakeup_map;
+                Map<Long, Long> map = null;
                 if(action.equals("wakeup"))
                 {
                     map = wakeup_map;
@@ -114,11 +125,6 @@ public class StatisticsActivity extends AppCompatActivity {
                     map = overslept_map;
                 }
 
-                if(map.containsKey(ts)) {
-                    map.put(ts, map.get(ts));
-                } else {
-                    map.put(ts, 1L);
-                }
             }
 
             //calculate average
@@ -182,11 +188,7 @@ public class StatisticsActivity extends AppCompatActivity {
                     date.setMinutes(0);
                     date.setSeconds(0);
                     long time = date.getTime();
-                    if(oversleptMap.containsKey(time)) {
-                        oversleptMap.put(time, oversleptMap.get(time) + 1);
-                    } else {
-                        oversleptMap.put(time, 1L);
-                    }
+                    IncrementMapDefault(oversleptMap, time, 1L);
                 }
             }
 
@@ -256,11 +258,7 @@ public class StatisticsActivity extends AppCompatActivity {
                     date.setMinutes(0);
                     date.setSeconds(0);
                     long time = date.getTime();
-                    if(snoozeMap.containsKey(time)) {
-                        snoozeMap.put(time, snoozeMap.get(time) + 1);
-                    } else {
-                        snoozeMap.put(time, 1L);
-                    }
+                    IncrementMapDefault(oversleptMap, time, 1L);
                 }
             }
 

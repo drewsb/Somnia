@@ -49,19 +49,19 @@
             <RadioButton android:id="@+id/oversleptGraphWeek"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/radio_button_text_1"
+                android:text="@string/radio_button_week"
                 android:onClick="onRadioOverSleptGraph"/>
 
             <RadioButton android:id="@+id/oversleptGraphMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/radio_button_text_2"
+                android:text="@string/radio_button_month"
                 android:onClick="onRadioOverSleptGraph"/>
 
             <RadioButton android:id="@+id/oversleptGraphYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/radio_button_text_3"
+                android:text="@string/radio_button_year"
                 android:onClick="onRadioOverSleptGraph"/>
 
             </RadioGroup>

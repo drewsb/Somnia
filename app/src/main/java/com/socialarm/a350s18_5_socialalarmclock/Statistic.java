@@ -69,15 +69,12 @@ public final class Statistic {
                 GetUser(friend_id, friend -> {
                     Calendar calendar = Calendar.getInstance();
 
-                    //lambda to compute days in milliseconds
-                    DayCalculator dayCalculator = day -> day * 24 * 3600 * 1000L;
-
                     //events filtered by last week, month, year
                     List<Event> filteredEvents = new ArrayList<>();
 
                     for(Event event : events)
                     {
-                        if(isWithinDuration(event, duration, calendar, dayCalculator) &&
+                        if(isWithinDuration(event, duration, calendar) &&
                                 isCorrectType(event, type) &&
                                 isCorrectUser(event, friend_id)) {
                             filteredEvents.add(event);
@@ -96,7 +93,12 @@ public final class Statistic {
         }
     }
 
-    private static boolean isWithinDuration(Event event, Duration duration, Calendar cal, DayCalculator dayCalc) {
+    private static long GetInMilliSeconds(long day)
+    {
+        return day * 24 * 60 * 60 * 1000L;
+    }
+
+    private static boolean isWithinDuration(Event event, Duration duration, Calendar cal) {
         //convert to a date
         Date date = new Date(event.getTimestamp());
 
@@ -119,7 +121,7 @@ public final class Statistic {
         }
 
         //calculate now - week, month, year
-        Date lastDate = new Date(cal.getTime().getTime() - dayCalc.GetInMilliSeconds(difference_days));
+        Date lastDate = new Date(cal.getTime().getTime() - GetInMilliSeconds(difference_days));
 
         return date.after(lastDate);
     }
@@ -150,12 +152,6 @@ public final class Statistic {
         YEAR
     }
 
-    //helper for GetEventsSince (lambda)
-    interface DayCalculator
-    {
-        long GetInMilliSeconds(long day);
-    }
-
     private static long getDaysSinceEpoch() {
         return System.currentTimeMillis() / 1000 / 60 / 60 / 24;
     }
@@ -171,9 +167,6 @@ public final class Statistic {
         GetAllEvents(events ->
         {
             Calendar calender = Calendar.getInstance();
-
-            //lambda to compute days in milliseconds
-            DayCalculator dayCalculator = day -> day * 24 * 3600 * 1000L;
 
             //events filtered by last week, month, year
             List<Event> filteredEvents = new ArrayList<Event>();
@@ -202,7 +195,7 @@ public final class Statistic {
                 }
 
                 //calculate now - week, month, year
-                Date lastDate = new Date(calender.getTime().getTime() - dayCalculator.GetInMilliSeconds(difference_days));
+                Date lastDate = new Date(calender.getTime().getTime() - GetInMilliSeconds(difference_days));
 
                 //check if event was greater than last week, month, year
                 if(date.after(lastDate) && isCorrectUser(event, user_id)) {
@@ -230,20 +223,16 @@ public final class Statistic {
                 .addOnSuccessListener(documentSnapshots -> {
                     if (!documentSnapshots.isEmpty()) {
                         List<User> friends = new ArrayList<User>();
-                        for(DocumentSnapshot ds : documentSnapshots)
-                        {
+                        for(DocumentSnapshot ds : documentSnapshots) {
                             User friend = ds.toObject(User.class);
-                            try {
-                                //check if in list
-                                if (user != null && user.getFriend_ids().contains(friend.getId())) {
-                                    friends.add(friend);
-                                }
-                            } catch (NullPointerException e) { // cleanly handle NPE as per request
+
+                            if (user != null && user.getFriend_ids() != null &&user.getFriend_ids().contains(friend.getId())) {
+                                friends.add(friend);
+                            } else {
                                 CharSequence text = "You do not have a friends list";
                                 Toast.makeText(getApplicationContext(),text, Toast.LENGTH_SHORT).show();
                             }
                         }
-
                         //callback
                         friendsLambda.callback(friends);
                     }

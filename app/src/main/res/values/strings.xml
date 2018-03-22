@@ -40,8 +40,8 @@
 
     <!-- Friends page usage -->
     <string name="friend_stat_button_text">See Stats</string>
-    <string name="radio_button_text_1">Week</string>
-    <string name="radio_button_text_2">Month</string>
-    <string name="radio_button_text_3">Year</string>
+    <string name="radio_button_week">Week</string>
+    <string name="radio_button_month">Month</string>
+    <string name="radio_button_year">Year</string>
 
 </resources>
