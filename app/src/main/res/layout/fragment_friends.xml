@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.socialarm.a350s18_5_socialalarmclock.FriendsFragment">
 
-    <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:scrollbars="vertical"

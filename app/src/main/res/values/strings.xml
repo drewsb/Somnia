@@ -37,6 +37,8 @@
     </string-array>
 
     <string name="title_activity_statistics">StatisticsActivity</string>
+
+    <!-- Friends page usage -->
     <string name="friend_stat_button_text">See Stats</string>
     <string name="radio_button_text_1">Week</string>
     <string name="radio_button_text_2">Month</string>
