@@ -70,6 +70,7 @@ public class AlarmEvent extends AppCompatActivity {
         minute = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
         enabled = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
         days_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
+        volume = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_VOLUME));
     }
 
     protected void onSnooze(View view) {

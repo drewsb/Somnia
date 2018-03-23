@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.NumberPicker;
+import android.widget.SeekBar;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
@@ -54,8 +55,9 @@ public class AlarmEditActivity extends AppCompatActivity {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         NumberPicker interval = findViewById(R.id.interval_selector);
         NumberPicker count = findViewById(R.id.snooze_count);
+        SeekBar volume = findViewById(R.id.volume_slider);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),
-                days_of_week, interval.getValue(), count.getValue());
+                days_of_week, interval.getValue(), count.getValue(), volume.getProgress());
 
         Intent i = new Intent();
         i.putExtra("new_alarm", row);

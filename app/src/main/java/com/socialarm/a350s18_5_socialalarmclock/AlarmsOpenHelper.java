@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteStatement;
 
 
 public class AlarmsOpenHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "somnia.db";
 
     public static final int SUNDAY = 1;
@@ -29,7 +29,9 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
       LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + " TINYINT, " +
       LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL + " INTEGER, " +
-      LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT + " INTEGER);";
+      LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT + " INTEGER, " +
+      LocalDBContract.Alarm.COLUMN_NAME_VOLUME + " INTEGER);";
+
     private static final String DELETE_ALARMS_TABLE =
        "DROP TABLE IF EXISTS " + LocalDBContract.Alarm.TABLE_NAME;
 
@@ -59,7 +61,7 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
     }
 
     public long addAlarm(int hour, int minute, int active_alarms, int snooze_interval,
-                         int snooze_count) {
+                         int snooze_count, int volume) {
         SQLiteDatabase db_write = getWritableDatabase();
         String query = "INSERT INTO " + LocalDBContract.Alarm.TABLE_NAME + " " +
                        "(" + LocalDBContract.Alarm.COLUMN_NAME_HOUR + ", " +
@@ -67,7 +69,8 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
                        LocalDBContract.Alarm.COLUMN_NAME_ENABLED + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL + ", " +
-                       LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT + ") VALUES (?, ?, ?, ?, ?, ?)";
+                       LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT  + ", " +
+                       LocalDBContract.Alarm.COLUMN_NAME_VOLUME + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, hour);
         stmt.bindLong(2, minute);
@@ -75,6 +78,7 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         stmt.bindLong(4, active_alarms);
         stmt.bindLong(5, snooze_interval);
         stmt.bindLong(6, snooze_count);
+        stmt.bindLong(7, volume);
         long ret = stmt.executeInsert();
         return ret;
     }
@@ -110,6 +114,11 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        onCreate(sqLiteDatabase);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase sqLiteDatabase, int i, int j) {
         onCreate(sqLiteDatabase);
     }
 
