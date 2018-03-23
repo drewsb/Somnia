@@ -12,8 +12,10 @@ import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -63,6 +65,34 @@ public class StatisticsActivity extends AppCompatActivity {
         DrawNumberStats();
 
         DrawGraphs(WEEK);
+
+        Spinner notifications = (Spinner)findViewById(R.id.notifcationDropdown);
+
+        notifications.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                updateFriendNotifications();
+            }
+        });
+
+        Spinner privileges = (Spinner)findViewById(R.id.privilegeDropdown);
+
+        privileges.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                updateFriendPrivileges();
+            }
+        });
+    }
+
+    private void updateFriendNotifications(){
+
+    }
+
+    private void updateFriendPrivileges(){
+
     }
 
     private void DrawUserInfo()
