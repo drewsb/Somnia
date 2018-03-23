@@ -23,11 +23,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
+
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Button;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FriendsFragment.OnFragmentInteractionListener,
@@ -80,22 +83,36 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         nameView.setText(name);
         emailView.setText(email);
 
-        List<Fragment> fragments = new ArrayList<Fragment>();
-        fragments.add(MyAlarms.newInstance());
-        fragments.add(FriendsFragment.newInstance());
-        fragments.add(LeaderBoardFragment.newInstance());
+        Statistic.GetUser(extras.getString("idFacebook"), user -> {
+            //TESTING (Adds event entries to db)
+            /*
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.MONTH, Calendar.MARCH);
+            calendar.set(Calendar.DAY_OF_MONTH, 22);
+            Event event = new Event("snooze", "abc", user.getId(), "abc", calendar.getTime().getTime()  );
+            Statistic.WriteEvent(event);
+            calendar.set(Calendar.DAY_OF_MONTH, 24);
+            Statistic.WriteEvent(event);
+            Statistic.WriteEvent(event);
+            */
 
-        // Create the adapter that will return a fragment
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
+            List<Fragment> fragments = new ArrayList<Fragment>();
+            fragments.add(MyAlarms.newInstance());
+            fragments.add(FriendsFragment.newInstance(user));
+            fragments.add(LeaderBoardFragment.newInstance(user));
 
-        // Set up the ViewPager with the sections adapter.
-        viewPager = findViewById(R.id.viewPagerContainer);
-        viewPager.setAdapter(pagerAdapter);
+            // Create the adapter that will return a fragment
+            pagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
 
-        TabLayout tabLayout = findViewById(R.id.tabs);
+            // Set up the ViewPager with the sections adapter.
+            viewPager = findViewById(R.id.viewPagerContainer);
+            viewPager.setAdapter(pagerAdapter);
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+            TabLayout tabLayout = findViewById(R.id.tabs);
+
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+        });
 
         //add functionality to find friends button
         Button search_friend_button = (Button)findViewById(R.id.search_friend_button);
@@ -134,11 +151,13 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
-            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+            Statistic.GetUser(extras.getString("idFacebook"), user -> {
+                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
 
-            //pass facebook data to statistics activity
-            intent.putExtras(this.getIntent().getExtras());
-            startActivity(intent);
+                //pass user data to statistics activity
+                intent.putExtra("user",  user);
+                startActivity(intent);
+            });
         } else if (id == R.id.nav_disable) {
             DisableAlarmFragment disableAlarmFragment = new DisableAlarmFragment();
             disableAlarmFragment.show(getSupportFragmentManager(), "disable");

@@ -34,7 +34,6 @@
         android:layout_marginTop="50dp"
         android:background="@android:color/darker_gray"/>
 
-    <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:scrollbars="vertical"

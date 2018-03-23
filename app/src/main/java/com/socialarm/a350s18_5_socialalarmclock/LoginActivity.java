@@ -100,8 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
             bundle.putString("idFacebook", id);
-            if (object.has("user_friends")) {
-                bundle.putString("user_friends", object.getString("user_friends"));
+            if (object.has("friends")) {
+                bundle.putString("friends", object.getString("friends"));
             }
             if (object.has("first_name"))
                 bundle.putString("first_name", object.getString("first_name"));

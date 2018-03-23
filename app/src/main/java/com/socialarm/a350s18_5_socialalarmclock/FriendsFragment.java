@@ -4,21 +4,37 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class FriendsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    private User user;
+
     public FriendsFragment() {
         // Required empty public constructor
     }
 
-    public static FriendsFragment newInstance() {
+    public static FriendsFragment newInstance(User user) {
         FriendsFragment fragment = new FriendsFragment();
         Bundle args = new Bundle();
+        args.putSerializable("user", user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,8 +47,28 @@ public class FriendsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friends, container, false);
+        View myView = inflater.inflate(R.layout.fragment_friends, container, false);
+        mRecyclerView = myView.findViewById(R.id.my_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this.getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // get user
+        Bundle extras = getArguments();
+        User user = (User) extras.getSerializable("user");
+
+        // fetch friends
+        Statistic.GetFriends(user, friends -> {
+                // specify an adapter (see also next example)
+                mAdapter = new FriendRowAdapter(friends);
+                mRecyclerView.setAdapter(mAdapter);
+            });
+
+        return myView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
