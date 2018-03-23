@@ -12,6 +12,7 @@ import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -68,31 +69,39 @@ public class StatisticsActivity extends AppCompatActivity {
 
         Spinner notifications = (Spinner)findViewById(R.id.notifcationDropdown);
 
-        notifications.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                updateFriendNotifications();
+        notifications.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                updateFriendNotifications(notifications.getSelectedItem());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
         Spinner privileges = (Spinner)findViewById(R.id.privilegeDropdown);
 
-        privileges.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                updateFriendPrivileges();
+        privileges.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                updateFriendPrivileges(privileges.getSelectedItem());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }
 
-    private void updateFriendNotifications(){
-
+    private void updateFriendNotifications(Object o){
+        // TODO : Update database
     }
 
-    private void updateFriendPrivileges(){
-
+    private void updateFriendPrivileges(Object o){
+        // TODO: Update database
     }
 
     private void DrawUserInfo()
