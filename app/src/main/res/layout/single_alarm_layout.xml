@@ -3,14 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:longClickable="true"
+    android:id="@+id/alarm_row"
+    android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/alarm_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"/>
 
     <TextView
         android:id="@+id/Sunday"
@@ -19,6 +25,9 @@
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
         android:layout_weight="0"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
         android:text="S" />
 
     <TextView
@@ -28,6 +37,9 @@
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
         android:layout_weight="0"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
         android:text="M" />
 
     <TextView
@@ -37,6 +49,9 @@
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
         android:layout_weight="0"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
         android:text="T" />
 
     <TextView
@@ -46,6 +61,9 @@
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
         android:layout_weight="0"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
         android:text="W" />
 
     <TextView
@@ -55,6 +73,9 @@
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
         android:layout_weight="0"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
         android:text="T" />
 
     <TextView
@@ -64,6 +85,9 @@
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
         android:layout_weight="0"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
         android:text="F" />
 
     <TextView
@@ -73,11 +97,16 @@
         android:layout_marginEnd="2dp"
         android:layout_marginStart="2dp"
         android:layout_weight="0"
+        android:focusable="false"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
         android:text="S" />
 
     <Switch
         android:id="@+id/alarm_on_off"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0" />
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 </LinearLayout>

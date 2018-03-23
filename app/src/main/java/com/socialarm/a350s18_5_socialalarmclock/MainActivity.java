@@ -3,6 +3,7 @@ package com.socialarm.a350s18_5_socialalarmclock;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
@@ -157,6 +158,9 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
                 intent.putExtra("user",  user);
                 startActivity(intent);
             });
+        } else if (id == R.id.nav_disable) {
+            DisableAlarmFragment disableAlarmFragment = new DisableAlarmFragment();
+            disableAlarmFragment.show(getSupportFragmentManager(), "disable");
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteStatement;
 
 
 public class AlarmsOpenHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "somnia.db";
 
     public static final int SUNDAY = 1;
@@ -26,7 +26,10 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
       LocalDBContract.Alarm.COLUMN_NAME_HOUR + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_MINUTE + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_ENABLED + " TINYINT, " +
-      LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + " TINYINT);";
+      LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + " TINYINT, " +
+      LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT + " INTEGER, " +
+      LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL + " INTEGER, " +
+      LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT + " INTEGER);";
     private static final String DELETE_ALARMS_TABLE =
        "DROP TABLE IF EXISTS " + LocalDBContract.Alarm.TABLE_NAME;
 
@@ -55,30 +58,46 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         return c;
     }
 
-    public long addAlarm(int hour, int minute, int active_alarms) {
+    public long addAlarm(int hour, int minute, int active_alarms, int snooze_interval,
+                         int snooze_count) {
         SQLiteDatabase db_write = getWritableDatabase();
         String query = "INSERT INTO " + LocalDBContract.Alarm.TABLE_NAME + " " +
                        "(" + LocalDBContract.Alarm.COLUMN_NAME_HOUR + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_MINUTE + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_ENABLED + ", " +
-                       LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + ") VALUES (?, ?, ?, ?)";
+                       LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + ", " +
+                       LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL + ", " +
+                       LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT + ") VALUES (?, ?, ?, ?, ?, ?)";
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, hour);
         stmt.bindLong(2, minute);
         stmt.bindLong(3, 0);
         stmt.bindLong(4, active_alarms);
+        stmt.bindLong(5, snooze_interval);
+        stmt.bindLong(6, snooze_count);
         long ret = stmt.executeInsert();
         return ret;
+    }
+
+    public void setSnooze(long row_id, int snooze_count) {
+        SQLiteDatabase db_write = getWritableDatabase();
+        String query = "UPDATE " + LocalDBContract.Alarm.TABLE_NAME + " " +
+                       "SET " + LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT + "=? " +
+                       "WHERE " + LocalDBContract.Alarm._ID + "+?";
+        SQLiteStatement stmt = db_write.compileStatement(query);
+        stmt.bindLong(1, snooze_count);
+        stmt.bindLong(2, row_id);
+        stmt.executeUpdateDelete();
     }
 
     public void setActive(long row_id, boolean enable) {
         SQLiteDatabase db_write = getWritableDatabase();
         String query = "UPDATE " + LocalDBContract.Alarm.TABLE_NAME + " " +
-                       "SET " + LocalDBContract.Alarm.COLUMN_NAME_ENABLED + "=?" +
+                       "SET " + LocalDBContract.Alarm.COLUMN_NAME_ENABLED + "=? " +
                        "WHERE " + LocalDBContract.Alarm._ID + "=?";
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, enable ? 1 : 0);
-        stmt.bindLong(2,row_id);
+        stmt.bindLong(2, row_id);
         stmt.executeUpdateDelete();
     }
 

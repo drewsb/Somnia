@@ -70,6 +70,7 @@ public class MyAlarms extends Fragment {
         SingleAlarmAdapter adapter = new SingleAlarmAdapter(getContext(), c,0);
         ListView lv = v.findViewById(R.id.my_alarm_list);
         lv.setAdapter(adapter);
+        lv.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
     }
 
     /**
