@@ -81,6 +81,7 @@ public class SingleAlarmAdapter extends CursorAdapter {
                     long tTime = trigger_time.getTimeInMillis();
                     Intent intent = new Intent(internal_context, AlarmEvent.class);
                     intent.putExtra("Alarm", id);
+                    intent.setType("Alarm"+id);
                     PendingIntent Alarm = PendingIntent.getActivity(internal_context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
                     AlarmManager manager = (AlarmManager) internal_context.getSystemService(Context.ALARM_SERVICE);
                     manager.setAlarmClock(new AlarmManager.AlarmClockInfo(tTime, Alarm), Alarm);
@@ -88,6 +89,7 @@ public class SingleAlarmAdapter extends CursorAdapter {
                 } else {
                     Intent intent = new Intent(internal_context, AlarmEvent.class);
                     intent.putExtra("alarm", id);
+                    intent.setType("Alarm"+id);
                     PendingIntent Alarm = PendingIntent.getActivity(internal_context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
                     AlarmManager manager = (AlarmManager) internal_context.getSystemService(Context.ALARM_SERVICE);
                     manager.cancel(Alarm);
@@ -115,6 +117,7 @@ public class SingleAlarmAdapter extends CursorAdapter {
                         // Cancel current alarm.
                         Intent intent = new Intent(internal_context, AlarmEvent.class);
                         intent.putExtra("alarm", id);
+                        intent.setType("Alarm"+id);
                         PendingIntent Alarm = PendingIntent.getActivity(internal_context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
                         AlarmManager manager = (AlarmManager) internal_context.getSystemService(Context.ALARM_SERVICE);
                         manager.cancel(Alarm);
