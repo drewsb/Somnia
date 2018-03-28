@@ -28,6 +28,7 @@ public class Alarm {
     int hour;
     String period;
     int snooze_count;
+    int snooze_interval;
 
     public String getUser_id(){
         return user_id;
@@ -52,8 +53,6 @@ public class Alarm {
     public int getSnooze_interval() {
         return snooze_interval;
     }
-
-    int snooze_interval;
 
     public Alarm() {}
 

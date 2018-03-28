@@ -19,14 +19,12 @@ public class UserInfo {
         this.activity = activity;
     }
 
-
     public void saveAccessToken(String token) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("fb_access_token", token);
         editor.apply(); // This line is IMPORTANT !!!
     }
-
 
     public String getToken() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);

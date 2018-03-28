@@ -1,13 +1,11 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
-import android.preference.PreferenceManager;
 
 
 public class AlarmsOpenHelper extends SQLiteOpenHelper {
@@ -39,6 +37,11 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Returns the day of week from the given int
+     * @param day
+     * @return
+     */
     public String getDayOfWeek(int day){
         switch(day) {
             case 1 :
