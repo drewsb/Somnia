@@ -11,12 +11,14 @@ import android.util.Log;
 
 public class UserInfo {
 
+
     private Activity activity;
 
     // Constructor
     public UserInfo(Activity activity) {
         this.activity = activity;
     }
+
 
     public void saveAccessToken(String token) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -38,9 +40,10 @@ public class UserInfo {
         editor.apply(); // This line is IMPORTANT !!!
     }
 
-    public void saveFacebookUserInfo(String first_name,String last_name, String email, String gender, String profileURL){
+    public void saveFacebookUserInfo(String id, String first_name,String last_name, String email, String gender, String profileURL){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("id", id);
         editor.putString("first_name", first_name);
         editor.putString("last_name", last_name);
         editor.putString("email", email);
@@ -52,7 +55,7 @@ public class UserInfo {
 
     public void getFacebookUserInfo() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        Log.d("MyApp", "Name : " + prefs.getString("fb_name", null) + "\nEmail : " + prefs.getString("fb_email", null));
+        Log.d("Somnia", "Name : " + prefs.getString("fb_name", null) + "\nEmail : " + prefs.getString("fb_email", null));
     }
 
 }

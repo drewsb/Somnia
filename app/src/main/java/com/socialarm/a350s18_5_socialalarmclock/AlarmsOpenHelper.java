@@ -1,11 +1,13 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
+import android.preference.PreferenceManager;
 
 
 public class AlarmsOpenHelper extends SQLiteOpenHelper {
@@ -35,6 +37,26 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
 
     public AlarmsOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public String getDayOfWeek(int day){
+        switch(day) {
+            case 1 :
+                return "Sunday";
+            case 2 :
+                return "Monday";
+            case 4 :
+                return "Tuesday";
+            case 8 :
+                return "Wednesday";
+            case 16 :
+                return "Thursday";
+            case 32 :
+                return "Friday";
+            case 64 :
+                return "Saturday";
+        }
+        return "";
     }
 
     public Cursor getAlarms() {
@@ -76,6 +98,7 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         stmt.bindLong(5, snooze_interval);
         stmt.bindLong(6, snooze_count);
         long ret = stmt.executeInsert();
+
         return ret;
     }
 

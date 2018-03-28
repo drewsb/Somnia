@@ -1,17 +1,26 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import com.facebook.login.Login;
+
 public class AlarmEditActivity extends AppCompatActivity {
 
     AlarmsOpenHelper dbHelper;
+    private AlarmDatabase alarmDB;
 
     private int days_of_week;
 
@@ -35,6 +44,7 @@ public class AlarmEditActivity extends AppCompatActivity {
         count.setValue(3);
 
         dbHelper = new AlarmsOpenHelper(this);
+        alarmDB = new AlarmDatabase();
     }
 
     @Override
@@ -54,9 +64,11 @@ public class AlarmEditActivity extends AppCompatActivity {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         NumberPicker interval = findViewById(R.id.interval_selector);
         NumberPicker count = findViewById(R.id.snooze_count);
+        Alarm alarm = new Alarm(User.getInstance().getId(), picker.getCurrentHour(), picker.getCurrentMinute(),
+                dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue());
+        alarmDB.addAlarm(alarm);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),
                 days_of_week, interval.getValue(), count.getValue());
-
         Intent i = new Intent();
         i.putExtra("new_alarm", row);
         setResult(RESULT_OK, i);

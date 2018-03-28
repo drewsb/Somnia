@@ -1,5 +1,6 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     public final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static LoginActivity instance;
 
     private static final String TAG = "LoginActivity";
 
@@ -45,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        instance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -77,6 +80,11 @@ public class LoginActivity extends AppCompatActivity {
                 deleteAccessToken();
             }
         });
+    }
+
+    public static Context getContext(){
+        return instance;
+        // or return instance.getApplicationContext();
     }
 
     @Override
@@ -113,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                 bundle.putString("gender", object.getString("gender"));
 
 
-            userInfo.saveFacebookUserInfo(object.getString("first_name"),
+            userInfo.saveFacebookUserInfo(object.getString("idFacebook"), object.getString("first_name"),
                     object.getString("last_name"),object.getString("email"),
                     object.getString("gender"), profile_pic.toString());
 
