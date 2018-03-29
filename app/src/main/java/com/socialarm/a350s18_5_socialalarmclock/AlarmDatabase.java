@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class AlarmDatabase {
 
-    public static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static final FirebaseFirestore db = DatabaseSingleton.getInstance();
 
     private static final String TAG = "AlarmDatabase";
 

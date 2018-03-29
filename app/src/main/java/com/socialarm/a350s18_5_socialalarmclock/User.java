@@ -17,6 +17,9 @@ import com.socialarm.a350s18_5_socialalarmclock.LeaderBoardFragment.*;
  * Created by drewboyette on 3/13/18.
  */
 
+/**
+ * Holds information for every user in the database
+ */
 public class User implements Serializable {
 
     private static User instance;

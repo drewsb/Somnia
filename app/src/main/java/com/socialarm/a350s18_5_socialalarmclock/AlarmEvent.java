@@ -18,11 +18,14 @@ import java.util.Calendar;
 public class AlarmEvent extends AppCompatActivity {
 
     private MediaPlayer media;
+    private EventDatabase eventDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_event);
+        eventDB = new EventDatabase();
+
         Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if (alarm == null) {
             alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -44,6 +47,9 @@ public class AlarmEvent extends AppCompatActivity {
         AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
         Cursor cursor = dbHelper.getAlarm(alarm_id);
 
+        int min = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
+        int hour = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_HOUR));
+        int day_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
         int snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT));
         int snooze_interval = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL));
         int current_snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT));
@@ -54,6 +60,16 @@ public class AlarmEvent extends AppCompatActivity {
             dbHelper.close();
             finish();
         }
+
+        // Create Event instance
+        String user_id = User.getInstance().getId();
+        String dayOfWeek = dbHelper.getDayOfWeek(day_of_week);
+        Alarm alarm = new Alarm(user_id, min, hour, dayOfWeek, snooze_count, snooze_interval);
+        int alarmId = System.identityHashCode(alarm);
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        Event event = new Event("Snooze", "" + alarmId, user_id, user_id + ts, tsLong);
+        eventDB.addEvent(event);
 
         dbHelper.setSnooze(alarm_id, current_snooze_count+1);
 

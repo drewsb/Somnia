@@ -56,7 +56,7 @@ public class AlarmEditActivity extends AppCompatActivity {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         NumberPicker interval = findViewById(R.id.interval_selector);
         NumberPicker count = findViewById(R.id.snooze_count);
-        Alarm alarm = new Alarm(User.getInstance().getId(), picker.getCurrentHour(), picker.getCurrentMinute(),
+        Alarm alarm = new Alarm(User.getInstance().getId(), picker.getCurrentMinute(), picker.getCurrentHour(),
                 dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue());
         alarmDB.addAlarm(alarm);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),
