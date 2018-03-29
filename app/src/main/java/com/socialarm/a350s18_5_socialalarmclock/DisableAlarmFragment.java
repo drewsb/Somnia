@@ -79,7 +79,8 @@ public class DisableAlarmFragment extends DialogFragment {
 
                            // Cancel current trigger.
                            Intent intent = new Intent(getContext(), AlarmEvent.class);
-                           intent.putExtra("alarm", alarm_id);
+                           intent.putExtra("Alarm", alarm_id);
+                           intent.setType("Alarm"+alarm_id);
                            PendingIntent Alarm = PendingIntent.getActivity(getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
                            AlarmManager manager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
                            manager.cancel(Alarm);
@@ -90,6 +91,7 @@ public class DisableAlarmFragment extends DialogFragment {
                            long tTime = toTrigger.getTimeInMillis();
                            Intent new_intent = new Intent(getContext(), AlarmEvent.class);
                            intent.putExtra("Alarm", alarm_id);
+                           intent.setType("Alarm"+alarm_id);
                            PendingIntent new_alarm = PendingIntent.getActivity(getContext(), 0, new_intent, PendingIntent.FLAG_ONE_SHOT);
                            manager.setAlarmClock(new AlarmManager.AlarmClockInfo(tTime, new_alarm), new_alarm);
                        }

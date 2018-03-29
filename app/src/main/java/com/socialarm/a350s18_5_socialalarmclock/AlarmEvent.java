@@ -20,9 +20,27 @@ public class AlarmEvent extends AppCompatActivity {
     private MediaPlayer media;
     private EventDatabase eventDB;
 
+    private int alarm_id;
+
+    private int hour;
+    private int minute;
+    private int enabled;
+    private int days_of_week;
+
+    private int snooze_count;
+    private int snooze_interval;
+    private int current_snooze_count;
+
+    private int volume;
+
+    AlarmsOpenHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initialize();
+
         setContentView(R.layout.activity_alarm_event);
         eventDB = new EventDatabase();
 
@@ -31,6 +49,8 @@ public class AlarmEvent extends AppCompatActivity {
             alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
         media = new MediaPlayer();
+        float actualVolume = (float)Math.pow(((float)volume)/16, 2);
+        media.setVolume(actualVolume, actualVolume);
         try {
             media.setDataSource(this, alarm);
             media.setLooping(true);
@@ -40,22 +60,27 @@ public class AlarmEvent extends AppCompatActivity {
         media.start();
     }
 
-    protected void onSnooze(View view) {
-        media.stop();
+    private void initialize() {
         Intent i = getIntent();
-        int alarm_id = i.getIntExtra("Alarm", -1);
-        AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
+        alarm_id = i.getIntExtra("Alarm", -1);
+        dbHelper = new AlarmsOpenHelper(this);
         Cursor cursor = dbHelper.getAlarm(alarm_id);
 
-        int min = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
-        int hour = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_HOUR));
-        int day_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
-        int snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT));
-        int snooze_interval = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL));
-        int current_snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT));
+        snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT));
+        snooze_interval = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL));
+        current_snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT));
+        hour = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_HOUR));
+        minute = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
+        enabled = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
+        days_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
+        volume = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_VOLUME));
+    }
+
+    protected void onSnooze(View view) {
+        media.stop();
 
         if (current_snooze_count >= snooze_count) {
-            setNextAlarm(cursor);
+            setNextAlarm();
             dbHelper.setSnooze(alarm_id, 0);
             dbHelper.close();
             finish();
@@ -63,8 +88,8 @@ public class AlarmEvent extends AppCompatActivity {
 
         // Create Event instance
         String user_id = User.getInstance().getId();
-        String dayOfWeek = dbHelper.getDayOfWeek(day_of_week);
-        Alarm alarm = new Alarm(user_id, min, hour, dayOfWeek, snooze_count, snooze_interval);
+        String dayOfWeek = dbHelper.getDayOfWeek(days_of_week);
+        Alarm alarm = new Alarm(user_id, minute, hour, dayOfWeek, snooze_count, snooze_interval);
         int alarmId = System.identityHashCode(alarm);
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
@@ -76,6 +101,7 @@ public class AlarmEvent extends AppCompatActivity {
         long time = System.currentTimeMillis() + snooze_interval*60*1000;
         Intent intent = new Intent(this, AlarmEvent.class);
         intent.putExtra("Alarm", alarm_id);
+        intent.setType("Alarm"+alarm_id);
         PendingIntent reAlarm = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         AlarmManager manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         manager.setAlarmClock(new AlarmManager.AlarmClockInfo(time, reAlarm), reAlarm);
@@ -91,7 +117,7 @@ public class AlarmEvent extends AppCompatActivity {
         AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
         Cursor cursor = dbHelper.getAlarm(alarm_id);
 
-        setNextAlarm(cursor);
+        setNextAlarm();
         dbHelper.setSnooze(alarm_id, 0);
 
         dbHelper.close();
@@ -99,18 +125,12 @@ public class AlarmEvent extends AppCompatActivity {
         finish();
     }
 
-    private void setNextAlarm(Cursor cursor) {
-
-        final int hour = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_HOUR));
-        final int minute = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
-        final int enabled = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
-        final int days_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
-        final int id = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm._ID));
-
+    private void setNextAlarm() {
         Calendar trigger_time = AlarmsUtil.getNextTrigger(hour, minute, days_of_week);
         long tTime = trigger_time.getTimeInMillis();
         Intent intent = new Intent(this, AlarmEvent.class);
-        intent.putExtra("Alarm", id);
+        intent.putExtra("Alarm", alarm_id);
+        intent.setType("Alarm"+alarm_id);
         PendingIntent Alarm = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         manager.setAlarmClock(new AlarmManager.AlarmClockInfo(tTime, Alarm), Alarm);
