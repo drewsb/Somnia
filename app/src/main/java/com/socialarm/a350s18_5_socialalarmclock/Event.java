@@ -1,15 +1,5 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
-import android.os.Bundle;
-
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ServerTimestamp;
-
-import java.sql.Timestamp;
-import java.util.Map;
-
-
 public class Event {
 
     private String action;
@@ -17,6 +7,7 @@ public class Event {
     private String user_id;
     private String event_id;
     private long timestamp;
+
     //empty no constructor required for firebase
     Event() {
 

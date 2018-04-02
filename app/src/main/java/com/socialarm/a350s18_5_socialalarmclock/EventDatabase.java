@@ -11,19 +11,18 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import com.socialarm.a350s18_5_socialalarmclock.LeaderBoardFragment.*;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public final class Statistic {
+public final class EventDatabase {
 
     // TODO: This is a memory leak, please fix (@Drew Boyette)
     private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     //private constructor
-    private Statistic() {}
+    public EventDatabase() {}
 
     interface EventLambda
     {
@@ -40,7 +39,7 @@ public final class Statistic {
      *
      * (to use, use lambda since as (events) -> {Log.v("...", events.toString())} and pass in to function
      */
-    private static void GetAllEvents(final EventLambda eventLambda) {
+    private static void getAllEvents(final EventLambda eventLambda) {
 
             db.collection("events").get()
                 .addOnSuccessListener(documentSnapshots -> {
@@ -65,8 +64,8 @@ public final class Statistic {
 
         // TODO: This is literally slower than a dead sloth, we should query all events and sort them in single pass, will refactor
         for (String friend_id : friends_list) {
-            GetAllEvents(events -> {
-                GetUser(friend_id, friend -> {
+            getAllEvents(events -> {
+                getUser(friend_id, friend -> {
                     Calendar calendar = Calendar.getInstance();
 
                     //events filtered by last week, month, year
@@ -93,7 +92,7 @@ public final class Statistic {
         }
     }
 
-    private static long GetInMilliSeconds(long day)
+    private static long getInMilliSeconds(long day)
     {
         return day * 24 * 60 * 60 * 1000L;
     }
@@ -121,7 +120,7 @@ public final class Statistic {
         }
 
         //calculate now - week, month, year
-        Date lastDate = new Date(cal.getTime().getTime() - GetInMilliSeconds(difference_days));
+        Date lastDate = new Date(cal.getTime().getTime() - getInMilliSeconds(difference_days));
 
         return date.after(lastDate);
     }
@@ -156,10 +155,10 @@ public final class Statistic {
      *
      * (to use, use lambda such as (events) -> {Log.v("...", events.toString())} and pass in to function
      */
-    static void GetEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda)
+    static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda)
     {
         // TODO: Refactor this slow code
-        GetAllEvents(events ->
+        getAllEvents(events ->
         {
             Calendar calender = Calendar.getInstance();
 
@@ -190,7 +189,7 @@ public final class Statistic {
                 }
 
                 //calculate now - week, month, year
-                Date lastDate = new Date(calender.getTime().getTime() - GetInMilliSeconds(difference_days));
+                Date lastDate = new Date(calender.getTime().getTime() - getInMilliSeconds(difference_days));
 
                 //check if event was greater than last week, month, year
                 if(date.after(lastDate) && isCorrectUser(event, user_id)) {
@@ -211,7 +210,7 @@ public final class Statistic {
     /**
      *  Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
      */
-    static void GetFriends(User user, final FriendsLambda friendsLambda)
+    static void getFriends(User user, final FriendsLambda friendsLambda)
     {
         // TODO: refactor this slow code
         db.collection("users").get()
@@ -243,7 +242,7 @@ public final class Statistic {
     /**
      *  gets all users and only returns the one that matches someone with more exp w/ db check it out
      */
-    static void GetUser(String user_id, final UserLambda userLambda)
+    static void getUser(String user_id, final UserLambda userLambda)
     {
         // TODO: refactor this bad code
         db.collection("users").document(user_id).get()
@@ -258,10 +257,13 @@ public final class Statistic {
                 .addOnFailureListener(e -> Log.d("User", "Error getting user"));
     }
 
-    //USED FOR TESTING
-    public static void WriteEvent(Event e)
-    {
-        //ugh what is this
-        db.collection("events").document(new Random().nextLong() + "").set(e);
+    /**
+     * Add event to event collection
+     * ID of event is "user_id + timestamp" of the event
+     * @param event
+     */
+    public static void addEvent(final Event event) {
+        String userID = event.getUser_id();
+        db.collection("events").document(userID + event.getTimestamp()).set(event);
     }
 }

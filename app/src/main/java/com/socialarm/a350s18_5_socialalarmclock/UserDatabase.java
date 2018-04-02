@@ -13,9 +13,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * Created by drewboyette on 3/13/18.
  */
 
+/**
+ * Database class used to push user data to the cloud
+ */
 public class UserDatabase {
 
-    public static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static final FirebaseFirestore db = DatabaseSingleton.getInstance();
 
     private static final String TAG = "UserDatabase";
 

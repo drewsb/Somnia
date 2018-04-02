@@ -18,6 +18,7 @@ import java.util.Calendar;
 public class AlarmEvent extends AppCompatActivity {
 
     private MediaPlayer media;
+    private EventDatabase eventDB;
 
     private int alarm_id;
 
@@ -41,6 +42,8 @@ public class AlarmEvent extends AppCompatActivity {
         initialize();
 
         setContentView(R.layout.activity_alarm_event);
+        eventDB = new EventDatabase();
+
         Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if (alarm == null) {
             alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -82,6 +85,16 @@ public class AlarmEvent extends AppCompatActivity {
             dbHelper.close();
             finish();
         }
+
+        // Create Event instance
+        String user_id = User.getInstance().getId();
+        String dayOfWeek = dbHelper.getDayOfWeek(days_of_week);
+        Alarm alarm = new Alarm(user_id, minute, hour, dayOfWeek, snooze_count, snooze_interval);
+        int alarmId = System.identityHashCode(alarm);
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        Event event = new Event("Snooze", "" + alarmId, user_id, user_id + ts, tsLong);
+        eventDB.addEvent(event);
 
         dbHelper.setSnooze(alarm_id, current_snooze_count+1);
 

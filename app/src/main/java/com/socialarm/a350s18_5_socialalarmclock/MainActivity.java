@@ -3,10 +3,8 @@ package com.socialarm.a350s18_5_socialalarmclock;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -25,12 +23,9 @@ import android.widget.TextView;
 import com.facebook.login.LoginManager;
 
 import android.support.v4.app.Fragment;
-import android.view.View;
 import android.widget.Button;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FriendsFragment.OnFragmentInteractionListener,
@@ -83,18 +78,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         nameView.setText(name);
         emailView.setText(email);
 
-        Statistic.GetUser(extras.getString("idFacebook"), user -> {
-            //TESTING (Adds event entries to db)
-            /*
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.MONTH, Calendar.MARCH);
-            calendar.set(Calendar.DAY_OF_MONTH, 22);
-            Event event = new Event("snooze", "abc", user.getId(), "abc", calendar.getTime().getTime()  );
-            Statistic.WriteEvent(event);
-            calendar.set(Calendar.DAY_OF_MONTH, 24);
-            Statistic.WriteEvent(event);
-            Statistic.WriteEvent(event);
-            */
+        EventDatabase.getUser(extras.getString("idFacebook"), user -> {
 
             List<Fragment> fragments = new ArrayList<Fragment>();
             fragments.add(MyAlarms.newInstance());
@@ -112,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
 
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
             tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+
         });
 
         //add functionality to find friends button
@@ -151,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
-            Statistic.GetUser(extras.getString("idFacebook"), user -> {
+            EventDatabase.getUser(extras.getString("idFacebook"), user -> {
                 Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
 
                 //pass user data to statistics activity
