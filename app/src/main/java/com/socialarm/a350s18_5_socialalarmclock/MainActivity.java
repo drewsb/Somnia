@@ -65,14 +65,14 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
 
         //  Check either activity or app is open very first time or not and do action
-        if (isFirstStart) {
+        //if (isFirstStart) {
             //  Launch application introduction screen
             Intent i = new Intent(MainActivity.this, TutorialActivity.class);
             startActivity(i);
             SharedPreferences.Editor e = getSharedPreferences.edit();
             e.putBoolean("firstStart", false);
             e.apply();
-        }
+        //}
     }
 
     @Override
