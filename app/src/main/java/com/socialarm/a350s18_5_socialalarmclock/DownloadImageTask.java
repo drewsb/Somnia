@@ -23,7 +23,6 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
             icon = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
-            e.printStackTrace();
         }
         return icon;
     }
