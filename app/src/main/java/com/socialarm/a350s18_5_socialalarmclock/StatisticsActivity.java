@@ -1,49 +1,32 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.icu.text.SimpleDateFormat;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.socialarm.a350s18_5_socialalarmclock.Statistic.TimeDifference.MONTH;
-import static com.socialarm.a350s18_5_socialalarmclock.Statistic.TimeDifference.WEEK;
-import static com.socialarm.a350s18_5_socialalarmclock.Statistic.TimeDifference.YEAR;
+import static com.socialarm.a350s18_5_socialalarmclock.EventDatabase.TimeDifference.MONTH;
+import static com.socialarm.a350s18_5_socialalarmclock.EventDatabase.TimeDifference.WEEK;
+import static com.socialarm.a350s18_5_socialalarmclock.EventDatabase.TimeDifference.YEAR;
 
 public class StatisticsActivity extends AppCompatActivity {
 
@@ -142,7 +125,7 @@ public class StatisticsActivity extends AppCompatActivity {
         TextView statisticsView = findViewById(R.id.statisticsView);
 
         //fetch events for user
-        Statistic.GetEventsSince(Statistic.TimeDifference.YEAR, user.getId(), events -> {
+        EventDatabase.getEventsSince(EventDatabase.TimeDifference.YEAR, user.getId(), events -> {
             Map<Long, Long> wakeup_map = new HashMap<Long, Long>();
             Map<Long, Long> snooze_map = new HashMap<Long, Long>();
             Map<Long, Long> overslept_map = new HashMap<Long, Long>();
@@ -196,11 +179,11 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
-    private void DrawGraphs(final Statistic.TimeDifference graphDrawState)
+    private void DrawGraphs(final EventDatabase.TimeDifference graphDrawState)
     {
         String user_id = user.getId(); //get user id
 
-        Statistic.GetEventsSince(graphDrawState, user_id, events -> {
+        EventDatabase.getEventsSince(graphDrawState, user_id, events -> {
 
             //edit graphs
             GraphView oversleptGraph = (GraphView) findViewById(R.id.oversleptGraph);

@@ -12,17 +12,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class LeaderBoardFragment extends Fragment {
 
@@ -89,7 +81,7 @@ public class LeaderBoardFragment extends Fragment {
                 updateStatDuration(position);
 
                 // make database call and display statistic asynchronously
-                Statistic.getLeaderboardEventsSince(user.getFriend_ids(),
+                EventDatabase.getLeaderboardEventsSince(user.getFriend_ids(),
                         statDuration, statType, sortDirection, entries -> {displayRanking(entries);});
 
             }
@@ -110,7 +102,7 @@ public class LeaderBoardFragment extends Fragment {
                 updateStatTypeAndSortDirection(position);
 
                 // make database call and display statistic asynchronously
-                Statistic.getLeaderboardEventsSince(user.getFriend_ids(),
+                EventDatabase.getLeaderboardEventsSince(user.getFriend_ids(),
                         statDuration, statType, sortDirection, entries -> {displayRanking(entries);});
             }
 

@@ -39,6 +39,31 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Returns the day of week from the given int
+     * @param day
+     * @return
+     */
+    public String getDayOfWeek(int day){
+        switch(day) {
+            case 1 :
+                return "Sunday";
+            case 2 :
+                return "Monday";
+            case 4 :
+                return "Tuesday";
+            case 8 :
+                return "Wednesday";
+            case 16 :
+                return "Thursday";
+            case 32 :
+                return "Friday";
+            case 64 :
+                return "Saturday";
+        }
+        return "";
+    }
+
     public Cursor getAlarms() {
         SQLiteDatabase db_read = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -80,6 +105,7 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         stmt.bindLong(6, snooze_count);
         stmt.bindLong(7, volume);
         long ret = stmt.executeInsert();
+
         return ret;
     }
 

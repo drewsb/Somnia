@@ -13,6 +13,7 @@ import android.widget.ToggleButton;
 public class AlarmEditActivity extends AppCompatActivity {
 
     AlarmsOpenHelper dbHelper;
+    private AlarmDatabase alarmDB;
 
     private int days_of_week;
 
@@ -36,6 +37,7 @@ public class AlarmEditActivity extends AppCompatActivity {
         count.setValue(3);
 
         dbHelper = new AlarmsOpenHelper(this);
+        alarmDB = new AlarmDatabase();
     }
 
     @Override
@@ -55,6 +57,9 @@ public class AlarmEditActivity extends AppCompatActivity {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         NumberPicker interval = findViewById(R.id.interval_selector);
         NumberPicker count = findViewById(R.id.snooze_count);
+        Alarm alarm = new Alarm(User.getInstance().getId(), picker.getCurrentMinute(), picker.getCurrentHour(),
+                dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue());
+        alarmDB.addAlarm(alarm);
         SeekBar volume = findViewById(R.id.volume_slider);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),
                 days_of_week, interval.getValue(), count.getValue(), volume.getProgress());

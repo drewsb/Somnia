@@ -1,7 +1,6 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -20,11 +19,6 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
 
@@ -33,15 +27,12 @@ import org.json.JSONObject;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    public final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     private static final String TAG = "LoginActivity";
 
     // UI references.
     private CallbackManager callbackManager;
     private LoginButton loginButton;
     private static final String[] permissions = new String[]{"public_profile", "email", "user_friends"};
-    private final UserInfo userInfo = new UserInfo(LoginActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +76,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    //Retrieve user data from JSON object
+
+    /**
+     * Retrieve user data from JSON object
+     * @param object
+     * @return Bundle containing data
+     */
     private Bundle getFacebookData(JSONObject object) {
         Bundle bundle = new Bundle();
 
@@ -112,17 +108,15 @@ public class LoginActivity extends AppCompatActivity {
             if (object.has("gender"))
                 bundle.putString("gender", object.getString("gender"));
 
-
-            userInfo.saveFacebookUserInfo(object.getString("first_name"),
-                    object.getString("last_name"),object.getString("email"),
-                    object.getString("gender"), profile_pic.toString());
-
         } catch (Exception e) {
             Log.d(TAG, "BUNDLE Exception : "+e.toString());
         }
         return bundle;
     }
 
+    /**
+     * Delete facebook access token
+     */
     private void deleteAccessToken() {
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -131,16 +125,16 @@ public class LoginActivity extends AppCompatActivity {
                     AccessToken currentAccessToken) {
                 if (currentAccessToken == null){
                     //User logged out
-                    userInfo.clearToken();
                     LoginManager.getInstance().logOut();
                 }
             }
         };
     }
 
-    /*
-        Submit read permissions and retrieve user data. Send data as a bundle and
-        transition to the MainActivity
+    /**
+     * Submit read permissions and retrieve user data. Send data as a bundle and
+     transition to the MainActivity
+     * @param token
      */
     private void sendRequest(AccessToken token){
         GraphRequest request = GraphRequest.newMeRequest(token,

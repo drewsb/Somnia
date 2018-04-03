@@ -17,19 +17,34 @@ import com.socialarm.a350s18_5_socialalarmclock.LeaderBoardFragment.*;
  * Created by drewboyette on 3/13/18.
  */
 
+/**
+ * Holds information for every user in the database
+ */
 public class User implements Serializable {
+
+    private static User instance;
 
     private String id;
     private String first_name;
     private String last_name;
     private List<String> friend_ids;
 
-    public User() {}
+    public User() {
+        this.instance = this;
+    }
 
     public User(String id, String first_name, String last_name){
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
+        this.instance = this;
+    }
+
+    public static User getInstance() {
+        if(instance == null) {
+            instance = new User();
+        }
+        return instance;
     }
 
     public User(Bundle b){
@@ -50,6 +65,7 @@ public class User implements Serializable {
         } catch (JSONException e) {
 
         }
+        this.instance = this;
     }
 
     public String getId(){
