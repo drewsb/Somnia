@@ -25,10 +25,10 @@ public class SearchFriendActivity extends AppCompatActivity {
         ListView friend_listview = (ListView)findViewById(R.id.friend_listview);
 
         ArrayList<String> friends = new ArrayList<>();
-        friends.add("Liam");
-        friends.add("Alex");
-        friends.add("Drew");
-        friends.add("Henry");
+        friends.add("Liam"); // TODO: Change this to be from friends list
+        friends.add("Alex"); // TODO: Change this to be from friends list
+        friends.add("Drew");// TODO: Change this to be from friends list
+        friends.add("Henry"); // TODO: Change this to be from friends list
         adapter = new ArrayAdapter<String>(SearchFriendActivity.this, android.R.layout.simple_expandable_list_item_1, friends);
 
         friend_listview.setAdapter(adapter);

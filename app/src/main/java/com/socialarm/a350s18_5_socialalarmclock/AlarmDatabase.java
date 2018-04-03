@@ -10,8 +10,6 @@ import java.util.HashMap;
 
 public class AlarmDatabase {
 
-    public static final FirebaseFirestore db = DatabaseSingleton.getInstance();
-
     private static final String TAG = "AlarmDatabase";
 
 
@@ -24,10 +22,10 @@ public class AlarmDatabase {
         String userID = alarm.getUser_id();
         // Add a new document with a generated ID
         String alarmID = "" + System.identityHashCode(alarm);
-        db.collection("alarms").document(userID + alarmID).set(alarm);
+        DatabaseSingleton.getInstance().collection("alarms").document(userID + alarmID).set(alarm);
         HashMap<String, Object> data = new HashMap<String, Object>();
         data.put("On", true);
-        db.collection("users").document(userID).collection("alarms").document(alarmID).set(data);
+        DatabaseSingleton.getInstance().collection("users").document(userID).collection("alarms").document(alarmID).set(data);
     }
 
     /**
@@ -37,8 +35,8 @@ public class AlarmDatabase {
     public static void deleteAlarm(final Alarm alarm) {
         String userID = alarm.getUser_id();
         String alarmId = "" + System.identityHashCode(alarm);
-        db.collection("alarms").document(userID + alarmId).delete();
-        db.collection("users").document(userID).collection("alarms").document(alarmId).delete();
+        DatabaseSingleton.getInstance().collection("alarms").document(userID + alarmId).delete();
+        DatabaseSingleton.getInstance().collection("users").document(userID).collection("alarms").document(alarmId).delete();
     }
 
     /**
@@ -51,6 +49,6 @@ public class AlarmDatabase {
         String alarmId = "" + System.identityHashCode(alarm);
         HashMap<String, Object> data = new HashMap<String, Object>();
         data.put("On", OnBool);
-        db.collection("users").document(userID).collection("alarms").document(alarmId).set(data);
+        DatabaseSingleton.getInstance().collection("users").document(userID).collection("alarms").document(alarmId).set(data);
     }
 }

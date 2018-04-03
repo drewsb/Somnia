@@ -11,19 +11,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * Created by drewboyette on 3/13/18.
- */
-
-/**
+ *
  * Database class used to push user data to the cloud
  */
 public class UserDatabase {
 
-    public static final FirebaseFirestore db = DatabaseSingleton.getInstance();
-
     private static final String TAG = "UserDatabase";
 
     public static void checkUserExists(final User user){
-        final DocumentReference docRef = db.collection("users").document(user.getId());
+        final DocumentReference docRef = DatabaseSingleton.getInstance().collection("users").document(user.getId());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -42,6 +38,6 @@ public class UserDatabase {
     public static void addUser(User user){
         // Add a new document with a generated ID
         Log.d(TAG, user.getId());
-        db.collection("users").document(user.getId()).set(user);
+        DatabaseSingleton.getInstance().collection("users").document(user.getId()).set(user);
     }
 }

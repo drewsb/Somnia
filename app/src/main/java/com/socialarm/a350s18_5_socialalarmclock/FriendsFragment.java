@@ -37,6 +37,14 @@ public class FriendsFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * onCreateView fetches friends and then creates the recyclerview to hold the FriendRows
+     *
+     * @param inflater the tool to inflate the xml objects
+     * @param container the container that is the parent view of this view
+     * @param savedInstanceState any other important state
+     * @return the finished leaderboard view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,13 +72,23 @@ public class FriendsFragment extends Fragment {
         return myView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    /**
+     * Does an action when a row is pressed
+     * @param uri the uri
+     */
+    // TODO: Have this trigger the optionsactivity or something else other than do nothing
+    // (possibly have stats here?)
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
 
+    /**
+     * Attach the onfragmentinteractionlistener or throw an error if there isn't one
+     *
+     * @param context the global context of the app
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -82,6 +100,9 @@ public class FriendsFragment extends Fragment {
         }
     }
 
+    /**
+     * Called when the view is detached from the view (set listener to null)
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -93,10 +114,6 @@ public class FriendsFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

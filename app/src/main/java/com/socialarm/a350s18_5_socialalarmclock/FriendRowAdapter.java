@@ -7,13 +7,19 @@ import android.widget.RelativeLayout;
 
 import java.util.List;
 
+/**
+ * The adapter to be hooked into FriendRow (Similar to LeaderboardRow)
+ */
 public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.ViewHolder> {
 
+    /**
+     * A list of users to be displayed on the friends page (canonically the logged in user's friends list)
+     */
     private List<User> users;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
+    /**
+     * Static inner view holder class
+     */
     static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         FriendRow row;
@@ -23,25 +29,35 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
     FriendRowAdapter(List<User> users) {
         this.users = users;
     }
 
-    // Create new views (invoked by the layout manager)
+    /**
+     * Create the new viewholder with the new FriendHolder inside
+     *
+     * @param parent the parent view group that the row is to be in
+     * @param viewType ? - TODO: investigate this
+     * @return a new ViewHolder
+     */
     @Override
     public FriendRowAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                           int viewType) {
         // create a new view
         RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_friends, parent, false); // TODO: Change this?
+                .inflate(R.layout.fragment_friends, parent, false);
         FriendRow newRow = new FriendRow(v.getContext(), null);
 
         ViewHolder rh = new ViewHolder(newRow);
         return rh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    /**
+     * Replace the contents of the View (specifically the FriendRow) with the given user and statistic button
+     *
+     * @param holder the ViewHolder that contains this view
+     * @param position the position in the list of this view
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
@@ -50,7 +66,10 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         holder.row.setStatisticButton(users.get(position));
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    /**
+     * Returns the size of the dataset
+     * @return size of friends list
+     */
     @Override
     public int getItemCount() {
         return users.size();
