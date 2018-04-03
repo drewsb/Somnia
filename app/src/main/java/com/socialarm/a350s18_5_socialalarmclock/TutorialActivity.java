@@ -25,7 +25,7 @@ public class TutorialActivity extends AppIntro2 {
 
         //adding the three slides for introduction app you can ad as many you needed
         addSlide(AppIntroFragment.newInstance("Alarms", "Setup your alarms", R.drawable.alarms_tutorial, R.color.lightBlue));
-        addSlide(AppIntroFragment.newInstance("Friend's", "Check your friend's alarms", R.drawable.friend_tutorial, R.color.lightBlue));
+        addSlide(AppIntroFragment.newInstance("Friends", "Check your friends' alarms", R.drawable.friend_tutorial, R.color.lightBlue));
         addSlide(AppIntroFragment.newInstance("Leaderboard", "See who is the worst snoozer", R.drawable.leaderboard_tutorial, R.color.lightBlue));
         addSlide(AppIntroFragment.newInstance("Settings", "Look at your statistics and settings", R.drawable.statistics_tutorial, R.color.lightBlue));
         addSlide(AppIntroFragment.newInstance("All set!", "Welcome to Social Alarm Clock!?", 0, R.color.lightBlue));
