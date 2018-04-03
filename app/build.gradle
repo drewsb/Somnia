@@ -47,6 +47,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'com.google.api-client:google-api-client:1.23.0'
+    compile 'com.github.apl-devs:appintro:v4.2.3'
 }
 
 protobuf {
@@ -64,7 +65,7 @@ protobuf {
                 remove java
             }
             task.plugins {
-                lite { }
+                lite {}
             }
         }
     }
