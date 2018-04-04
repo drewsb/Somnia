@@ -8,11 +8,14 @@ import java.util.HashMap;
  * Created by drewboyette on 3/27/18.
  */
 
+/**
+ * Defines various functions that perform queries on the alarm database
+ */
 public class AlarmDatabase {
 
     private static final String TAG = "AlarmDatabase";
 
-
+    private AlarmDatabase() {}
     /**
      * Add alarm to alarm collection, and add alarm id to user alarm collection
      with the option "On" set to true

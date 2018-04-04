@@ -1,5 +1,6 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
@@ -33,11 +34,19 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private LoginButton loginButton;
     private static final String[] permissions = new String[]{"public_profile", "email", "user_friends"};
+    private UserInfo userInfo;
+    public static Context contextOfApplication;
+
+    public static Context getContextOfApplication(){
+        return contextOfApplication;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        contextOfApplication = getApplicationContext();
         setContentView(R.layout.activity_login);
+        userInfo = new UserInfo(this);
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -96,9 +105,8 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
             bundle.putString("idFacebook", id);
-            if (object.has("friends")) {
+            if (object.has("friends"))
                 bundle.putString("friends", object.getString("friends"));
-            }
             if (object.has("first_name"))
                 bundle.putString("first_name", object.getString("first_name"));
             if (object.has("last_name"))
@@ -107,7 +115,9 @@ public class LoginActivity extends AppCompatActivity {
                 bundle.putString("email", object.getString("email"));
             if (object.has("gender"))
                 bundle.putString("gender", object.getString("gender"));
-
+            userInfo.saveFacebookUserInfo(id, object.getString("first_name"),
+                    object.getString("last_name"),object.getString("email"),
+                    object.getString("gender"), profile_pic.toString());
         } catch (Exception e) {
             Log.d(TAG, "BUNDLE Exception : "+e.toString());
         }
@@ -142,8 +152,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Bundle facebookData = getFacebookData(object);
-                        final User user = new User(facebookData);
-                        UserDatabase.checkUserExists(user);
+                        User user = new User(facebookData);
+                        UserDatabase.addNewUser(user);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtras(facebookData);
                         startActivity(intent);
