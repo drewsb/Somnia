@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -77,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         UserDatabase.getUser(extras.getString("idFacebook"), user -> {
 
             List<Fragment> fragments = new ArrayList<Fragment>();
-            fragments.add(MyAlarms.newInstance());
+            MyAlarms myAlarms = MyAlarms.newInstance();
+            fragments.add(myAlarms);
             fragments.add(FriendsFragment.newInstance(user));
             fragments.add(LeaderBoardFragment.newInstance(user));
             fragments.add(LiveFeedFragment.newInstance(user));
@@ -92,8 +94,24 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             TabLayout tabLayout = findViewById(R.id.tabs);
 
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-            tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+            TabLayout.ViewPagerOnTabSelectedListener viewPagerListener = new TabLayout.ViewPagerOnTabSelectedListener(viewPager);
 
+            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    int i = tab.getPosition();
+                    if(i == 0) {
+                        myAlarms.onResume();
+                    }
+                    viewPager.setCurrentItem(i);
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {}
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {}
+            });
         });
     }
 

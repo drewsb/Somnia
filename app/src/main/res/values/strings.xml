@@ -40,7 +40,7 @@
     <string name="title_activity_statistics">StatisticsActivity</string>
 
     <!-- Friends page usage -->
-    <string name="friend_stat_button_text">See Stats</string>
+    <string name="friend_join_text">Join Alarm</string>
     <string name="radio_button_week">Week</string>
     <string name="radio_button_month">Month</string>
     <string name="radio_button_year">Year</string>

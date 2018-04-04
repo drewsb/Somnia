@@ -106,6 +106,8 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
             bundle.putString("idFacebook", id);
+            Log.d(TAG, id);
+            Log.d(TAG, object.getString("friends"));
             if (object.has("friends"))
                 bundle.putString("friends", object.getString("friends"));
             if (object.has("first_name"))
@@ -153,6 +155,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Bundle facebookData = getFacebookData(object);
+                        Log.d(TAG, facebookData.getString("idFacebook"));
+                        Log.d(TAG, facebookData.getString("friends"));
                         User user = new User(facebookData);
                         user.setFirebase_id(FirebaseInstanceId.getInstance().getToken());
                         UserDatabase.addNewUser(user);

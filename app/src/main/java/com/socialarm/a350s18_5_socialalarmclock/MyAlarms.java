@@ -1,5 +1,6 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.database.Cursor;
@@ -23,7 +24,15 @@ public class MyAlarms extends Fragment {
 
     View v;
 
+    public final String TAG = "MyAlarms";
+
     AlarmsOpenHelper dbHelper;
+    public static Context contextOfApplication;
+
+    public static Context getContextOfApplication(){
+        return contextOfApplication;
+    }
+
 
     /**
      * Create a new fragment.
@@ -50,7 +59,7 @@ public class MyAlarms extends Fragment {
         super.onCreate(savedInstanceState);
 
         dbHelper = new AlarmsOpenHelper(getActivity());
-        //dbHelper.onCreate(dbHelper.getWritableDatabase());
+        contextOfApplication = getActivity();
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d("ID", "Refreshed token: " + refreshedToken);
     }
@@ -65,6 +74,15 @@ public class MyAlarms extends Fragment {
     }
 
     /**
+     * Once the view has resumed, update table values
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        updateValues();
+    }
+
+    /**
      * Set the view and the FAB.
      * @param inflater The layout inflator to use
      * @param container The parent of the new view
@@ -75,8 +93,9 @@ public class MyAlarms extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.d(TAG, "CREATED VIEW");
         v = inflater.inflate(R.layout.fragment_my_alarms, container, false);
-        UpdateValues();
+        updateValues();
         FloatingActionButton b = v.findViewById(R.id.add_alarm_button);
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -96,14 +115,16 @@ public class MyAlarms extends Fragment {
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        UpdateValues();
+        Log.d(TAG, "ACTIVITY RESULT");
+        updateValues();
     }
 
     /**
      * Recheck the local db for new alarms.
      */
-    private void UpdateValues() {
+    private void updateValues() {
         Cursor c = dbHelper.getAlarms();
+        Log.d(TAG, "" + c.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
         SingleAlarmAdapter adapter = new SingleAlarmAdapter(getContext(), c,0);
         ListView lv = v.findViewById(R.id.my_alarm_list);
         lv.setAdapter(adapter);

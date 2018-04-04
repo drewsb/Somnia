@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,8 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.socialarm.a350s18_5_socialalarmclock.LeaderBoardFragment.*;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public final class EventDatabase {
 
@@ -49,7 +43,7 @@ public final class EventDatabase {
      *
      * @param eventLambda the function to run once the call is complete
      */
-     static void getAllEvents(final EventLambda eventLambda) {
+    public static void getAllEvents(final EventLambda eventLambda) {
 
         DatabaseSingleton.getInstance().collection("events").get()
                 .addOnSuccessListener(documentSnapshots -> {

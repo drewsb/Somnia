@@ -106,8 +106,8 @@ public class AlarmEvent extends AppCompatActivity {
         // Create Event instance
         String user_id = prefs.getString("id", null);
         String dayOfWeek = dbHelper.getDayOfWeek(days_of_week);
-        Alarm alarm = new Alarm(user_id, minute, hour, dayOfWeek, snooze_count, snooze_interval);
-        int alarmId = System.identityHashCode(alarm);
+        Alarm alarm = new Alarm(user_id, minute, hour, dayOfWeek, snooze_count, snooze_interval, volume);
+        int alarmId = alarm.hashCode();
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
         Event event = new Event("Snooze", "" + alarmId, user_id, user_id + ts, tsLong);
