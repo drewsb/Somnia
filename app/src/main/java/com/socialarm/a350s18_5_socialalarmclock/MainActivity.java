@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     }
 
     private void setupPager() {
-        EventDatabase.getUser(extras.getString("idFacebook"), user -> {
+        UserDatabase.getUser(extras.getString("idFacebook"), user -> {
 
             List<Fragment> fragments = new ArrayList<Fragment>();
             fragments.add(MyAlarms.newInstance());
