@@ -80,11 +80,11 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void updateFriendNotifications(Object o){
-        // TODO : Update database
+
     }
 
     private void updateFriendPrivileges(Object o){
-        // TODO: Update database
+
     }
 
     private void DrawUserInfo()
