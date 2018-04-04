@@ -42,66 +42,25 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         //you can leave it empty
     }
 
-    public boolean isFirstStart;
-
-    //check if user opened tutorial
-    private void createTutorial() {
-
-        //  Intro App Initialize SharedPreferences
-        SharedPreferences getSharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
-
-        //  Create a new boolean and preference and set it to true
-        isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
-
-        //  Check either activity or app is open very first time or not and do action
-        if (isFirstStart) {
-            //  Launch application introduction screen
-            Intent i = new Intent(MainActivity.this, TutorialActivity.class);
-            startActivity(i);
-            SharedPreferences.Editor e = getSharedPreferences.edit();
-            e.putBoolean("firstStart", false);
-            e.apply();
-        }
+          private View setupNav() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(this);
+        return headerView;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+    private void setupDrawerLayout(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
+    private void setupPager() {
+        EventDatabase.getUser(extras.getString("idFacebook"), user -> {
 
-        i = getIntent();
-        extras = i.getExtras();
-
-        //Retrieve user's name and email
-        String name = extras.getString("first_name") + " " + extras.getString("last_name");
-        String email = extras.getString("email");
-
-        TextView nameView = headerView.findViewById(R.id.nameView);
-        TextView emailView = headerView.findViewById(R.id.emailView);
-
-        //Set profile pic image
-        new DownloadImageTask((ImageView) headerView.findViewById(R.id.profileView))
-                .execute(extras.getString("profile_pic"));
-
-        nameView.setText(name);
-        emailView.setText(email);
-      
-        createTutorial();
-        UserDatabase.getUser(extras.getString("idFacebook"), user -> {
             List<Fragment> fragments = new ArrayList<Fragment>();
             fragments.add(MyAlarms.newInstance());
             fragments.add(FriendsFragment.newInstance(user));
@@ -120,6 +79,35 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
         });
+    }
+
+    private void setupScreen() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        i = getIntent();
+        extras = i.getExtras();
+
+        //Retrieve user's name and email
+        String name = extras.getString("first_name") + " " + extras.getString("last_name");
+        String email = extras.getString("email");
+
+        setupDrawerLayout(toolbar);
+        View headerView = setupNav();
+
+        TextView nameView = headerView.findViewById(R.id.nameView);
+        TextView emailView = headerView.findViewById(R.id.emailView);
+
+        //Set profile pic image
+        new DownloadImageTask((ImageView) headerView.findViewById(R.id.profileView))
+                .execute(extras.getString("profile_pic"));
+
+        nameView.setText(name);
+        emailView.setText(email);
+
+        CreateTutorial();
+
+        setupPager();
 
         //add functionality to find friends button
         Button search_friend_button = (Button) findViewById(R.id.search_friend_button);
@@ -130,6 +118,14 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        setupScreen();
     }
 
     /**
@@ -146,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     }
 
     /**
-     * Handle login menu options
+     * Navigation bar selection function
      * @param item
      * @return
      */
@@ -177,5 +173,28 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * check if user opened tutorial
+     */
+    private void CreateTutorial() {
+
+        //  Intro App Initialize SharedPreferences
+        SharedPreferences getSharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
+
+        //  Check either activity or app is open very first time or not and do action
+        if (isFirstStart) {
+            //  Launch application introduction screen
+            Intent i = new Intent(MainActivity.this, TutorialActivity.class);
+            startActivity(i);
+            SharedPreferences.Editor e = getSharedPreferences.edit();
+            e.putBoolean("firstStart", false);
+            e.apply();
+        }
     }
 }
