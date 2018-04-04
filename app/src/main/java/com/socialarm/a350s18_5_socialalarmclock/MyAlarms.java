@@ -13,7 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 
+
+/**
+ * This fragment lists all the current alarms and lets the user create new ones.
+ */
 public class MyAlarms extends Fragment {
     static final int CREATE_ALARM_REQUEST = 1;
 
@@ -29,6 +34,10 @@ public class MyAlarms extends Fragment {
     }
 
 
+    /**
+     * Create a new fragment.
+     * @return The new fragment
+     */
     public static MyAlarms newInstance() {
         MyAlarms fragment = new MyAlarms();
         Bundle args = new Bundle();
@@ -36,24 +45,41 @@ public class MyAlarms extends Fragment {
         return fragment;
     }
 
-    public MyAlarms() {
-        // Required empty public constructor
-    }
+    /**
+     * Required empty public constructor
+     */
+    public MyAlarms() {}
 
+    /**
+     * Called when the fragment is created.
+     * @param savedInstanceState Previous instance state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         dbHelper = new AlarmsOpenHelper(getActivity());
         contextOfApplication = getActivity();
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d("ID", "Refreshed token: " + refreshedToken);
     }
 
+    /**
+     * Close the database to prevent memory leaks.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
         dbHelper.close();
     }
 
+    /**
+     * Set the view and the FAB.
+     * @param inflater The layout inflator to use
+     * @param container The parent of the new view
+     * @param savedInstanceState Previous instance state.
+     * @return The new view
+     */
     @Override
     public void onResume(){
         super.onResume();
@@ -77,13 +103,23 @@ public class MyAlarms extends Fragment {
         return v;
     }
 
+    /**
+     *
+     * Called when another activity returns.
+     * @param requestCode used to determine which result this is.
+     * @param resultCode Success or failure of called activity
+     * @param data Extra information returned from
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "ACTIVITY RESULT");
         updateValues();
     }
 
-    private void updateValues() {
+    /**
+     * Recheck the local db for new alarms.
+     */
+    private void UpdateValues() {
         Cursor c = dbHelper.getAlarms();
         Log.d(TAG, "" + c.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
         SingleAlarmAdapter adapter = new SingleAlarmAdapter(getContext(), c,0);

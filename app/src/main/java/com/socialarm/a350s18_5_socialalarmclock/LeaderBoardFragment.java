@@ -90,7 +90,10 @@ public class LeaderBoardFragment extends Fragment {
                 updateStatDuration(position);
 
                 // make database call and display statistic asynchronously
-                EventDatabase.getLeaderboardEventsSince(user.getFriend_ids(),
+                List<String> leaderboardUsers = new ArrayList<>();
+                leaderboardUsers.addAll(user.getFriend_ids());
+                leaderboardUsers.add(user.getId());
+                EventDatabase.getLeaderboardEventsSince(leaderboardUsers,
                         statDuration, statType, sortDirection, entries -> {displayRanking(entries);});
 
             }
@@ -111,7 +114,10 @@ public class LeaderBoardFragment extends Fragment {
                 updateStatTypeAndSortDirection(position);
 
                 // make database call and display statistic asynchronously
-                EventDatabase.getLeaderboardEventsSince(user.getFriend_ids(),
+                List<String> leaderboardUsers = new ArrayList<>();
+                leaderboardUsers.addAll(user.getFriend_ids());
+                leaderboardUsers.add(user.getId());
+                EventDatabase.getLeaderboardEventsSince(leaderboardUsers,
                         statDuration, statType, sortDirection, entries -> {displayRanking(entries);});
             }
 

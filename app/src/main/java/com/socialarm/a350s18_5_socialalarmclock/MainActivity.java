@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
+import com.socialarm.a350s18_5_socialalarmclock.SomniaFirebaseInstanceIDService;
 
 import android.support.v4.app.Fragment;
 import android.widget.Button;
@@ -43,71 +44,45 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         //you can leave it empty
     }
 
-    public boolean isFirstStart;
+    private View setupNav() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(this);
+        return headerView;
+    }
 
-    //check if user opened tutorial
-    private void createTutorial() {
+    private void setFirebaseId() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        //  Intro App Initialize SharedPreferences
-        SharedPreferences getSharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
+        boolean hasSetFirebaseId = prefs.getBoolean("setFirebaseId", false);
 
-        //  Create a new boolean and preference and set it to true
-        isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
-
-        //  Check either activity or app is open very first time or not and do action
-        if (isFirstStart) {
-            //  Launch application introduction screen
-            Intent i = new Intent(MainActivity.this, TutorialActivity.class);
-            startActivity(i);
-            SharedPreferences.Editor e = getSharedPreferences.edit();
-            e.putBoolean("firstStart", false);
+        if (!hasSetFirebaseId) {
+            SomniaFirebaseInstanceIDService service = new SomniaFirebaseInstanceIDService();
+            service.onTokenRefresh();
+            SharedPreferences.Editor e = prefs.edit();
+            e.putBoolean("setFirebaseId", true);
             e.apply();
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+    private void setupDrawerLayout(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        i = getIntent();
-        extras = i.getExtras();
-
-        //Retrieve user's name and email
-        String name = extras.getString("first_name") + " " + extras.getString("last_name");
-        String email = extras.getString("email");
-
-        TextView nameView = headerView.findViewById(R.id.nameView);
-        TextView emailView = headerView.findViewById(R.id.emailView);
-
-        //Set profile pic image
-        new DownloadImageTask((ImageView) headerView.findViewById(R.id.profileView))
-                .execute(extras.getString("profile_pic"));
-
-        nameView.setText(name);
-        emailView.setText(email);
-      
-        createTutorial();
+    private void setupPager() {
         UserDatabase.getUser(extras.getString("idFacebook"), user -> {
+
             List<Fragment> fragments = new ArrayList<Fragment>();
             MyAlarms myAlarms = MyAlarms.newInstance();
             fragments.add(myAlarms);
             fragments.add(FriendsFragment.newInstance(user));
             fragments.add(LeaderBoardFragment.newInstance(user));
+            fragments.add(LiveFeedFragment.newInstance(user));
 
             // Create the adapter that will return a fragment
             pagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
@@ -138,6 +113,36 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
                 public void onTabReselected(TabLayout.Tab tab) {}
             });
         });
+    }
+
+    private void setupScreen() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        i = getIntent();
+        extras = i.getExtras();
+
+        //Retrieve user's name and email
+        String name = extras.getString("first_name") + " " + extras.getString("last_name");
+        String email = extras.getString("email");
+
+        setupDrawerLayout(toolbar);
+        View headerView = setupNav();
+
+        TextView nameView = headerView.findViewById(R.id.nameView);
+        TextView emailView = headerView.findViewById(R.id.emailView);
+
+        //Set profile pic image
+        new DownloadImageTask((ImageView) headerView.findViewById(R.id.profileView))
+                .execute(extras.getString("profile_pic"));
+
+        nameView.setText(name);
+        emailView.setText(email);
+
+        setFirebaseId();
+        CreateTutorial();
+
+        setupPager();
 
         //add functionality to find friends button
         Button search_friend_button = (Button) findViewById(R.id.search_friend_button);
@@ -148,6 +153,14 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        setupScreen();
     }
 
     /**
@@ -164,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     }
 
     /**
-     * Handle login menu options
+     * Navigation bar selection function
      * @param item
      * @return
      */
@@ -195,5 +208,28 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * check if user opened tutorial
+     */
+    private void CreateTutorial() {
+
+        //  Intro App Initialize SharedPreferences
+        SharedPreferences getSharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
+
+        //  Check either activity or app is open very first time or not and do action
+        if (isFirstStart) {
+            //  Launch application introduction screen
+            Intent i = new Intent(MainActivity.this, TutorialActivity.class);
+            startActivity(i);
+            SharedPreferences.Editor e = getSharedPreferences.edit();
+            e.putBoolean("firstStart", false);
+            e.apply();
+        }
     }
 }

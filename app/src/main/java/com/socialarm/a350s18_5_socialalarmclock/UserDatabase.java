@@ -142,4 +142,8 @@ public class UserDatabase {
                 });
         return new Alarm(user.getId(), 41, 1, "Wednesday", 5, 0, 10);
     }
+
+    public static void updateFirebaseId(String self, String firebase_id) {
+        db.collection("users").document(self).update("firebase_id", firebase_id);
+    }
 }

@@ -6,9 +6,17 @@ import java.util.Set;
 
 /**
  * Created by Alex on 3/14/2018.
+ * This class has utilities for interacting with local alarms.
  */
 
 class AlarmsUtil {
+    /**
+     * Gets the next trigger time for an alarm with given parameters
+     * @param hour when an alarm will go off
+     * @param minute when an alarm will go off
+     * @param days_of_week what day of the week an alarm will go off.
+     * @return a Calendar based on milliseconds for the next trigger time
+     */
     static Calendar getNextTrigger(int hour, int minute, int days_of_week) {
         Set<Integer> calendar_days = getCalendarDays(days_of_week);
 
@@ -32,6 +40,13 @@ class AlarmsUtil {
         return trigger_time;
     }
 
+    /**
+     * Gets the next trigger time after today.
+     * @param hour when an alarm will go off
+     * @param minute when an alarm will go off
+     * @param days_of_week what day of the week an alarm will go off.
+     * @return a Calendar based on milliseconds for the next trigger time
+     */
     static Calendar skipNextTrigger(int hour, int minute, int days_of_week) {
         Calendar trigger_time = getNextTrigger(hour, minute, days_of_week);
         Set<Integer> calendar_days = getCalendarDays(days_of_week);
@@ -50,6 +65,11 @@ class AlarmsUtil {
 
     }
 
+    /**
+     * Converts a binary encoded days of week to a set for easier manipulation
+     * @param days_of_week binary encoded day of week
+     * @return All the days the alarm is set to trigger.
+     */
     static Set<Integer> getCalendarDays(int days_of_week) {
         Set<Integer> calendar_days = new HashSet<Integer>();
         if ((days_of_week & AlarmsOpenHelper.SUNDAY) != 0) {

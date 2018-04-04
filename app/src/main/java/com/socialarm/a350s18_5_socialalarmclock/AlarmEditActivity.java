@@ -24,6 +24,10 @@ public class AlarmEditActivity extends AppCompatActivity {
 
     private static final String TAG = "AlarmEditActivity";
 
+    /**
+     * Set certain defaults for the pickers.
+     * @param savedInstanceState previous instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,9 @@ public class AlarmEditActivity extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
     }
 
+    /**
+     * Whenever the user reopens the app, recheck whether they are in 12 or 24 hour time.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -55,12 +62,20 @@ public class AlarmEditActivity extends AppCompatActivity {
         picker.setIs24HourView(DateFormat.is24HourFormat(this));
     }
 
+    /**
+     * Send the cancel result back the calling activity.
+     * @param view The View that was selected.
+     */
     public void onCancel(View view) {
         Intent i = new Intent();
         setResult(RESULT_CANCELED, i);
         finish();
     }
 
+    /**
+     * Collect the data from the settings and make a new alarm.
+     * @param view The View that was selected.
+     */
     public void onAccept(View view) {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         NumberPicker interval = findViewById(R.id.interval_selector);
@@ -79,6 +94,10 @@ public class AlarmEditActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Stores the of the days of week in a single integer and updates as the buttons are pressed.
+     * @param view The button that was tapped.
+     */
     public void onDayOfWeekClick(View view) {
         ToggleButton b = (ToggleButton) view;
         if (b.isChecked()) {
@@ -110,5 +129,4 @@ public class AlarmEditActivity extends AppCompatActivity {
                 break;
         }
     }
-
 }
