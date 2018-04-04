@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import java.io.InputStream;
 
 /**
- *  DownloadImageTask is a private class used to convert URL's into a Bitmap asynchronously
+ * Used to download images online and convert into a Bitmap object, which is then
+ * used to set the image of an image view.
  */
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
@@ -18,11 +19,16 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         this.bmImage = bmImage;
     }
 
+    /**
+     * Returns a Bitmap object representing an image at the given url
+     * @param urls
+     * @return Bitmap object
+     */
     protected Bitmap doInBackground(String... urls) {
-        String urldisplay = urls[0];
+        String url= urls[0];
         Bitmap icon = null;
         try {
-            InputStream in = new java.net.URL(urldisplay).openStream();
+            InputStream in = new java.net.URL(url).openStream();
             icon = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
@@ -30,6 +36,10 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         return icon;
     }
 
+    /**
+     * Set image of the image view field
+     * @param result
+     */
     protected void onPostExecute(Bitmap result) {
         bmImage.setImageBitmap(result);
     }

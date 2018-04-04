@@ -49,6 +49,7 @@ public class DisableAlarmFragment extends DialogFragment {
         });
 
 
+        // Build the dialog.
         builder.setView(v)
                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                    @Override

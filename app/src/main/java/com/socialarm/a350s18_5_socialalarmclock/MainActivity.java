@@ -1,6 +1,5 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -8,16 +7,12 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +23,6 @@ import com.facebook.login.LoginManager;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     private ViewPager viewPager;
     private Intent i;
     private Bundle extras;
+    private EventDatabase eventDB;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -47,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         //you can leave it empty
     }
 
-    private View setupNav() {
+          private View setupNav() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
@@ -163,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
-            EventDatabase.getUser(extras.getString("idFacebook"), user -> {
+                UserDatabase.getUser(extras.getString("idFacebook"), user -> {
                 Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
 
                 //pass user data to statistics activity
@@ -202,5 +197,4 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             e.apply();
         }
     }
-
 }
