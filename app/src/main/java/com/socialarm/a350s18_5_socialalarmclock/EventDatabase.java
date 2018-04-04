@@ -37,7 +37,7 @@ final class EventDatabase {
      *
      * @param eventLambda the function to run once the call is complete
      */
-    private static void getAllEvents(final EventLambda eventLambda) {
+     static void getAllEvents(final EventLambda eventLambda) {
 
         DatabaseSingleton.getInstance().collection("events").get()
                 .addOnSuccessListener(documentSnapshots -> {

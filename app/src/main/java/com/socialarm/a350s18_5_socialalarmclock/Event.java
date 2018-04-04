@@ -61,4 +61,10 @@ public class Event {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String serialize() {
+        // TODO: Make this query DB to get the data on the alarm
+        // TODO: Make the timestamp be in a printable form
+        return action + " " + alarm_id + " " + timestamp;
+    }
 }
