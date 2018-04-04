@@ -114,4 +114,8 @@ public class UserDatabase {
     public static void addUser(User user){
         db.collection("users").document(user.getId()).set(user);
     }
+
+    public static void updateFirebaseId(String self, String firebase_id) {
+        db.collection("users").document(self).update("firebase_id", firebase_id);
+    }
 }

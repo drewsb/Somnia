@@ -26,6 +26,7 @@ public class User implements Serializable {
     private String first_name;
     private String last_name;
     private List<String> friend_ids;
+    private String firebase_id;
 
     public User() {}
 
@@ -63,4 +64,12 @@ public class User implements Serializable {
     }
 
     public List<String> getFriend_ids() { return friend_ids; }
+
+    public void setFirebase_id(String f_id) {
+        firebase_id = f_id;
+    }
+
+    String getFirebase_id() {
+        return firebase_id;
+    }
 }

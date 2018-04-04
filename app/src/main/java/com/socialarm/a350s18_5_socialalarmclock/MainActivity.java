@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
+import com.socialarm.a350s18_5_socialalarmclock.SomniaFirebaseInstanceIDService;
 
 import android.support.v4.app.Fragment;
 import android.widget.Button;
@@ -42,11 +43,25 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         //you can leave it empty
     }
 
-          private View setupNav() {
+    private View setupNav() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
         return headerView;
+    }
+
+    private void setFirebaseId() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        boolean hasSetFirebaseId = prefs.getBoolean("setFirebaseId", false);
+
+        if (!hasSetFirebaseId) {
+            SomniaFirebaseInstanceIDService service = new SomniaFirebaseInstanceIDService();
+            service.onTokenRefresh();
+            SharedPreferences.Editor e = prefs.edit();
+            e.putBoolean("setFirebaseId", true);
+            e.apply();
+        }
     }
 
     private void setupDrawerLayout(Toolbar toolbar) {
@@ -105,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         nameView.setText(name);
         emailView.setText(email);
 
+        setFirebaseId();
         CreateTutorial();
 
         setupPager();

@@ -20,6 +20,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONObject;
 
@@ -153,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Bundle facebookData = getFacebookData(object);
                         User user = new User(facebookData);
+                        user.setFirebase_id(FirebaseInstanceId.getInstance().getToken());
                         UserDatabase.addNewUser(user);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtras(facebookData);
