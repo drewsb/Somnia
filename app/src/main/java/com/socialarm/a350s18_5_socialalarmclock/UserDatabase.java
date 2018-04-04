@@ -121,6 +121,11 @@ public class UserDatabase {
         DatabaseSingleton.getInstance().collection("users").document(user.getId()).set(user);
     }
 
+    /**
+     * Retrieve the user's next alarm.
+     * @param user
+     * @return
+     */
     public static Alarm getMostRecentAlarm(User user) {
         String user_id = user.getId();
         FirebaseFirestore db = DatabaseSingleton.getInstance();
@@ -143,7 +148,12 @@ public class UserDatabase {
         return new Alarm(user.getId(), 41, 1, "Wednesday", 5, 0, 10);
     }
 
+    /**
+     * Update given user's firebase id
+     * @param self
+     * @param firebase_id
+     */
     public static void updateFirebaseId(String self, String firebase_id) {
-        db.collection("users").document(self).update("firebase_id", firebase_id);
+        DatabaseSingleton.getInstance().collection("users").document(self).update("firebase_id", firebase_id);
     }
 }
