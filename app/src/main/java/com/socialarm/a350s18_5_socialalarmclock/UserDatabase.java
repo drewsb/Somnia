@@ -6,12 +6,18 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.ref.Reference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -116,10 +122,24 @@ public class UserDatabase {
     }
 
     public static Alarm getMostRecentAlarm(User user) {
-//        String user_id = user.getId();
-//        FirebaseFirestore db = DatabaseSingleton.getInstance();
-//        DatabaseSingleton.getInstance().collection("users").document(user_id)
-//                .collection("alarms").document(alarmID).set(data);
+        String user_id = user.getId();
+        FirebaseFirestore db = DatabaseSingleton.getInstance();
+        CollectionReference ref = DatabaseSingleton.getInstance().collection("users").document(user_id)
+                .collection("alarms");
+        TreeMap<Alarm, Integer> alarmTimeMap = new TreeMap<Alarm,Integer>();
+        ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot doc : task.getResult()) {
+                                AlarmDatabase.getAlarm(user_id, Integer.parseInt(doc.getId()), alarm -> {});
+                                Log.d(TAG, doc.getId() + " => " + doc.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
         return new Alarm(user.getId(), 41, 1, "Wednesday", 5, 0, 10);
     }
 }

@@ -38,7 +38,7 @@ public class AlarmDatabase {
         DatabaseSingleton.getInstance().collection("users").document(userID).collection("alarms").document(alarmID).set(data);
     }
 
-    public void getAlarm(final String user_id, final int alarm_id, final AlarmLambda alarmLambda) {
+    public static void getAlarm(final String user_id, final int alarm_id, final AlarmLambda alarmLambda) {
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         db.collection("alarms").document(user_id + alarm_id).get()
                 .addOnSuccessListener(documentSnapshot -> {
