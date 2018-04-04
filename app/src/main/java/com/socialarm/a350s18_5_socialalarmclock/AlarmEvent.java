@@ -10,6 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import java.io.IOException;
@@ -25,7 +26,8 @@ public class AlarmEvent extends AppCompatActivity {
         setContentView(R.layout.activity_alarm_event);
 
         //get alarm id and fetch path to ringtone
-        int alarm_id  = savedInstanceState.getInt("alarm");
+        Intent i = getIntent();
+        int alarm_id = i.getIntExtra("Alarm", -1);
         AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
         Cursor cursor = dbHelper.getAlarm(alarm_id);
         final String ringtone_path = cursor.getString(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH));
@@ -35,12 +37,15 @@ public class AlarmEvent extends AppCompatActivity {
         if (ringtone_path.isEmpty()) {
             alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
+
+        //create media player
         media = new MediaPlayer();
         try {
             media.setDataSource(this, alarm);
             media.setLooping(true);
             media.prepare();
         } catch (IOException e) {
+            Log.e("MediaPlayer Failure: ", e.toString());
         }
         media.start();
     }

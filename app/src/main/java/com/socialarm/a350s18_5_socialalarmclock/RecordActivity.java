@@ -54,6 +54,10 @@ public class RecordActivity extends AppCompatActivity {
         mFileName += "/AudioRecording.3gp";
         setupButtons();
     }
+
+    /**
+     * Setups the Play, Stop, Resume buttons
+     */
     private void setupButtons() {
         startbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +131,12 @@ public class RecordActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * When permissions are granted, this is called
+     * @param requestCode status code
+     * @param permissions what permissions were requested
+     * @param grantResults what permissions were granted
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -143,11 +153,20 @@ public class RecordActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    /**
+     * Check WRITE and RECORD permissions
+     * @return true if permissions were granted
+     */
     public boolean CheckPermissions() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
         int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
         return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
     }
+
+    /**
+     * Request WRITE and AUDIO permission
+     */
     private void RequestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{RECORD_AUDIO, WRITE_EXTERNAL_STORAGE}, REQUEST_AUDIO_PERMISSION_CODE);
     }

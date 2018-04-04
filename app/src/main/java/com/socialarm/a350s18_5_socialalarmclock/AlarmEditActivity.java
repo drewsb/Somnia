@@ -1,8 +1,18 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +23,10 @@ import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import java.io.File;
 import java.io.IOException;
+
+import static com.socialarm.a350s18_5_socialalarmclock.GetPathFromURI.getPathFromURI;
 
 public class AlarmEditActivity extends AppCompatActivity {
 
@@ -88,21 +101,27 @@ public class AlarmEditActivity extends AppCompatActivity {
         }
     }
 
-    final int RECORD_SOUND = 1;
     final int SELECT_SOUND = 2;
 
+    /**
+     * OnClickListener for when a user clicks the record button and brings up the recording page
+     * @param view not used
+     */
     public void onGoToRecordClick(View view) {
         Intent i = new Intent(this, RecordActivity.class);
         startActivity(i);
-        /// /Intent i = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-        //startActivityForResult(i, RECORD_SOUND);
-        //startActivity(i);
     }
 
+    /**
+     * OnClickListener for when a user clicks the select button and brings up the selection page
+     * @param view not used
+     */
     public void onSelectMusicPlayerClick(View view) {
         Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, SELECT_SOUND);
     }
+
+    final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 11;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -111,37 +130,34 @@ public class AlarmEditActivity extends AppCompatActivity {
         //play the song if found
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case RECORD_SOUND:
-
-                    break;
                 case SELECT_SOUND:
 
-                    MediaPlayer mediaPlayer = new MediaPlayer();
-                    Uri audio_uri = data.getData();
-                    try {
-                        mediaPlayer.setDataSource(this, audio_uri);
-                        mediaPlayer.prepare();
-                    } catch (IOException e) {
-                        Log.e("SetDataSource", e.toString());
-                    }
+                    Uri uri = data.getData();
 
-                    //mediaPlayer.start();
+                    RequestReadPermission();
 
-                    ringtone_path = audio_uri.toString();
-
-                    mediaPlayer = new  MediaPlayer();
-                    try {
-                        mediaPlayer.setDataSource(ringtone_path);
-                        mediaPlayer.prepare();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    mediaPlayer.start();
+                    ringtone_path = getPathFromURI(getApplicationContext(), uri);
 
                     break;
                 default:
                     break;
             }
+        }
+    }
+
+    /**
+     * Request read permission from user
+     */
+    private void RequestReadPermission() {
+        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (shouldShowRequestPermissionRationale(
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            }
+
+            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         }
     }
 
