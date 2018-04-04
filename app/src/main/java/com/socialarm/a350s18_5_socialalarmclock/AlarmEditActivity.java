@@ -92,8 +92,11 @@ public class AlarmEditActivity extends AppCompatActivity {
     final int SELECT_SOUND = 2;
 
     public void onGoToRecordClick(View view) {
-        Intent i = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-        startActivityForResult(i, RECORD_SOUND);
+        Intent i = new Intent(this, RecordActivity.class);
+        startActivity(i);
+        /// /Intent i = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        //startActivityForResult(i, RECORD_SOUND);
+        //startActivity(i);
     }
 
     public void onSelectMusicPlayerClick(View view) {
