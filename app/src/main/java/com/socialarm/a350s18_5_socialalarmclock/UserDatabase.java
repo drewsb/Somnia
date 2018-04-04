@@ -28,6 +28,8 @@ public class UserDatabase {
 
     private static final String TAG = "UserDatabase";
 
+    private UserDatabase(){}
+
     interface FriendsLambda
     {
         void callback(List<User> friends);

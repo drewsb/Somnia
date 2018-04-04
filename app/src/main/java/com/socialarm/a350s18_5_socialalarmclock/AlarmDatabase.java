@@ -15,13 +15,13 @@ public class AlarmDatabase {
 
     private static final String TAG = "AlarmDatabase";
 
-
+    private AlarmDatabase() {}
     /**
      * Add alarm to alarm collection, and add alarm id to user alarm collection
      with the option "On" set to true
      * @param alarm
      */
-    public void addAlarm(final Alarm alarm) {
+    public static void addAlarm(final Alarm alarm) {
         String userID = alarm.getUser_id();
         // Add a new document with a generated ID
         String alarmID = "" + System.identityHashCode(alarm);
@@ -35,7 +35,7 @@ public class AlarmDatabase {
      * Delete alarm from the alarm collection, and remove alarm id from user alarm collection
      * @param alarm
      */
-    public void deleteAlarm(final Alarm alarm) {
+    public static void deleteAlarm(final Alarm alarm) {
         String userID = alarm.getUser_id();
         String alarmId = "" + System.identityHashCode(alarm);
         DatabaseSingleton.getInstance().collection("alarms").document(userID + alarmId).delete();
@@ -47,7 +47,7 @@ public class AlarmDatabase {
      * @param alarm
      * @param OnBool
      */
-    public void enableAlarm(final Alarm alarm, Boolean OnBool) {
+    public static void enableAlarm(final Alarm alarm, Boolean OnBool) {
         String userID = alarm.getUser_id();
         String alarmId = "" + System.identityHashCode(alarm);
         HashMap<String, Object> data = new HashMap<String, Object>();

@@ -64,7 +64,7 @@ public final class EventDatabase {
      * @param direction the sort direction of the resulting list
      * @param lbeLambda the function to run once the call is complete
      */
-    static void getLeaderboardEventsSince(List<String> friends_list,
+    public static void getLeaderboardEventsSince(List<String> friends_list,
                                                  Duration duration,
                                                  SleepStatType type,
                                                  SortDirection direction,
@@ -250,7 +250,7 @@ public final class EventDatabase {
      *
      * @param event the event to add to the database
      */
-    static void addEvent(final Event event) {
+    public static void addEvent(final Event event) {
         String userID = event.getUser_id();
         DatabaseSingleton.getInstance().collection("events").document(userID + event.getTimestamp()).set(event);
     }
