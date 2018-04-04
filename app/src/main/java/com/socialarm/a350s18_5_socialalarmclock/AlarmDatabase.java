@@ -50,20 +50,6 @@ public class AlarmDatabase {
         DatabaseSingleton.getInstance().collection("users").document(userID).collection("alarms").document(alarmID).set(data);
     }
 
-    public static void getAlarm(final String user_id, final int alarm_id, final AlarmLambda alarmLambda) {
-        FirebaseFirestore db = DatabaseSingleton.getInstance();
-        db.collection("alarms").document(user_id + alarm_id).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Alarm alarm = documentSnapshot.toObject(Alarm.class);
-
-                        //callback
-                        alarmLambda.callback(alarm);
-                    }
-                })
-                .addOnFailureListener(e -> Log.d("User", "Error getting user"));
-    }
-
     /**
      * Delete alarm from the alarm collection, and remove alarm id from user alarm collection
      * @param alarm
