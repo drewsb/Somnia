@@ -44,7 +44,6 @@ public class AlarmEvent extends AppCompatActivity {
         initialize();
         setContentView(R.layout.activity_alarm_event);
 
-        eventDB = new EventDatabase();
         Context applicationContext = LoginActivity.getContextOfApplication();
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
 

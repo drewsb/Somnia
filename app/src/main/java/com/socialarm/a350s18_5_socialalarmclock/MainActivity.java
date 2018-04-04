@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        eventDB = new EventDatabase();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         emailView.setText(email);
       
         CreateTutorial();
-        EventDatabase.getUser(extras.getString("idFacebook"), user -> {
+        UserDatabase.getUser(extras.getString("idFacebook"), user -> {
             List<Fragment> fragments = new ArrayList<Fragment>();
             fragments.add(MyAlarms.newInstance());
             fragments.add(FriendsFragment.newInstance(user));
