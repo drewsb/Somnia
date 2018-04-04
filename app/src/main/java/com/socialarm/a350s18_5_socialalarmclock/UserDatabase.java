@@ -20,7 +20,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 /**
- * Database class used to push user data to the cloud
+ * Database class used to push user data to the firebase database
  */
 public class UserDatabase {
 
@@ -39,6 +39,10 @@ public class UserDatabase {
         public void callback(User user);
     }
 
+    /**
+     * Check if the user is already in the Firebase database. If not, call addUser(user).
+     * @param user
+     */
     public static void addNewUser(final User user){
         final DocumentReference docRef = db.collection("users").document(user.getId());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -55,7 +59,6 @@ public class UserDatabase {
             }
         });
     }
-
 
 
     /**
@@ -102,9 +105,12 @@ public class UserDatabase {
                 .addOnFailureListener(e -> Log.d("Friend", "Error getting friends"));
     }
 
+    /**
+     * Add given user to the database.
+     * @param user
+     */
     public static void addUser(User user){
         // Add a new document with a generated ID
-        Log.d(TAG, user.getId());
         db.collection("users").document(user.getId()).set(user);
     }
 }

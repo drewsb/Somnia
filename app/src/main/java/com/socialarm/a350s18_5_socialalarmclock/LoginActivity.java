@@ -96,7 +96,6 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             String id = object.getString("id");
-            Log.d(TAG, id);
             URL profile_pic;
             try {
                 profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
