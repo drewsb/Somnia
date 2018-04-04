@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             fragments.add(MyAlarms.newInstance());
             fragments.add(FriendsFragment.newInstance(user));
             fragments.add(LeaderBoardFragment.newInstance(user));
+            fragments.add(LiveFeedFragment.newInstance(user));
 
             // Create the adapter that will return a fragment
             pagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
