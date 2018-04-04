@@ -1,19 +1,26 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
+
+import java.io.IOException;
 
 public class AlarmEditActivity extends AppCompatActivity {
 
     AlarmsOpenHelper dbHelper;
 
     private int days_of_week;
+    private String ringtone_path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +30,7 @@ public class AlarmEditActivity extends AppCompatActivity {
         picker.setIs24HourView(DateFormat.is24HourFormat(this));
 
         dbHelper = new AlarmsOpenHelper(this);
+        ringtone_path = new String();
     }
 
     @Override
@@ -40,7 +48,7 @@ public class AlarmEditActivity extends AppCompatActivity {
 
     public void onAccept(View view) {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
-        long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(), days_of_week);
+        long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(), days_of_week, ringtone_path);
 
         Intent i = new Intent();
         i.putExtra("new_alarm", row);
@@ -79,5 +87,60 @@ public class AlarmEditActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    final int RECORD_SOUND = 1;
+    final int SELECT_SOUND = 2;
+
+    public void onGoToRecordClick(View view) {
+        Intent i = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        startActivityForResult(i, RECORD_SOUND);
+    }
+
+    public void onSelectMusicPlayerClick(View view) {
+        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, SELECT_SOUND);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //play the song if found
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RECORD_SOUND:
+
+                    break;
+                case SELECT_SOUND:
+
+                    MediaPlayer mediaPlayer = new MediaPlayer();
+                    Uri audio_uri = data.getData();
+                    try {
+                        mediaPlayer.setDataSource(this, audio_uri);
+                        mediaPlayer.prepare();
+                    } catch (IOException e) {
+                        Log.e("SetDataSource", e.toString());
+                    }
+
+                    //mediaPlayer.start();
+
+                    ringtone_path = audio_uri.toString();
+
+                    mediaPlayer = new  MediaPlayer();
+                    try {
+                        mediaPlayer.setDataSource(ringtone_path);
+                        mediaPlayer.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mediaPlayer.start();
+
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
 
 }

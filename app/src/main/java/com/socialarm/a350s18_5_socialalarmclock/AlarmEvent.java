@@ -23,8 +23,16 @@ public class AlarmEvent extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_event);
-        Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        if (alarm == null) {
+
+        //get alarm id and fetch path to ringtone
+        int alarm_id  = savedInstanceState.getInt("alarm");
+        AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
+        Cursor cursor = dbHelper.getAlarm(alarm_id);
+        final String ringtone_path = cursor.getString(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH));
+        dbHelper.close();
+
+        Uri alarm = Uri.parse(ringtone_path);
+        if (ringtone_path.isEmpty()) {
             alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
         media = new MediaPlayer();

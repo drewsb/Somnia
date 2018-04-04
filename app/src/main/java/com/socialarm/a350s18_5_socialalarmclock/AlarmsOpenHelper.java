@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteStatement;
 
 
 public class AlarmsOpenHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "somnia.db";
 
     public static final int SUNDAY = 1;
@@ -26,7 +26,9 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
       LocalDBContract.Alarm.COLUMN_NAME_HOUR + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_MINUTE + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_ENABLED + " TINYINT, " +
-      LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + " TINYINT);";
+      LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + " TINYINT, " +
+      LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH + " TEXT);";
+
     private static final String DELETE_ALARMS_TABLE =
        "DROP TABLE IF EXISTS " + LocalDBContract.Alarm.TABLE_NAME;
 
@@ -55,18 +57,20 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         return c;
     }
 
-    public long addAlarm(int hour, int minute, int active_alarms) {
+    public long addAlarm(int hour, int minute, int active_alarms, String ringtone_path) {
         SQLiteDatabase db_write = getWritableDatabase();
         String query = "INSERT INTO " + LocalDBContract.Alarm.TABLE_NAME + " " +
-                       "(" + LocalDBContract.Alarm.COLUMN_NAME_HOUR + ", " +
-                       LocalDBContract.Alarm.COLUMN_NAME_MINUTE + ", " +
-                       LocalDBContract.Alarm.COLUMN_NAME_ENABLED + ", " +
-                       LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + ") VALUES (?, ?, ?, ?)";
+                "(" + LocalDBContract.Alarm.COLUMN_NAME_HOUR + ", " +
+                LocalDBContract.Alarm.COLUMN_NAME_MINUTE + ", " +
+                LocalDBContract.Alarm.COLUMN_NAME_ENABLED + ", " +
+                LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + ", " +
+                LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH + ") VALUES (?, ?, ?, ?, ?)";
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, hour);
         stmt.bindLong(2, minute);
         stmt.bindLong(3, 0);
         stmt.bindLong(4, active_alarms);
+        stmt.bindString(5, ringtone_path);
         long ret = stmt.executeInsert();
         return ret;
     }
@@ -79,6 +83,17 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, enable ? 1 : 0);
         stmt.bindLong(2,row_id);
+        stmt.executeUpdateDelete();
+    }
+
+    public void setRingtonePath(long row_id, String ringtone_path) {
+        SQLiteDatabase db_write = getWritableDatabase();
+        String query = "UPDATE " + LocalDBContract.Alarm.TABLE_NAME + " " +
+                "SET " + LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH + "=?" +
+                "WHERE " + LocalDBContract.Alarm._ID + "=?";
+        SQLiteStatement stmt = db_write.compileStatement(query);
+        stmt.bindLong(2, row_id);
+        stmt.bindString(5, ringtone_path);
         stmt.executeUpdateDelete();
     }
 
