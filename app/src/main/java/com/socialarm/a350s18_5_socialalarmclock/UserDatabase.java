@@ -155,4 +155,8 @@ public class UserDatabase {
     public static void updateFirebaseId(String self, String firebase_id) {
         DatabaseSingleton.getInstance().collection("users").document(self).update("firebase_id", firebase_id);
     }
+
+    public static void updateFirebaseId(String self, String firebase_id) {
+        db.collection("users").document(self).update("firebase_id", firebase_id);
+    }
 }

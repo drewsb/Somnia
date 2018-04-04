@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-
+import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.MessageSender;
 
 /**
  * This fragment lists all the current alarms and lets the user create new ones.
@@ -101,6 +101,14 @@ public class MyAlarms extends Fragment {
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), AlarmEditActivity.class);
                 startActivityForResult(i, CREATE_ALARM_REQUEST);
+            }
+        });
+
+        FloatingActionButton debug = v.findViewById(R.id.debug);
+        debug.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                MessageSender m = new MessageSender();
+                m.notifyFriends("snooze");
             }
         });
         return v;

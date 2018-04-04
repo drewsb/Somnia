@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.MessageSender;
+
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -112,6 +114,9 @@ public class AlarmEvent extends AppCompatActivity {
         String ts = tsLong.toString();
         Event event = new Event("Snooze", "" + alarmId, user_id, user_id + ts, tsLong);
         EventDatabase.addEvent(event);
+
+        MessageSender ms = new MessageSender();
+        ms.notifyFriends("snooze");
 
         dbHelper.setSnooze(alarm_id, current_snooze_count+1);
 

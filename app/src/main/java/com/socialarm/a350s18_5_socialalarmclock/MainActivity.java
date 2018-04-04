@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
-import com.socialarm.a350s18_5_socialalarmclock.SomniaFirebaseInstanceIDService;
+import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.SomniaFirebaseInstanceIDService;
 
 import android.support.v4.app.Fragment;
 import android.widget.Button;
