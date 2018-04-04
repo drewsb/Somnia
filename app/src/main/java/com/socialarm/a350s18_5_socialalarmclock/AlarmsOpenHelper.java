@@ -75,7 +75,6 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
 
     public Cursor getAlarm(int alarm_id) {
         SQLiteDatabase db_read = getReadableDatabase();
-
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(LocalDBContract.Alarm.TABLE_NAME);
         String where = LocalDBContract.Alarm._ID + " = " + alarm_id;

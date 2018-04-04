@@ -31,7 +31,7 @@ public class AlarmDatabase {
     public static void addAlarm(final Alarm alarm) {
         String userID = alarm.getUser_id();
         // Add a new document with a generated ID
-        String alarmID = "" + System.identityHashCode(alarm);
+        String alarmID = "" + alarm.hashCode();
         DatabaseSingleton.getInstance().collection("alarms").document(userID + alarmID).set(alarm);
         HashMap<String, Object> data = new HashMap<String, Object>();
         data.put("On", true);
