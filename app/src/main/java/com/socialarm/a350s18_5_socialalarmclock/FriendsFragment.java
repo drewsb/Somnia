@@ -76,8 +76,6 @@ public class FriendsFragment extends Fragment {
      * Does an action when a row is pressed
      * @param uri the uri
      */
-    // TODO: Have this trigger the optionsactivity or something else other than do nothing
-    // (possibly have stats here?)
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -116,7 +114,6 @@ public class FriendsFragment extends Fragment {
      * activity.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

@@ -39,7 +39,7 @@ public class LeaderboardRowAdapter extends RecyclerView.Adapter<LeaderboardRowAd
      * Create the new viewholder with the new ViewHolder inside
      *
      * @param parent the parent view group that the row is to be in
-     * @param viewType ? - TODO: investigate this
+     * @param viewType ?
      * @return a new ViewHolder
      */
     @Override

@@ -19,7 +19,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 final class EventDatabase {
 
     //private constructor
-    EventDatabase() {}
+    private EventDatabase() {}
 
     interface EventLambda
     {
@@ -68,10 +68,8 @@ final class EventDatabase {
                                                  SleepStatType type,
                                                  SortDirection direction,
                                                  final LeaderboardEntryLambda lbeLambda) {
-        // TODO: Combine this with other get events since?
         List<LeaderboardEntry> entryList = new ArrayList<>();
 
-        // TODO: This is literally slower than a dead sloth, we should query all events and sort them in single pass, will refactor
         for (String friend_id : friends_list) {
             getAllEvents(events -> {
                 getUser(friend_id, friend -> {
@@ -180,7 +178,6 @@ final class EventDatabase {
     /**
      * Enum for Duration
      */
-    // TODO: Refactor this to also be the same as duration
     public enum TimeDifference {
         WEEK,
         MONTH,
@@ -205,7 +202,6 @@ final class EventDatabase {
      */
     static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda)
     {
-        // TODO: Refactor this slow code
         getAllEvents(events ->
         {
             Calendar calender = Calendar.getInstance();
@@ -266,7 +262,6 @@ final class EventDatabase {
      */
     static void getFriends(User user, final FriendsLambda friendsLambda)
     {
-        // TODO: refactor this slow code
         DatabaseSingleton.getInstance().collection("users").get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (!documentSnapshots.isEmpty()) {
@@ -304,7 +299,6 @@ final class EventDatabase {
      */
     static void getUser(String user_id, final UserLambda userLambda)
     {
-        // TODO: refactor this bad code
         DatabaseSingleton.getInstance().collection("users").document(user_id).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {

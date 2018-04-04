@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         int id = item.getItemId();
 
         if (id == R.id.nav_settings) {
-            //TODO: Implement
         } else if (id == R.id.nav_logout) { //Logout and return to LoginActivity
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
