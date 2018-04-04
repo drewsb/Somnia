@@ -43,7 +43,6 @@ public class AlarmEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         initialize();
-
         setContentView(R.layout.activity_alarm_event);
 
         eventDB = new EventDatabase();

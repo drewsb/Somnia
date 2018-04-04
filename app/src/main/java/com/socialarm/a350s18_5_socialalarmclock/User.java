@@ -27,6 +27,8 @@ public class User implements Serializable {
     private String last_name;
     private List<String> friend_ids;
 
+    public User() {}
+
 
     public User(Bundle b){
         this.id = b.getString("idFacebook");

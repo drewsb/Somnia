@@ -32,7 +32,6 @@ public final class EventDatabase {
     {
         void callback(List<LeaderboardEntry> events);
     }
-
     /**
      * Get all events since beginning
      *
@@ -154,8 +153,7 @@ public final class EventDatabase {
      *
      * (to use, use lambda such as (events) -> {Log.v("...", events.toString())} and pass in to function
      */
-    public static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda)
-    {
+    public static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda) {
         // TODO: Refactor this slow code
         getAllEvents(events ->
         {
@@ -164,16 +162,14 @@ public final class EventDatabase {
             //events filtered by last week, month, year
             List<Event> filteredEvents = new ArrayList<Event>();
 
-            for(Event event : events)
-            {
+            for (Event event : events) {
                 //convert to a date
                 Date date = new Date(event.getTimestamp());
 
                 //subtract to find if in week, month or year
                 long difference_days = 7;
 
-                switch (difference)
-                {
+                switch (difference) {
                     case WEEK:
                         difference_days = 7;
                         break;
@@ -191,7 +187,7 @@ public final class EventDatabase {
                 Date lastDate = new Date(calender.getTime().getTime() - getInMilliSeconds(difference_days));
 
                 //check if event was greater than last week, month, year
-                if(date.after(lastDate) && isCorrectUser(event, user_id)) {
+                if (date.after(lastDate) && isCorrectUser(event, user_id)) {
                     filteredEvents.add(event);
                 }
             }
@@ -201,37 +197,6 @@ public final class EventDatabase {
         });
     }
 
-    interface FriendsLambda
-    {
-        void callback(List<User> friends);
-    }
-
-    /**
-     *  Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
-     */
-    public static void getFriends(User user, final FriendsLambda friendsLambda)
-    {
-        // TODO: refactor this slow code
-        db.collection("users").get()
-                .addOnSuccessListener(documentSnapshots -> {
-                    if (!documentSnapshots.isEmpty()) {
-                        List<User> friends = new ArrayList<User>();
-                        for(DocumentSnapshot ds : documentSnapshots) {
-                            User friend = ds.toObject(User.class);
-
-                            if (user != null && user.getFriend_ids() != null &&user.getFriend_ids().contains(friend.getId())) {
-                                friends.add(friend);
-                            } else {
-                                CharSequence text = "You do not have a friends list";
-                                Toast.makeText(getApplicationContext(),text, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        //callback
-                        friendsLambda.callback(friends);
-                    }
-                })
-                .addOnFailureListener(e -> Log.d("Friend", "Error getting friends"));
-    }
 
     /**
      * Add event to event collection

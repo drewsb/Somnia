@@ -2,12 +2,18 @@ package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by drewboyette on 3/13/18.
@@ -21,6 +27,17 @@ public class UserDatabase {
     public static final FirebaseFirestore db = DatabaseSingleton.getInstance();
 
     private static final String TAG = "UserDatabase";
+
+    interface FriendsLambda
+    {
+        void callback(List<User> friends);
+    }
+
+
+    interface UserLambda
+    {
+        public void callback(User user);
+    }
 
     public static void addNewUser(final User user){
         final DocumentReference docRef = db.collection("users").document(user.getId());
@@ -40,17 +57,12 @@ public class UserDatabase {
     }
 
 
-    interface UserLambda
-    {
-        public void callback(User user);
-    }
 
     /**
      *  Gets all users and only returns the one that matches someone with more exp w/ db check it out
      */
     public static void getUser(String user_id, final UserLambda userLambda)
     {
-        // TODO: refactor this bad code
         db.collection("users").document(user_id).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -61,6 +73,33 @@ public class UserDatabase {
                     }
                 })
                 .addOnFailureListener(e -> Log.d("User", "Error getting user"));
+    }
+
+    /**
+     *  Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
+     */
+    public static void getFriends(User user, final FriendsLambda friendsLambda)
+    {
+        // TODO: refactor this slow code
+        db.collection("users").get()
+                .addOnSuccessListener(documentSnapshots -> {
+                    if (!documentSnapshots.isEmpty()) {
+                        List<User> friends = new ArrayList<User>();
+                        for(DocumentSnapshot ds : documentSnapshots) {
+                            User friend = ds.toObject(User.class);
+
+                            if (user != null && user.getFriend_ids() != null &&user.getFriend_ids().contains(friend.getId())) {
+                                friends.add(friend);
+                            } else {
+                                CharSequence text = "You do not have a friends list";
+                                Toast.makeText(getApplicationContext(),text, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        //callback
+                        friendsLambda.callback(friends);
+                    }
+                })
+                .addOnFailureListener(e -> Log.d("Friend", "Error getting friends"));
     }
 
     public static void addUser(User user){

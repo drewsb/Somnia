@@ -25,7 +25,6 @@ public class AlarmEditActivity extends AppCompatActivity {
 
     private static final String TAG = "AlarmActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +70,6 @@ public class AlarmEditActivity extends AppCompatActivity {
         String user_id = prefs.getString("id", null);
         Alarm alarm = new Alarm(user_id, picker.getCurrentMinute(), picker.getCurrentHour(),
                 dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue());
-        Log.d(TAG, user_id);
         alarmDB.addAlarm(alarm);
         SeekBar volume = findViewById(R.id.volume_slider);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),

@@ -55,7 +55,7 @@ public class FriendsFragment extends Fragment {
         User user = (User) extras.getSerializable("user");
 
         // fetch friends
-        EventDatabase.getFriends(user, friends -> {
+        UserDatabase.getFriends(user, friends -> {
                 // specify an adapter (see also next example)
                 mAdapter = new FriendRowAdapter(friends);
                 mRecyclerView.setAdapter(mAdapter);
