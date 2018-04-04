@@ -42,14 +42,20 @@ public class StatisticsActivity extends AppCompatActivity {
         Intent i = getIntent();
         Bundle extras = i.getExtras();
 
+        //set the user
         user = (User) i.getSerializableExtra("user");
 
+        //draw information on the screen
         DrawUserInfo();
-
         DrawNumberStats();
-
         DrawGraphs(WEEK);
+        SetupSpinner();
+    }
 
+    /**
+     * Setups the spinner
+     */
+    private void SetupSpinner() {
         Spinner notifications = (Spinner)findViewById(R.id.notifcationDropdown);
 
         notifications.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -87,6 +93,9 @@ public class StatisticsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Draw the user profile pic
+     */
     private void DrawUserInfo()
     {
         try {
@@ -108,7 +117,14 @@ public class StatisticsActivity extends AppCompatActivity {
         nameView.setText(name);
     }
 
-    //appends one to value if key exists and starts with 1 if not
+    /**
+     * appends one to value if key exists and starts with 1 if not (Used for map)
+     * @param map
+     * @param key
+     * @param default_value
+     * @param <A>
+     * @param <B>
+     */
     private <A, B> void IncrementMapDefault(Map<A, B> map, A key, B default_value)
     {
         //compute put entries with same timestamp in map
@@ -119,6 +135,9 @@ public class StatisticsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Calculate statistics and updates text conntaining average
+     */
     private void DrawNumberStats()
     {
         //set number statistics
@@ -179,6 +198,87 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Draws a graph provided events, the event to find and how much data needs to be filtered
+     * @param graph
+     * @param events
+     * @param eventToFind
+     * @param graphDrawState
+     */
+    private void UpdateGraph(GraphView graph, List<Event> events, String eventToFind, final EventDatabase.TimeDifference graphDrawState) {
+        //edit graphs
+        graph.removeAllSeries();
+
+        //set titles
+        graph.setTitle("Overslept");
+        graph.getGridLabelRenderer().setHorizontalAxisTitle("Days");
+        graph.getGridLabelRenderer().setVerticalAxisTitle("Times overslept");
+
+        // activate horizontal scrolling
+        graph.getViewport().setScrollable(true);
+        graph.getGridLabelRenderer().setPadding(100);
+
+        //populate data points
+        HashMap<Long, Long> oversleptMap = new HashMap<Long, Long>();
+        for(Event event : events) {
+            //go through and check type and populate
+            if(event.getAction().equals(eventToFind))
+            {
+                //round to nearest day
+                Date date = new Date(event.getTimestamp());
+                date.setHours(0);
+                date.setMinutes(0);
+                date.setSeconds(0);
+                long time = date.getTime();
+                IncrementMapDefault(oversleptMap, time, 1L);
+            }
+        }
+
+        //convert to array
+        List<DataPoint> oversleptDataPoints = new ArrayList<DataPoint>();
+        Double max = 0.0;
+        for(Map.Entry<Long, Long> entry : oversleptMap.entrySet())
+        {
+            oversleptDataPoints.add(new DataPoint(entry.getKey(), entry.getValue()));
+            if(entry.getValue() > max)
+            {
+                max = entry.getValue().doubleValue();
+            }
+        }
+
+        LineGraphSeries<DataPoint> oversleptSeries = new LineGraphSeries<DataPoint>(oversleptDataPoints.toArray(new DataPoint[oversleptDataPoints.size()]));
+        oversleptSeries.setDrawDataPoints(true);
+        oversleptSeries.setDataPointsRadius(10);
+        oversleptSeries.setThickness(8);
+
+        //manually set range from 0 to max
+        graph.getViewport().setMinY(0.0);
+        graph.getViewport().setMaxY(max);
+
+        graph.getViewport().setYAxisBoundsManual(true);
+
+        graph.addSeries(oversleptSeries);
+
+        // set date label formatter
+        switch (graphDrawState)
+        {
+            case WEEK:
+                graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("EEE")));
+                break;
+            case MONTH:
+                graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("dd")));
+                break;
+            case YEAR:
+                graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("yyyy")));
+                graph.getGridLabelRenderer().setNumHorizontalLabels(2);
+                break;
+        }
+    }
+
+    /**
+     * Draws the graphs by making a request to db
+     * @param graphDrawState
+     */
     private void DrawGraphs(final EventDatabase.TimeDifference graphDrawState)
     {
         String user_id = user.getId(); //get user id
@@ -194,65 +294,7 @@ public class StatisticsActivity extends AppCompatActivity {
             oversleptGraph.getGridLabelRenderer().setHorizontalAxisTitle("Days");
             oversleptGraph.getGridLabelRenderer().setVerticalAxisTitle("Times overslept");
 
-            // activate horizontal scrolling
-            oversleptGraph.getViewport().setScrollable(true);
-            oversleptGraph.getGridLabelRenderer().setPadding(100);
-
-            //populate data points
-            HashMap<Long, Long> oversleptMap = new HashMap<Long, Long>();
-            for(Event event : events) {
-                //go through and check type and populate
-                if(event.getAction().equals("overslept"))
-                {
-                    //round to nearest day
-                    Date date = new Date(event.getTimestamp());
-                    date.setHours(0);
-                    date.setMinutes(0);
-                    date.setSeconds(0);
-                    long time = date.getTime();
-                    IncrementMapDefault(oversleptMap, time, 1L);
-                }
-            }
-
-            //convert to array
-            List<DataPoint> oversleptDataPoints = new ArrayList<DataPoint>();
-            Double max = 0.0;
-            for(Map.Entry<Long, Long> entry : oversleptMap.entrySet())
-            {
-                oversleptDataPoints.add(new DataPoint(entry.getKey(), entry.getValue()));
-                if(entry.getValue() > max)
-                {
-                    max = entry.getValue().doubleValue();
-                }
-            }
-
-            LineGraphSeries<DataPoint> oversleptSeries = new LineGraphSeries<DataPoint>(oversleptDataPoints.toArray(new DataPoint[oversleptDataPoints.size()]));
-            oversleptSeries.setDrawDataPoints(true);
-            oversleptSeries.setDataPointsRadius(10);
-            oversleptSeries.setThickness(8);
-
-            //manually set range from 0 to max
-            oversleptGraph.getViewport().setMinY(0.0);
-            oversleptGraph.getViewport().setMaxY(max);
-
-            oversleptGraph.getViewport().setYAxisBoundsManual(true);
-
-            oversleptGraph.addSeries(oversleptSeries);
-
-            // set date label formatter
-            switch (graphDrawState)
-            {
-                case WEEK:
-                    oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("EEE")));
-                    break;
-                case MONTH:
-                    oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("dd")));
-                    break;
-                case YEAR:
-                    oversleptGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("yyyy")));
-                    oversleptGraph.getGridLabelRenderer().setNumHorizontalLabels(2);
-                    break;
-            }
+            UpdateGraph(oversleptGraph, events, "overslept", graphDrawState);
 
             //------------------------------------
 
@@ -263,69 +305,15 @@ public class StatisticsActivity extends AppCompatActivity {
             snoozeGraph.setTitle("Snoozes");
             snoozeGraph.getGridLabelRenderer().setHorizontalAxisTitle("Days");
             snoozeGraph.getGridLabelRenderer().setVerticalAxisTitle("Times snoozed");
-            snoozeGraph.getGridLabelRenderer().setPadding(100);
 
-            // activate horizontal scrolling
-            snoozeGraph.getViewport().setScrollable(true);
-
-            //populate data points
-            HashMap<Long, Long> snoozeMap = new HashMap<Long, Long>();
-            for(Event event : events) {
-                //go through and check type and populate
-                if(event.getAction().equals("snooze"))
-                {
-                    //round to nearest day
-                    Date date = new Date(event.getTimestamp());
-                    date.setHours(0);
-                    date.setMinutes(0);
-                    date.setSeconds(0);
-                    long time = date.getTime();
-                    IncrementMapDefault(oversleptMap, time, 1L);
-                }
-            }
-
-            //convert to array
-            List<DataPoint> snoozeDataPoints = new ArrayList<DataPoint>();
-            max = 0.0;
-            for(Map.Entry<Long, Long> entry : snoozeMap.entrySet())
-            {
-                snoozeDataPoints.add(new DataPoint(entry.getKey(), entry.getValue()));
-                if(entry.getValue() > max)
-                {
-                    max = entry.getValue().doubleValue();
-                }
-            }
-
-            LineGraphSeries<DataPoint> snoozeSeries = new LineGraphSeries<DataPoint>(snoozeDataPoints.toArray(new DataPoint[snoozeDataPoints.size()]));
-            snoozeSeries.setDrawDataPoints(true);
-            snoozeSeries.setDataPointsRadius(10);
-            snoozeSeries.setThickness(8);
-
-            //manually set range from 0 to max
-            snoozeGraph.getViewport().setMinY(0.0);
-            snoozeGraph.getViewport().setMaxY(max);
-
-            snoozeGraph.getViewport().setYAxisBoundsManual(true);
-
-            snoozeGraph.addSeries(snoozeSeries);
-
-            // set date label formatter
-            switch (graphDrawState)
-            {
-                case WEEK:
-                    snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("EEE")));
-                    break;
-                case MONTH:
-                    snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("dd")));
-                    break;
-                case YEAR:
-                    snoozeGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, new java.text.SimpleDateFormat("yyyy")));
-                    snoozeGraph.getGridLabelRenderer().setNumHorizontalLabels(2);
-                    break;
-            }
+            UpdateGraph(snoozeGraph, events, "snooze", graphDrawState);
         });
     }
 
+    /**
+     * Radio button for week, month, year - selects a mode to draw
+     * @param view
+     */
     public void onRadioOverSleptGraph(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
