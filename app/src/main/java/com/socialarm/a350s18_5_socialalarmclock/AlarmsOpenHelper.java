@@ -88,7 +88,6 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
     public long addAlarm(int hour, int minute, int active_alarms, int snooze_interval,
                          int snooze_count, int volume) {
         SQLiteDatabase db_write = getWritableDatabase();
-        this.onCreate(db_write);
         String query = "INSERT INTO " + LocalDBContract.Alarm.TABLE_NAME + " " +
                        "(" + LocalDBContract.Alarm.COLUMN_NAME_HOUR + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_MINUTE + ", " +

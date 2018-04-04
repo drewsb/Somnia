@@ -78,4 +78,32 @@ public class Alarm {
         this.snooze_interval = snooze_interval;
         this.volume = volume;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Alarm)) return false;
+
+        Alarm alarm = (Alarm) o;
+
+        if (getMin() != alarm.getMin()) return false;
+        if (getHour() != alarm.getHour()) return false;
+        if (getSnooze_count() != alarm.getSnooze_count()) return false;
+        if (getSnooze_interval() != alarm.getSnooze_interval()) return false;
+        if (getVolume() != alarm.getVolume()) return false;
+        if (!getUser_id().equals(alarm.getUser_id())) return false;
+        return getDay_of_week().equals(alarm.getDay_of_week());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getUser_id().hashCode();
+        result = 31 * result + getMin();
+        result = 31 * result + getHour();
+        result = 31 * result + getDay_of_week().hashCode();
+        result = 31 * result + getSnooze_count();
+        result = 31 * result + getSnooze_interval();
+        result = 31 * result + getVolume();
+        return result;
+    }
 }

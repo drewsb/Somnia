@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ public class MyAlarms extends Fragment {
     static final int CREATE_ALARM_REQUEST = 1;
 
     View v;
+
+    public final String TAG = "MyAlarms";
 
     AlarmsOpenHelper dbHelper;
     public static Context contextOfApplication;
@@ -43,7 +46,6 @@ public class MyAlarms extends Fragment {
 
         dbHelper = new AlarmsOpenHelper(getActivity());
         contextOfApplication = getActivity();
-        //dbHelper.onCreate(dbHelper.getWritableDatabase());
     }
 
     @Override
@@ -53,11 +55,18 @@ public class MyAlarms extends Fragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        updateValues();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.d(TAG, "CREATED VIEW");
         v = inflater.inflate(R.layout.fragment_my_alarms, container, false);
-        UpdateValues();
+        updateValues();
         FloatingActionButton b = v.findViewById(R.id.add_alarm_button);
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -70,11 +79,13 @@ public class MyAlarms extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        UpdateValues();
+        Log.d(TAG, "ACTIVITY RESULT");
+        updateValues();
     }
 
-    private void UpdateValues() {
+    private void updateValues() {
         Cursor c = dbHelper.getAlarms();
+        Log.d(TAG, "" + c.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
         SingleAlarmAdapter adapter = new SingleAlarmAdapter(getContext(), c,0);
         ListView lv = v.findViewById(R.id.my_alarm_list);
         lv.setAdapter(adapter);

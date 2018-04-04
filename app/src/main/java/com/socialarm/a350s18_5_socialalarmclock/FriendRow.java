@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ public class FriendRow extends LinearLayout {
 
     private LinearLayout myView;
 
+    public final String TAG = "FriendRow";
     /**
      * Base constructor for a FriendRow
      * @param context the global app context
@@ -88,7 +90,7 @@ public class FriendRow extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(MyAlarms.getContextOfApplication());
-                long row = dbHelper.addAlarm(alarm.getHour(), alarm.getMin(), alarm.getInt_Day_of_week(), alarm.getSnooze_count(),
+                dbHelper.addAlarm(alarm.getHour(), alarm.getMin(), alarm.getInt_Day_of_week(), alarm.getSnooze_count(),
                         alarm.getSnooze_interval(), alarm.getVolume());
                 AlarmDatabase.addAlarm(newAlarm);
                 String text = "You have successfully joined " + user.getFirst_name() + "'s alarm!";
