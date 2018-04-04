@@ -23,7 +23,6 @@ public class TutorialActivity extends AppIntro2 {
 
         // Note here that we DO NOT use setContentView();
 
-        //adding the three slides for introduction app you can ad as many you needed
         addSlide(AppIntroFragment.newInstance("Alarms", "Setup your alarms", R.drawable.alarms_tutorial, R.color.lightBlue));
         addSlide(AppIntroFragment.newInstance("Friends", "Check your friends' alarms", R.drawable.friend_tutorial, R.color.lightBlue));
         addSlide(AppIntroFragment.newInstance("Leaderboard", "See who is the worst snoozer", R.drawable.leaderboard_tutorial, R.color.lightBlue));
