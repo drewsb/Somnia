@@ -53,7 +53,7 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     /**
-     * Setups the spinner
+     * Setup the spinner
      */
     private void SetupSpinner() {
         Spinner notifications = (Spinner)findViewById(R.id.notifcationDropdown);
@@ -181,12 +181,12 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     /**
-     * appends one to value if key exists and starts with 1 if not (Used for map)
-     * @param map
-     * @param key
-     * @param default_value
-     * @param <A>
-     * @param <B>
+     * Appends one to value if key exists and starts with 1 if not into a map
+     * @param map the map
+     * @param key key to search for
+     * @param default_value default key value
+     * @param <A> key
+     * @param <B> value
      */
     private <A, B> void IncrementMapDefault(Map<A, B> map, A key, B default_value)
     {
@@ -200,9 +200,9 @@ public class StatisticsActivity extends AppCompatActivity {
 
     /**
      * Obtains a mapping from events to date
-     * @param events
-     * @param eventToFind
-     * @return
+     * @param events list of events to parse through
+     * @param eventToFind filter by what event
+     * @return A map mapping the event to date
      */
     private HashMap<Long, Long> GetMapOfCertainEvent(List<Event> events, String eventToFind) {
         //populate data points
@@ -225,10 +225,10 @@ public class StatisticsActivity extends AppCompatActivity {
 
     /**
      * Draws a graph provided events, the event to find and how much data needs to be filtered
-     * @param graph
-     * @param events
-     * @param eventToFind
-     * @param graphDrawState
+     * @param graph the graph object
+     * @param events list of events
+     * @param eventToFind filter by what event
+     * @param graphDrawState filter graph by week, month, year
      */
     private void UpdateGraph(GraphView graph, List<Event> events, String eventToFind, final EventDatabase.TimeDifference graphDrawState) {
         //edit graphs
@@ -288,7 +288,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
     /**
      * Draws the graphs by making a request to db
-     * @param graphDrawState
+     * @param graphDrawState filter graph by week, month, year
      */
     private void DrawGraphs(final EventDatabase.TimeDifference graphDrawState)
     {
@@ -323,7 +323,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
     /**
      * Radio button for week, month, year - selects a mode to draw
-     * @param view
+     * @param view Not used
      */
     public void onRadioOverSleptGraph(View view) {
         // Is the button now checked?

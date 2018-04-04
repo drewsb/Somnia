@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         });
     }
 
-    private void SetupScreen() {
+    private void setupScreen() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SetupScreen();
+        setupScreen();
     }
 
     /**
