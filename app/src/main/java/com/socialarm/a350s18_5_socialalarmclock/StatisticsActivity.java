@@ -118,24 +118,6 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     /**
-     * appends one to value if key exists and starts with 1 if not (Used for map)
-     * @param map
-     * @param key
-     * @param default_value
-     * @param <A>
-     * @param <B>
-     */
-    private <A, B> void IncrementMapDefault(Map<A, B> map, A key, B default_value)
-    {
-        //compute put entries with same timestamp in map
-        if(map.containsKey(key)) {
-            map.put(key, map.get(key));
-        } else {
-            map.put(key, default_value);
-        }
-    }
-
-    /**
      * Calculate statistics and updates text conntaining average
      */
     private void DrawNumberStats()
@@ -199,6 +181,49 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     /**
+     * appends one to value if key exists and starts with 1 if not (Used for map)
+     * @param map
+     * @param key
+     * @param default_value
+     * @param <A>
+     * @param <B>
+     */
+    private <A, B> void IncrementMapDefault(Map<A, B> map, A key, B default_value)
+    {
+        //compute put entries with same timestamp in map
+        if(map.containsKey(key)) {
+            map.put(key, map.get(key));
+        } else {
+            map.put(key, default_value);
+        }
+    }
+
+    /**
+     * Obtains a mapping from events to date
+     * @param events
+     * @param eventToFind
+     * @return
+     */
+    private HashMap<Long, Long> GetMapOfCertainEvent(List<Event> events, String eventToFind) {
+        //populate data points
+        HashMap<Long, Long> map = new HashMap<Long, Long>();
+        for(Event event : events) {
+            //go through and check type and populate
+            if(event.getAction().equals(eventToFind))
+            {
+                //round to nearest day
+                Date date = new Date(event.getTimestamp());
+                date.setHours(0);
+                date.setMinutes(0);
+                date.setSeconds(0);
+                long time = date.getTime();
+                IncrementMapDefault(map, time, 1L);
+            }
+        }
+        return map;
+    }
+
+    /**
      * Draws a graph provided events, the event to find and how much data needs to be filtered
      * @param graph
      * @param events
@@ -218,26 +243,12 @@ public class StatisticsActivity extends AppCompatActivity {
         graph.getViewport().setScrollable(true);
         graph.getGridLabelRenderer().setPadding(100);
 
-        //populate data points
-        HashMap<Long, Long> oversleptMap = new HashMap<Long, Long>();
-        for(Event event : events) {
-            //go through and check type and populate
-            if(event.getAction().equals(eventToFind))
-            {
-                //round to nearest day
-                Date date = new Date(event.getTimestamp());
-                date.setHours(0);
-                date.setMinutes(0);
-                date.setSeconds(0);
-                long time = date.getTime();
-                IncrementMapDefault(oversleptMap, time, 1L);
-            }
-        }
+        Map<Long, Long> eventsDateMap = GetMapOfCertainEvent(events, eventToFind);
 
         //convert to array
         List<DataPoint> oversleptDataPoints = new ArrayList<DataPoint>();
         Double max = 0.0;
-        for(Map.Entry<Long, Long> entry : oversleptMap.entrySet())
+        for(Map.Entry<Long, Long> entry : eventsDateMap.entrySet())
         {
             oversleptDataPoints.add(new DataPoint(entry.getKey(), entry.getValue()));
             if(entry.getValue() > max)

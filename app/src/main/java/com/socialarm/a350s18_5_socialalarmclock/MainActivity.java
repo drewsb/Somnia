@@ -47,65 +47,23 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         //you can leave it empty
     }
 
-    public boolean isFirstStart;
-
-    //check if user opened tutorial
-    private void CreateTutorial() {
-
-        //  Intro App Initialize SharedPreferences
-        SharedPreferences getSharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
-
-        //  Create a new boolean and preference and set it to true
-        isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
-
-        //  Check either activity or app is open very first time or not and do action
-        if (isFirstStart) {
-            //  Launch application introduction screen
-            Intent i = new Intent(MainActivity.this, TutorialActivity.class);
-            startActivity(i);
-            SharedPreferences.Editor e = getSharedPreferences.edit();
-            e.putBoolean("firstStart", false);
-            e.apply();
-        }
+    private View setupNav() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(this);
+        return headerView;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+    private void setupDrawerLayout(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        i = getIntent();
-        extras = i.getExtras();
-
-        //Retrieve user's name and email
-        String name = extras.getString("first_name") + " " + extras.getString("last_name");
-        String email = extras.getString("email");
-
-        TextView nameView = headerView.findViewById(R.id.nameView);
-        TextView emailView = headerView.findViewById(R.id.emailView);
-
-        //Set profile pic image
-        new DownloadImageTask((ImageView) headerView.findViewById(R.id.profileView))
-                .execute(extras.getString("profile_pic"));
-
-        nameView.setText(name);
-        emailView.setText(email);
-
-        CreateTutorial();
+    private void setupPager() {
         EventDatabase.getUser(extras.getString("idFacebook"), user -> {
 
             List<Fragment> fragments = new ArrayList<Fragment>();
@@ -126,6 +84,35 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
         });
+    }
+
+    private void SetupScreen() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        i = getIntent();
+        extras = i.getExtras();
+
+        //Retrieve user's name and email
+        String name = extras.getString("first_name") + " " + extras.getString("last_name");
+        String email = extras.getString("email");
+
+        setupDrawerLayout(toolbar);
+        View headerView = setupNav();
+
+        TextView nameView = headerView.findViewById(R.id.nameView);
+        TextView emailView = headerView.findViewById(R.id.emailView);
+
+        //Set profile pic image
+        new DownloadImageTask((ImageView) headerView.findViewById(R.id.profileView))
+                .execute(extras.getString("profile_pic"));
+
+        nameView.setText(name);
+        emailView.setText(email);
+
+        CreateTutorial();
+
+        setupPager();
 
         //add functionality to find friends button
         Button search_friend_button = (Button) findViewById(R.id.search_friend_button);
@@ -138,8 +125,16 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         });
     }
 
-    /*
-    Control navigation drawer display
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        SetupScreen();
+    }
+
+    /**
+     *  Control navigation drawer display
      */
     @Override
     public void onBackPressed() {
@@ -151,6 +146,11 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         }
     }
 
+    /**
+     * Navigation bar selection function
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -180,31 +180,27 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         return true;
     }
 
-    /*
-        DownloadImageTask is a private class used to convert URL's into a Bitmap asynchronously
+    /**
+     * check if user opened tutorial
      */
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
+    private void CreateTutorial() {
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
+        //  Intro App Initialize SharedPreferences
+        SharedPreferences getSharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
 
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
 
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
+        //  Check either activity or app is open very first time or not and do action
+        if (isFirstStart) {
+            //  Launch application introduction screen
+            Intent i = new Intent(MainActivity.this, TutorialActivity.class);
+            startActivity(i);
+            SharedPreferences.Editor e = getSharedPreferences.edit();
+            e.putBoolean("firstStart", false);
+            e.apply();
         }
     }
+
 }

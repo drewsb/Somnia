@@ -8,6 +8,9 @@ import android.widget.ImageView;
 
 import java.io.InputStream;
 
+/**
+ *  DownloadImageTask is a private class used to convert URL's into a Bitmap asynchronously
+ */
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
 
