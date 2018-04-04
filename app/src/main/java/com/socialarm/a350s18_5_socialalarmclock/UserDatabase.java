@@ -137,7 +137,6 @@ public class UserDatabase {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (DocumentSnapshot doc : task.getResult()) {
-                                AlarmDatabase.getAlarm(user_id, Integer.parseInt(doc.getId()), alarm -> {});
                                 Log.d(TAG, doc.getId() + " => " + doc.getData());
                             }
                         } else {

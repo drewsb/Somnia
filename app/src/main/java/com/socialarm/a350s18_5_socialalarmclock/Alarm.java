@@ -79,6 +79,10 @@ public class Alarm {
         this.volume = volume;
     }
 
+    /**
+     * @param o
+     * @return Return true if the two Alarm objects have the same fields, otherwise false.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,6 +99,11 @@ public class Alarm {
         return getDay_of_week().equals(alarm.getDay_of_week());
     }
 
+    /**
+     * Custom implemention of the Alarm object's hashcode. Helps distinguish different alarms, and
+     * alarms with the same values will have the same hashcode.
+     * @return
+     */
     @Override
     public int hashCode() {
         int result = getUser_id().hashCode();

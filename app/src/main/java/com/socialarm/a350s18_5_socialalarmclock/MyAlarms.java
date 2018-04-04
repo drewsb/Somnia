@@ -74,11 +74,7 @@ public class MyAlarms extends Fragment {
     }
 
     /**
-     * Set the view and the FAB.
-     * @param inflater The layout inflator to use
-     * @param container The parent of the new view
-     * @param savedInstanceState Previous instance state.
-     * @return The new view
+     * Once the view has resumed, update table values
      */
     @Override
     public void onResume(){
@@ -86,6 +82,13 @@ public class MyAlarms extends Fragment {
         updateValues();
     }
 
+    /**
+     * Set the view and the FAB.
+     * @param inflater The layout inflator to use
+     * @param container The parent of the new view
+     * @param savedInstanceState Previous instance state.
+     * @return The new view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,7 +122,7 @@ public class MyAlarms extends Fragment {
     /**
      * Recheck the local db for new alarms.
      */
-    private void UpdateValues() {
+    private void updateValues() {
         Cursor c = dbHelper.getAlarms();
         Log.d(TAG, "" + c.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
         SingleAlarmAdapter adapter = new SingleAlarmAdapter(getContext(), c,0);

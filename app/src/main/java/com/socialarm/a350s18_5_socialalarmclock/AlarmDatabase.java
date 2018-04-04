@@ -25,7 +25,7 @@ public class AlarmDatabase {
 
     private AlarmDatabase() {}
 
-    interface AlarmLambda
+    interface AlarmListLambda
     {
         void callback(List<Alarm> alarms);
     }
@@ -91,9 +91,9 @@ public class AlarmDatabase {
     /**
      * Get all alarms since beginning
      *
-     * @param alarmLambda the function to run once the call is complete
+     * @param alarmListLambda the function to run once the call is complete
      */
-    static void getAllAlarms(final AlarmLambda alarmLambda) {
+    static void getAllAlarms(final AlarmListLambda alarmListLambda) {
         DatabaseSingleton.getInstance().collection("alarms").get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (!documentSnapshots.isEmpty()) {
@@ -101,7 +101,7 @@ public class AlarmDatabase {
                         List<Alarm> alarms = documentSnapshots.toObjects(Alarm.class);
 
                         //callback
-                        alarmLambda.callback(alarms);
+                        alarmListLambda.callback(alarms);
                     }
                 })
                 .addOnFailureListener(e -> Log.d("Alarm", "Error getting alarms"));
