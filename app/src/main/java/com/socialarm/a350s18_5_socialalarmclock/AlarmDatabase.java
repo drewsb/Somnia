@@ -8,6 +8,9 @@ import java.util.HashMap;
  * Created by drewboyette on 3/27/18.
  */
 
+/**
+ * Defines various functions that perform queries on the alarm database
+ */
 public class AlarmDatabase {
 
     public static final FirebaseFirestore db = DatabaseSingleton.getInstance();
@@ -20,7 +23,7 @@ public class AlarmDatabase {
      with the option "On" set to true
      * @param alarm
      */
-    public static void addAlarm(final Alarm alarm) {
+    public void addAlarm(final Alarm alarm) {
         String userID = alarm.getUser_id();
         // Add a new document with a generated ID
         String alarmID = "" + System.identityHashCode(alarm);
@@ -34,7 +37,7 @@ public class AlarmDatabase {
      * Delete alarm from the alarm collection, and remove alarm id from user alarm collection
      * @param alarm
      */
-    public static void deleteAlarm(final Alarm alarm) {
+    public void deleteAlarm(final Alarm alarm) {
         String userID = alarm.getUser_id();
         String alarmId = "" + System.identityHashCode(alarm);
         db.collection("alarms").document(userID + alarmId).delete();
@@ -46,7 +49,7 @@ public class AlarmDatabase {
      * @param alarm
      * @param OnBool
      */
-    public static void enableAlarm(final Alarm alarm, Boolean OnBool) {
+    public void enableAlarm(final Alarm alarm, Boolean OnBool) {
         String userID = alarm.getUser_id();
         String alarmId = "" + System.identityHashCode(alarm);
         HashMap<String, Object> data = new HashMap<String, Object>();

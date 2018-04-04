@@ -18,8 +18,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public final class EventDatabase {
 
-    // TODO: This is a memory leak, please fix (@Drew Boyette)
-    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final FirebaseFirestore db = DatabaseSingleton.getInstance();
 
     //private constructor
     public EventDatabase() {}
@@ -55,7 +54,7 @@ public final class EventDatabase {
     }
 
     // TODO: Combine this with other get events since?
-    static void getLeaderboardEventsSince(List<String> friends_list,
+    public static void getLeaderboardEventsSince(List<String> friends_list,
                                                  Duration duration,
                                                  SleepStatType type,
                                                  SortDirection direction,
@@ -65,7 +64,7 @@ public final class EventDatabase {
         // TODO: This is literally slower than a dead sloth, we should query all events and sort them in single pass, will refactor
         for (String friend_id : friends_list) {
             getAllEvents(events -> {
-                getUser(friend_id, friend -> {
+                UserDatabase.getUser(friend_id, friend -> {
                     Calendar calendar = Calendar.getInstance();
 
                     //events filtered by last week, month, year
@@ -147,7 +146,7 @@ public final class EventDatabase {
     }
 
     private static long getDaysSinceEpoch() {
-        return System.currentTimeMillis() / 1000 / 60 / 60 / 24;
+        return System.currentTimeMillis() / 86400000;
     }
 
     /**
@@ -155,7 +154,7 @@ public final class EventDatabase {
      *
      * (to use, use lambda such as (events) -> {Log.v("...", events.toString())} and pass in to function
      */
-    static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda)
+    public static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda)
     {
         // TODO: Refactor this slow code
         getAllEvents(events ->
@@ -210,7 +209,7 @@ public final class EventDatabase {
     /**
      *  Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
      */
-    static void getFriends(User user, final FriendsLambda friendsLambda)
+    public static void getFriends(User user, final FriendsLambda friendsLambda)
     {
         // TODO: refactor this slow code
         db.collection("users").get()
@@ -234,35 +233,12 @@ public final class EventDatabase {
                 .addOnFailureListener(e -> Log.d("Friend", "Error getting friends"));
     }
 
-    interface UserLambda
-    {
-        public void callback(User user);
-    }
-
-    /**
-     *  gets all users and only returns the one that matches someone with more exp w/ db check it out
-     */
-    static void getUser(String user_id, final UserLambda userLambda)
-    {
-        // TODO: refactor this bad code
-        db.collection("users").document(user_id).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        User user = documentSnapshot.toObject(User.class);
-
-                        //callback
-                        userLambda.callback(user);
-                    }
-                })
-                .addOnFailureListener(e -> Log.d("User", "Error getting user"));
-    }
-
     /**
      * Add event to event collection
      * ID of event is "user_id + timestamp" of the event
      * @param event
      */
-    public static void addEvent(final Event event) {
+    public void addEvent(final Event event) {
         String userID = event.getUser_id();
         db.collection("events").document(userID + event.getTimestamp()).set(event);
     }

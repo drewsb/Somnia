@@ -1,5 +1,6 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
@@ -36,10 +37,11 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     private ViewPager viewPager;
     private Intent i;
     private Bundle extras;
+    private EventDatabase eventDB;
     private static final String TAG = "MainActivity";
 
     @Override
-    public void onFragmentInteraction(Uri uri){
+    public void onFragmentInteraction(Uri uri) {
         //you can leave it empty
     }
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        eventDB = new EventDatabase();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         nameView.setText(name);
         emailView.setText(email);
 
-        EventDatabase.getUser(extras.getString("idFacebook"), user -> {
+        UserDatabase.getUser(extras.getString("idFacebook"), user -> {
 
             List<Fragment> fragments = new ArrayList<Fragment>();
             fragments.add(MyAlarms.newInstance());
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
-            EventDatabase.getUser(extras.getString("idFacebook"), user -> {
+                UserDatabase.getUser(extras.getString("idFacebook"), user -> {
                 Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
 
                 //pass user data to statistics activity

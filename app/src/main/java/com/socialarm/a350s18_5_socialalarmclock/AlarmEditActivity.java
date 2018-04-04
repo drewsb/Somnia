@@ -1,9 +1,14 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
@@ -14,8 +19,12 @@ public class AlarmEditActivity extends AppCompatActivity {
 
     AlarmsOpenHelper dbHelper;
     private AlarmDatabase alarmDB;
+    private SharedPreferences prefs;
 
     private int days_of_week;
+
+    private static final String TAG = "AlarmActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +47,8 @@ public class AlarmEditActivity extends AppCompatActivity {
 
         dbHelper = new AlarmsOpenHelper(this);
         alarmDB = new AlarmDatabase();
+        Context applicationContext = LoginActivity.getContextOfApplication();
+        prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
     }
 
     @Override
@@ -57,8 +68,10 @@ public class AlarmEditActivity extends AppCompatActivity {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         NumberPicker interval = findViewById(R.id.interval_selector);
         NumberPicker count = findViewById(R.id.snooze_count);
-        Alarm alarm = new Alarm(User.getInstance().getId(), picker.getCurrentMinute(), picker.getCurrentHour(),
+        String user_id = prefs.getString("id", null);
+        Alarm alarm = new Alarm(user_id, picker.getCurrentMinute(), picker.getCurrentHour(),
                 dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue());
+        Log.d(TAG, user_id);
         alarmDB.addAlarm(alarm);
         SeekBar volume = findViewById(R.id.volume_slider);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),

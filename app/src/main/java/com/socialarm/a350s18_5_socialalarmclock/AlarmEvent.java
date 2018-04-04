@@ -4,10 +4,12 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +36,7 @@ public class AlarmEvent extends AppCompatActivity {
     private int volume;
 
     AlarmsOpenHelper dbHelper;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,10 @@ public class AlarmEvent extends AppCompatActivity {
         initialize();
 
         setContentView(R.layout.activity_alarm_event);
+
         eventDB = new EventDatabase();
+        Context applicationContext = LoginActivity.getContextOfApplication();
+        prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
 
         Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if (alarm == null) {
@@ -87,7 +93,7 @@ public class AlarmEvent extends AppCompatActivity {
         }
 
         // Create Event instance
-        String user_id = User.getInstance().getId();
+        String user_id = prefs.getString("id", null);
         String dayOfWeek = dbHelper.getDayOfWeek(days_of_week);
         Alarm alarm = new Alarm(user_id, minute, hour, dayOfWeek, snooze_count, snooze_interval);
         int alarmId = System.identityHashCode(alarm);
