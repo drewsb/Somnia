@@ -6,10 +6,13 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 
 /**
@@ -47,6 +50,9 @@ public class MyAlarms extends Fragment {
         super.onCreate(savedInstanceState);
 
         dbHelper = new AlarmsOpenHelper(getActivity());
+        //dbHelper.onCreate(dbHelper.getWritableDatabase());
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d("ID", "Refreshed token: " + refreshedToken);
     }
 
     /**
