@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
 
 public class FriendsFragment extends Fragment {
 
@@ -17,6 +20,8 @@ public class FriendsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    public final String TAG = "FriendsFragment";
 
     private User user;
 
@@ -54,6 +59,13 @@ public class FriendsFragment extends Fragment {
         mRecyclerView = myView.findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
+        myView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "PRESSED");
+            }
+        });
+
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -62,12 +74,16 @@ public class FriendsFragment extends Fragment {
         Bundle extras = getArguments();
         User user = (User) extras.getSerializable("user");
 
-        // fetch friends
+        // fetch friends and their most recent alarms
         UserDatabase.getFriends(user, friends -> {
                 // specify an adapter (see also next example)
-                mAdapter = new FriendRowAdapter(friends);
-                mRecyclerView.setAdapter(mAdapter);
-            });
+            ArrayList<Alarm> alarms = new ArrayList<Alarm>();
+            for(User f : friends) {
+                alarms.add(UserDatabase.getMostRecentAlarm(f));
+            }
+            mAdapter = new FriendRowAdapter(friends, alarms);
+            mRecyclerView.setAdapter(mAdapter);
+        });
 
         return myView;
     }

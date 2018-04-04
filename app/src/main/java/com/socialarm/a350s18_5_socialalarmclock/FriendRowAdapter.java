@@ -16,6 +16,7 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
      * A list of users to be displayed on the friends page (canonically the logged in user's friends list)
      */
     private List<User> users;
+    private List<Alarm> alarms;
 
     /**
      * Static inner view holder class
@@ -29,8 +30,9 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         }
     }
 
-    FriendRowAdapter(List<User> users) {
+    FriendRowAdapter(List<User> users, List<Alarm> alarms) {
         this.users = users;
+        this.alarms = alarms;
     }
 
     /**
@@ -63,7 +65,8 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.row.setName(users.get(position));
-        holder.row.setStatisticButton(users.get(position));
+        holder.row.setTime(alarms.get(position).getTime(), users.get(position));
+        holder.row.setJoinButton(users.get(position), alarms.get(position));
     }
 
     /**

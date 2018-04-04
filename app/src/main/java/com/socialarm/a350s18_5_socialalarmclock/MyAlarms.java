@@ -1,5 +1,6 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.database.Cursor;
@@ -18,6 +19,12 @@ public class MyAlarms extends Fragment {
     View v;
 
     AlarmsOpenHelper dbHelper;
+    public static Context contextOfApplication;
+
+    public static Context getContextOfApplication(){
+        return contextOfApplication;
+    }
+
 
     public static MyAlarms newInstance() {
         MyAlarms fragment = new MyAlarms();
@@ -35,6 +42,7 @@ public class MyAlarms extends Fragment {
         super.onCreate(savedInstanceState);
 
         dbHelper = new AlarmsOpenHelper(getActivity());
+        contextOfApplication = getActivity();
         //dbHelper.onCreate(dbHelper.getWritableDatabase());
     }
 

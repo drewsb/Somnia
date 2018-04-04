@@ -1,5 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -15,6 +17,11 @@ public class AlarmDatabase {
 
     private static final String TAG = "AlarmDatabase";
 
+    interface AlarmLambda
+    {
+        public void callback(Alarm alarm);
+    }
+
     private AlarmDatabase() {}
     /**
      * Add alarm to alarm collection, and add alarm id to user alarm collection
@@ -29,6 +36,20 @@ public class AlarmDatabase {
         HashMap<String, Object> data = new HashMap<String, Object>();
         data.put("On", true);
         DatabaseSingleton.getInstance().collection("users").document(userID).collection("alarms").document(alarmID).set(data);
+    }
+
+    public void getAlarm(final String user_id, final int alarm_id, final AlarmLambda alarmLambda) {
+        FirebaseFirestore db = DatabaseSingleton.getInstance();
+        db.collection("alarms").document(user_id + alarm_id).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Alarm alarm = documentSnapshot.toObject(Alarm.class);
+
+                        //callback
+                        alarmLambda.callback(alarm);
+                    }
+                })
+                .addOnFailureListener(e -> Log.d("User", "Error getting user"));
     }
 
     /**

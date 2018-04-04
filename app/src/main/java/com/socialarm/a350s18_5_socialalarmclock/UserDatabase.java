@@ -23,36 +23,35 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Database class used to push user data to the firebase database
  */
 public class UserDatabase {
-  
-    public static final FirebaseFirestore db = DatabaseSingleton.getInstance();
 
     private static final String TAG = "UserDatabase";
 
-    private UserDatabase(){}
+    private UserDatabase() {
+    }
 
-    interface FriendsLambda
-    {
+    interface FriendsLambda {
         void callback(List<User> friends);
     }
 
 
-    interface UserLambda
-    {
+    interface UserLambda {
         public void callback(User user);
     }
 
     /**
      * Check if the user is already in the Firebase database. If not, call addUser(user).
+     *
      * @param user
      */
-    public static void addNewUser(final User user){
+    public static void addNewUser(final User user) {
+        FirebaseFirestore db = DatabaseSingleton.getInstance();
         final DocumentReference docRef = db.collection("users").document(user.getId());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if(!document.exists()) {
+                    if (!document.exists()) {
                         addUser(user);
                     }
                 } else {
@@ -64,10 +63,10 @@ public class UserDatabase {
 
 
     /**
-     *  Gets all users and only returns the one that matches someone with more exp w/ db check it out
+     * Gets all users and only returns the one that matches someone with more exp w/ db check it out
      */
-    public static void getUser(String user_id, final UserLambda userLambda)
-    {
+    public static void getUser(String user_id, final UserLambda userLambda) {
+        FirebaseFirestore db = DatabaseSingleton.getInstance();
         db.collection("users").document(user_id).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -81,23 +80,23 @@ public class UserDatabase {
     }
 
     /**
-     *  Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
+     * Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
      */
-    public static void getFriends(User user, final FriendsLambda friendsLambda)
-    {
+    public static void getFriends(User user, final FriendsLambda friendsLambda) {
+        FirebaseFirestore db = DatabaseSingleton.getInstance();
         // TODO: refactor this slow code
         db.collection("users").get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (!documentSnapshots.isEmpty()) {
                         List<User> friends = new ArrayList<User>();
-                        for(DocumentSnapshot ds : documentSnapshots) {
+                        for (DocumentSnapshot ds : documentSnapshots) {
                             User friend = ds.toObject(User.class);
 
-                            if (user != null && user.getFriend_ids() != null &&user.getFriend_ids().contains(friend.getId())) {
+                            if (user != null && user.getFriend_ids() != null && user.getFriend_ids().contains(friend.getId())) {
                                 friends.add(friend);
                             } else {
                                 CharSequence text = "You do not have a friends list";
-                                Toast.makeText(getApplicationContext(),text, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
                             }
                         }
                         //callback
@@ -109,9 +108,18 @@ public class UserDatabase {
 
     /**
      * Add given user to the database.
+     *
      * @param user
      */
-    public static void addUser(User user){
-        db.collection("users").document(user.getId()).set(user);
+    public static void addUser(User user) {
+        DatabaseSingleton.getInstance().collection("users").document(user.getId()).set(user);
+    }
+
+    public static Alarm getMostRecentAlarm(User user) {
+//        String user_id = user.getId();
+//        FirebaseFirestore db = DatabaseSingleton.getInstance();
+//        DatabaseSingleton.getInstance().collection("users").document(user_id)
+//                .collection("alarms").document(alarmID).set(data);
+        return new Alarm(user.getId(), 41, 1, "Wednesday", 5, 0, 10);
     }
 }

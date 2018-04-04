@@ -22,7 +22,7 @@ public class AlarmEditActivity extends AppCompatActivity {
 
     private int days_of_week;
 
-    private static final String TAG = "AlarmActivity";
+    private static final String TAG = "AlarmEditActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +65,11 @@ public class AlarmEditActivity extends AppCompatActivity {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         NumberPicker interval = findViewById(R.id.interval_selector);
         NumberPicker count = findViewById(R.id.snooze_count);
+        SeekBar volume = findViewById(R.id.volume_slider);
         String user_id = prefs.getString("id", null);
         Alarm alarm = new Alarm(user_id, picker.getCurrentMinute(), picker.getCurrentHour(),
-                dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue());
+                dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue(), volume.getProgress());
         AlarmDatabase.addAlarm(alarm);
-        SeekBar volume = findViewById(R.id.volume_slider);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),
                 days_of_week, interval.getValue(), count.getValue(), volume.getProgress());
 
