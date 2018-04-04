@@ -185,10 +185,8 @@ public class StatisticsActivity extends AppCompatActivity {
      * @param map the map
      * @param key key to search for
      * @param default_value default key value
-     * @param <A> key
-     * @param <B> value
      */
-    private <A, B> void IncrementMapDefault(Map<A, B> map, A key, B default_value)
+    private <K, V> void IncrementMapDefault(Map<K, V> map, K key, V default_value)
     {
         //compute put entries with same timestamp in map
         if(map.containsKey(key)) {
