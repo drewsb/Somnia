@@ -1,5 +1,8 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,8 +21,6 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public final class EventDatabase {
 
-    private static final FirebaseFirestore db = DatabaseSingleton.getInstance();
-
     //private constructor
     private EventDatabase() {}
 
@@ -32,7 +33,17 @@ public final class EventDatabase {
     {
         void callback(List<LeaderboardEntry> events);
     }
-  
+
+    /**
+     * Enum for Duration
+     */
+    public enum TimeDifference {
+        WEEK,
+        MONTH,
+        YEAR
+    }
+
+
     /**
      * Get all events since beginning
      *
@@ -79,6 +90,7 @@ public final class EventDatabase {
                     //events filtered by last week, month, year
                     List<Event> filteredEvents = new ArrayList<>();
 
+                    System.out.println(events);
                     for(Event event : events)
                     {
                         if(isWithinDuration(event, duration, calendar) &&
@@ -87,6 +99,7 @@ public final class EventDatabase {
                             filteredEvents.add(event);
                         }
                     }
+                    System.out.println(filteredEvents);
 
                     String friendName = friend.getFirst_name() + " " + friend.getLast_name();
                     entryList.add(new LeaderboardEntry(friendName, filteredEvents.size(), direction));
@@ -121,7 +134,7 @@ public final class EventDatabase {
      */
     private static boolean isWithinDuration(Event event, Duration duration, Calendar cal) {
         //convert to a date
-        Date date = new Date(event.getTimestamp());
+        Date date = new Date(event.getTimestamp() * 1000);
 
         //subtract to find if in week, month or year
         long difference_days = 7;
@@ -142,8 +155,7 @@ public final class EventDatabase {
         }
 
         //calculate now - week, month, year
-        Date lastDate = new Date(cal.getTime().getTime() - getInMilliSeconds(difference_days));
-
+        Date lastDate = new Date(System.currentTimeMillis() - getInMilliSeconds(difference_days));
         return date.after(lastDate);
     }
 
@@ -157,11 +169,11 @@ public final class EventDatabase {
     private static boolean isCorrectType(Event event, SleepStatType statType) {
         switch(statType) {
             case SNOOZE:
-                return event.getAction().equals("snooze");
+                return event.getAction().equalsIgnoreCase("Snooze");
             case OVERSLEEP:
-                return event.getAction().equals("overslept");
+                return event.getAction().equalsIgnoreCase("Overslept");
             default:
-                return event.getAction().equals("overslept");
+                return event.getAction().equalsIgnoreCase("Overslept");
         }
     }
 
@@ -174,15 +186,6 @@ public final class EventDatabase {
      */
     private static boolean isCorrectUser(Event event, String user_id) {
         return event.getUser_id().equals(user_id);
-    }
-
-    /**
-     * Enum for Duration
-     */
-    public enum TimeDifference {
-        WEEK,
-        MONTH,
-        YEAR
     }
 
     /**

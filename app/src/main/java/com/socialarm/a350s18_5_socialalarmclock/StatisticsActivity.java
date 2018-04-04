@@ -134,15 +134,15 @@ public class StatisticsActivity extends AppCompatActivity {
                 String action = e.getAction();
                 Long ts = e.getTimestamp();
                 Map<Long, Long> map = null;
-                if(action.equals("wakeup"))
+                if(action.equalsIgnoreCase("wakeup"))
                 {
                     map = wakeup_map;
                 }
-                else if(action.equals("snooze"))
+                else if(action.equalsIgnoreCase("snooze"))
                 {
                     map = snooze_map;
                 }
-                else if(action.equals("overslept"))
+                else if(action.equalsIgnoreCase("overslept"))
                 {
                     map = overslept_map;
                 }

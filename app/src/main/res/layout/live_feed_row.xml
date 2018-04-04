@@ -11,19 +11,26 @@
 
         <TextView
             android:id="@+id/live_feed_name_text"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:layout_marginLeft="20dp"/>
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="fill_parent"
-            android:background="#FF0000FF" />
-
         <TextView
             android:id="@+id/live_feed_event_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/live_feed_alarm_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/live_feed_timestamp_text"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical" />
 
