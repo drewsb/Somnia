@@ -94,8 +94,8 @@ public class AlarmDatabase {
      * @param alarm_id the ID of the alarm to get
      * @param alarmLambda the function to run once the call is complete
      */
-    static void getAlarm(String alarm_id, final SingleAlarmLambda alarmLambda) {
-        DatabaseSingleton.getInstance().collection("alarms").document(alarm_id).get()
+    static void getAlarm(String alarm_id, String user_id, final SingleAlarmLambda alarmLambda) {
+        DatabaseSingleton.getInstance().collection("alarms").document(user_id + alarm_id).get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (documentSnapshots.exists()) {
                         // Convert the whole Query Snapshot to a list

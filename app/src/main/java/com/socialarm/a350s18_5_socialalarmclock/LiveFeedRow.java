@@ -58,7 +58,7 @@ public class LiveFeedRow extends LinearLayout {
         eventTextView.setText(eventText);
 
         // get the time of this alarm and put it in
-        AlarmDatabase.getAlarm(event.getAlarm_id(), alarm -> {
+        AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
             String alarmText = alarm.getHour() + ":" + alarm.getMin();
             eventTextView.setText(alarmText);
         });

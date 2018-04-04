@@ -14,25 +14,31 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:textStyle="bold"
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/live_feed_event_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/live_feed_alarm_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/live_feed_timestamp_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textSize="12sp"/>
 
     </LinearLayout>
 
