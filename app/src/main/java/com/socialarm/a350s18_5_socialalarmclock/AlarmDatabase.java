@@ -18,11 +18,6 @@ public class AlarmDatabase {
 
     private static final String TAG = "AlarmDatabase";
 
-    interface AlarmLambda
-    {
-        public void callback(Alarm alarm);
-    }
-
     private AlarmDatabase() {}
 
     interface AlarmListLambda
