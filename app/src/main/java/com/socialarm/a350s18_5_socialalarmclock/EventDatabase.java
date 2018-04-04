@@ -16,7 +16,9 @@ import com.socialarm.a350s18_5_socialalarmclock.LeaderBoardFragment.*;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-final class EventDatabase {
+public final class EventDatabase {
+
+    private static final FirebaseFirestore db = DatabaseSingleton.getInstance();
 
     //private constructor
     private EventDatabase() {}
@@ -30,8 +32,7 @@ final class EventDatabase {
     {
         void callback(List<LeaderboardEntry> events);
     }
-
-
+  
     /**
      * Get all events since beginning
      *
@@ -63,7 +64,7 @@ final class EventDatabase {
      * @param direction the sort direction of the resulting list
      * @param lbeLambda the function to run once the call is complete
      */
-    static void getLeaderboardEventsSince(List<String> friends_list,
+    public static void getLeaderboardEventsSince(List<String> friends_list,
                                                  Duration duration,
                                                  SleepStatType type,
                                                  SortDirection direction,
@@ -72,7 +73,7 @@ final class EventDatabase {
 
         for (String friend_id : friends_list) {
             getAllEvents(events -> {
-                getUser(friend_id, friend -> {
+                UserDatabase.getUser(friend_id, friend -> {
                     Calendar calendar = Calendar.getInstance();
 
                     //events filtered by last week, month, year
@@ -190,7 +191,7 @@ final class EventDatabase {
      * @return the number of days
      */
     private static long getDaysSinceEpoch() {
-        return System.currentTimeMillis() / 1000 / 60 / 60 / 24;
+        return System.currentTimeMillis() / 86400000;
     }
 
     /**
@@ -200,8 +201,7 @@ final class EventDatabase {
      * @param user_id user to filter for
      * @param eventLambda callback function
      */
-    static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda)
-    {
+    public static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda) {
         getAllEvents(events ->
         {
             Calendar calender = Calendar.getInstance();
@@ -209,16 +209,14 @@ final class EventDatabase {
             //events filtered by last week, month, year
             List<Event> filteredEvents = new ArrayList<Event>();
 
-            for(Event event : events)
-            {
+            for (Event event : events) {
                 //convert to a date
                 Date date = new Date(event.getTimestamp());
 
                 //subtract to find if in week, month or year
                 long difference_days = 7;
 
-                switch (difference)
-                {
+                switch (difference) {
                     case WEEK:
                         difference_days = 7;
                         break;
@@ -236,7 +234,7 @@ final class EventDatabase {
                 Date lastDate = new Date(calender.getTime().getTime() - getInMilliSeconds(difference_days));
 
                 //check if event was greater than last week, month, year
-                if(date.after(lastDate) && isCorrectUser(event, user_id)) {
+                if (date.after(lastDate) && isCorrectUser(event, user_id)) {
                     filteredEvents.add(event);
                 }
             }
@@ -245,79 +243,14 @@ final class EventDatabase {
             eventLambda.callback(filteredEvents);
         });
     }
-
-    /**
-     * Definition for the callback lambda
-     */
-    interface FriendsLambda
-    {
-        void callback(List<User> friends);
-    }
-
-    /**
-     * Takes in a user and passes a list of Users that are friends of that user to the callback
-     *
-     * @param user the user to get friends for
-     * @param friendsLambda the callback function
-     */
-    static void getFriends(User user, final FriendsLambda friendsLambda)
-    {
-        DatabaseSingleton.getInstance().collection("users").get()
-                .addOnSuccessListener(documentSnapshots -> {
-                    if (!documentSnapshots.isEmpty()) {
-                        List<User> friends = new ArrayList<User>();
-                        for(DocumentSnapshot ds : documentSnapshots) {
-                            User friend = ds.toObject(User.class);
-
-                            if (user != null && user.getFriend_ids() != null &&user.getFriend_ids().contains(friend.getId())) {
-                                friends.add(friend);
-                            } else {
-                                CharSequence text = "You do not have a friends list";
-                                Toast.makeText(getApplicationContext(),text, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        //callback
-                        friendsLambda.callback(friends);
-                    }
-                })
-                .addOnFailureListener(e -> Log.d("Friend", "Error getting friends"));
-    }
-
-    /**
-     * An interface for the user lambda
-     */
-    interface UserLambda
-    {
-        public void callback(User user);
-    }
-
-    /**
-     * Takes in a user id and passes the user to the callback
-     *
-     * @param user_id the user_id to check for
-     * @param userLambda the callback
-     */
-    static void getUser(String user_id, final UserLambda userLambda)
-    {
-        DatabaseSingleton.getInstance().collection("users").document(user_id).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        User user = documentSnapshot.toObject(User.class);
-
-                        //callback
-                        userLambda.callback(user);
-                    }
-                })
-                .addOnFailureListener(e -> Log.d("User", "Error getting user"));
-    }
-
+  
     /**
      * Add event to event collection
      * ID of event is "user_id + timestamp" of the event
      *
      * @param event the event to add to the database
      */
-    static void addEvent(final Event event) {
+    public static void addEvent(final Event event) {
         String userID = event.getUser_id();
         DatabaseSingleton.getInstance().collection("events").document(userID + event.getTimestamp()).set(event);
     }

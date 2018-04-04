@@ -30,3 +30,7 @@
 ### StatisticsActivity
 - [ ] updateFriendNotifications - Update database / implement
 - [ ] updateFriendPrivileges - Update databse / implement
+
+## General Backlog
+- [ ] Make friends list update dynamically
+- [ ] Make toast saying "You have no friends" not show up on every start up
