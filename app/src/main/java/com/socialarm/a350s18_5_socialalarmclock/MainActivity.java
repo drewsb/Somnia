@@ -1,6 +1,5 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -8,16 +7,12 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +23,6 @@ import com.facebook.login.LoginManager;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     public boolean isFirstStart;
 
     //check if user opened tutorial
-    private void CreateTutorial() {
+    private void createTutorial() {
 
         //  Intro App Initialize SharedPreferences
         SharedPreferences getSharedPreferences = PreferenceManager
@@ -106,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         nameView.setText(name);
         emailView.setText(email);
       
-        CreateTutorial();
+        createTutorial();
         UserDatabase.getUser(extras.getString("idFacebook"), user -> {
             List<Fragment> fragments = new ArrayList<Fragment>();
             fragments.add(MyAlarms.newInstance());
@@ -138,8 +132,8 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         });
     }
 
-    /*
-    Control navigation drawer display
+    /**
+     *  Control navigation drawer display
      */
     @Override
     public void onBackPressed() {
@@ -151,6 +145,11 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         }
     }
 
+    /**
+     * Handle login menu options
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -178,33 +177,5 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    /*
-        DownloadImageTask is a private class used to convert URL's into a Bitmap asynchronously
-     */
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
     }
 }
