@@ -19,24 +19,51 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 
+/**
+ * This adapter reads a cursor from the local db and populates a view with data about a single alarm.
+ */
 public class SingleAlarmAdapter extends CursorAdapter {
     private LayoutInflater inflater;
 
+    /**
+     * default constructor
+     * @param context The context this adapter is used in.
+     * @param c The cursor to read from.
+     * @param flags Flags used to determine the behavior of the adapter.
+     */
     public SingleAlarmAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    /**
+     * Makes a new view to hold the data pointed to by cursor.
+     * @param context Interface to applications's global information.
+     * @param cursor The cursor from which to get the data.
+     * @param parent The parent to which the new view is attached to.
+     * @return The newly created view.
+     */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return inflater.inflate(R.layout.single_alarm_layout, parent, false);
     }
 
+    /**
+     * Returns the true if the item at the specified position is not a separator.
+     * @param position Index of the item.
+     * @return True if the item is not a separator.
+     */
     @Override
     public boolean isEnabled(int position) {
         return true;
     }
 
+    /**
+     * Bind an existing view to the data pointed to by cursor.
+     * @param view Existing view, returned earlier by newView
+     * @param context Interface to application's global information
+     * @param cursor The cursor from which to get the data. The cursor is already moved to the correct position.
+     */
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         final Context internal_context = context;
@@ -71,6 +98,7 @@ public class SingleAlarmAdapter extends CursorAdapter {
         TextView saturday = view.findViewById(R.id.Saturday);
         saturday.setTextColor((days_of_week & AlarmsOpenHelper.SATURDAY) != 0 ? enabled_color : disabled_color);
 
+        // This section sets the on/off toggle for the alarms.
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -98,6 +126,7 @@ public class SingleAlarmAdapter extends CursorAdapter {
             }
         });
 
+        // This section sets the long press behavior for temporarily disabling an alarm.
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

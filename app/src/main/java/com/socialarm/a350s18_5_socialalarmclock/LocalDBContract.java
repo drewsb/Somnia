@@ -4,6 +4,7 @@ import android.provider.BaseColumns;
 
 /**
  * Created by Alex on 2/20/2018.
+ * Definition of the local SQL database.
  */
 
 public class LocalDBContract {

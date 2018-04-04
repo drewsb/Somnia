@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -38,6 +39,10 @@ public class AlarmEvent extends AppCompatActivity {
     AlarmsOpenHelper dbHelper;
     private SharedPreferences prefs;
 
+    /**
+     * Get the alarm and start ringing.
+     * @param savedInstanceState Previous instantace state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +64,15 @@ public class AlarmEvent extends AppCompatActivity {
             media.setDataSource(this, alarm);
             media.setLooping(true);
             media.prepare();
+            media.start();
         } catch (IOException e) {
+            Toast.makeText(this, "Failed to start alarm ring", Toast.LENGTH_SHORT).show();
         }
-        media.start();
     }
 
+    /**
+     * Extract all the data from the local db.
+     */
     private void initialize() {
         Intent i = getIntent();
         alarm_id = i.getIntExtra("Alarm", -1);
@@ -80,6 +89,10 @@ public class AlarmEvent extends AppCompatActivity {
         volume = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_VOLUME));
     }
 
+    /**
+     * Create a new alarm for a certain time in the future.
+     * @param view snooze button
+     */
     protected void onSnooze(View view) {
         media.stop();
 
@@ -114,6 +127,10 @@ public class AlarmEvent extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Set an alarm for the next valid time.
+     * @param view dismiss button
+     */
     protected void onDismiss(View view) {
         media.stop();
         Intent i = getIntent();
@@ -129,6 +146,9 @@ public class AlarmEvent extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Compute the next valid time for the current alarm to ring.
+     */
     private void setNextAlarm() {
         Calendar trigger_time = AlarmsUtil.getNextTrigger(hour, minute, days_of_week);
         long tTime = trigger_time.getTimeInMillis();
