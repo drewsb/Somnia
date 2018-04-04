@@ -21,7 +21,7 @@ public final class EventDatabase {
     private static final FirebaseFirestore db = DatabaseSingleton.getInstance();
 
     //private constructor
-    public EventDatabase() {}
+    private EventDatabase() {}
 
     interface EventLambda
     {
@@ -32,14 +32,15 @@ public final class EventDatabase {
     {
         void callback(List<LeaderboardEntry> events);
     }
+  
     /**
      * Get all events since beginning
      *
-     * (to use, use lambda since as (events) -> {Log.v("...", events.toString())} and pass in to function
+     * @param eventLambda the function to run once the call is complete
      */
     private static void getAllEvents(final EventLambda eventLambda) {
 
-            db.collection("events").get()
+        DatabaseSingleton.getInstance().collection("events").get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (!documentSnapshots.isEmpty()) {
                         // Convert the whole Query Snapshot to a list
@@ -52,15 +53,24 @@ public final class EventDatabase {
                 .addOnFailureListener(e -> Log.d("Event", "Error getting events"));
     }
 
-    // TODO: Combine this with other get events since?
-    public static void getLeaderboardEventsSince(List<String> friends_list,
+    /**
+     * getLeaderboardEventsSince gets all events from any User in the given friends_list
+     * that matches a given Duration and SleepStatType
+     * It then sorts the list in SortDirection before handing it off to the callback
+     *
+     * @param friends_list the list of users for which we will get events
+     * @param duration the timeframe we want to filter for
+     * @param type the type of event we want to recieve
+     * @param direction the sort direction of the resulting list
+     * @param lbeLambda the function to run once the call is complete
+     */
+    static void getLeaderboardEventsSince(List<String> friends_list,
                                                  Duration duration,
                                                  SleepStatType type,
                                                  SortDirection direction,
                                                  final LeaderboardEntryLambda lbeLambda) {
         List<LeaderboardEntry> entryList = new ArrayList<>();
 
-        // TODO: This is literally slower than a dead sloth, we should query all events and sort them in single pass, will refactor
         for (String friend_id : friends_list) {
             getAllEvents(events -> {
                 UserDatabase.getUser(friend_id, friend -> {
@@ -90,11 +100,25 @@ public final class EventDatabase {
         }
     }
 
+    /**
+     * Convert a day into milliseconds
+     *
+     * @param day a number of days
+     * @return the number in milliseconds
+     */
     private static long getInMilliSeconds(long day)
     {
         return day * 24 * 60 * 60 * 1000L;
     }
 
+    /**
+     * Helper function that determines if an event is within a specified Duration
+     *
+     * @param event the event to check
+     * @param duration the duration we are filtering for
+     * @param cal the calendar so that we can get the current time
+     * @return a boolean, true if within the specified Duration and false otherwise
+     */
     private static boolean isWithinDuration(Event event, Duration duration, Calendar cal) {
         //convert to a date
         Date date = new Date(event.getTimestamp());
@@ -123,6 +147,13 @@ public final class EventDatabase {
         return date.after(lastDate);
     }
 
+    /**
+     * Helper function that determines if an event is a specified SleepStatType
+     *
+     * @param event the event to check
+     * @param statType the type to check for
+     * @return true if the event is the correct type and false otherwise
+     */
     private static boolean isCorrectType(Event event, SleepStatType statType) {
         switch(statType) {
             case SNOOZE:
@@ -134,27 +165,43 @@ public final class EventDatabase {
         }
     }
 
+    /**
+     * Helper function that determines if an event is from a specified user
+     *
+     * @param event the event to check
+     * @param user_id the user to check for
+     * @return true if the event is by that user otherwise false
+     */
     private static boolean isCorrectUser(Event event, String user_id) {
         return event.getUser_id().equals(user_id);
     }
 
+    /**
+     * Enum for Duration
+     */
     public enum TimeDifference {
         WEEK,
         MONTH,
         YEAR
     }
 
+    /**
+     * Helper function to get number of days since the epoch
+     *
+     * @return the number of days
+     */
     private static long getDaysSinceEpoch() {
         return System.currentTimeMillis() / 86400000;
     }
 
     /**
-     * Get events for user_id since last week, month, year
+     * Get events filtered for a specific user_id and TimeDifference and then pass that into the callback
      *
-     * (to use, use lambda such as (events) -> {Log.v("...", events.toString())} and pass in to function
+     * @param difference time period to filter for
+     * @param user_id user to filter for
+     * @param eventLambda callback function
      */
     public static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda) {
-        // TODO: Refactor this slow code
         getAllEvents(events ->
         {
             Calendar calender = Calendar.getInstance();
@@ -196,15 +243,15 @@ public final class EventDatabase {
             eventLambda.callback(filteredEvents);
         });
     }
-
-
+  
     /**
      * Add event to event collection
      * ID of event is "user_id + timestamp" of the event
-     * @param event
+     *
+     * @param event the event to add to the database
      */
-    public void addEvent(final Event event) {
+    static void addEvent(final Event event) {
         String userID = event.getUser_id();
-        db.collection("events").document(userID + event.getTimestamp()).set(event);
+        DatabaseSingleton.getInstance().collection("events").document(userID + event.getTimestamp()).set(event);
     }
 }

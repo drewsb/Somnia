@@ -26,8 +26,8 @@ public class LeaderBoardFragment extends Fragment {
 
     private User user;
 
-    /*
-        state related to the leaderboard
+    /**
+     * Set of leaderboard sorting related enums
      */
     enum Duration { THIS_WEEK, THIS_MONTH, ALL_TIME }
     private Duration statDuration = Duration.THIS_WEEK; // default to this week
@@ -55,6 +55,15 @@ public class LeaderBoardFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * onCreateView creates the two spinners and attaches their listeners and creates the recyclerview
+     * for the rows
+     *
+     * @param inflater the tool to inflate the xml objects
+     * @param container the container that is the parent view of this view
+     * @param savedInstanceState any other important state
+     * @return the finished leaderboard view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -220,11 +229,11 @@ public class LeaderBoardFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    // ---------------------------------------
+    // ------------------Other required methods---------------------
 
     /**
      *   Possibly could rename method, update argument and hook method into UI event
-     *   if we wanted to have a global onButtonPressed
+     *   if we wanted to have a global onButtonPressed. This method will sit here unused otherwise
      */
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -234,7 +243,7 @@ public class LeaderBoardFragment extends Fragment {
 
     /**
      * Have to implement this one
-     * @param context
+     * @param context global context of the app
      */
     @Override
     public void onAttach(Context context) {
@@ -248,7 +257,7 @@ public class LeaderBoardFragment extends Fragment {
     }
 
     /**
-     * Forced to implement this one also
+     * Called when the view is detached from the view (set listener to null)
      */
     @Override
     public void onDetach() {

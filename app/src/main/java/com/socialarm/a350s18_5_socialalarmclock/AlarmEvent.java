@@ -20,7 +20,6 @@ import java.util.Calendar;
 public class AlarmEvent extends AppCompatActivity {
 
     private MediaPlayer media;
-    private EventDatabase eventDB;
 
     private int alarm_id;
 
@@ -99,7 +98,7 @@ public class AlarmEvent extends AppCompatActivity {
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
         Event event = new Event("Snooze", "" + alarmId, user_id, user_id + ts, tsLong);
-        eventDB.addEvent(event);
+        EventDatabase.addEvent(event);
 
         dbHelper.setSnooze(alarm_id, current_snooze_count+1);
 

@@ -2,7 +2,9 @@ package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,7 @@ import com.facebook.login.LoginManager;
 
 import android.support.v4.app.Fragment;
 import android.widget.Button;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,29 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     @Override
     public void onFragmentInteraction(Uri uri) {
         //you can leave it empty
+    }
+
+    public boolean isFirstStart;
+
+    //check if user opened tutorial
+    private void CreateTutorial() {
+
+        //  Intro App Initialize SharedPreferences
+        SharedPreferences getSharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
+        //  Create a new boolean and preference and set it to true
+        isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
+
+        //  Check either activity or app is open very first time or not and do action
+        if (isFirstStart) {
+            //  Launch application introduction screen
+            Intent i = new Intent(MainActivity.this, TutorialActivity.class);
+            startActivity(i);
+            SharedPreferences.Editor e = getSharedPreferences.edit();
+            e.putBoolean("firstStart", false);
+            e.apply();
+        }
     }
 
     @Override
@@ -71,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         String name = extras.getString("first_name") + " " + extras.getString("last_name");
         String email = extras.getString("email");
 
-        TextView nameView =  headerView.findViewById(R.id.nameView);
+        TextView nameView = headerView.findViewById(R.id.nameView);
         TextView emailView = headerView.findViewById(R.id.emailView);
 
         //Set profile pic image
@@ -80,9 +106,9 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
 
         nameView.setText(name);
         emailView.setText(email);
-
-        UserDatabase.getUser(extras.getString("idFacebook"), user -> {
-
+      
+        CreateTutorial();
+        EventDatabase.getUser(extras.getString("idFacebook"), user -> {
             List<Fragment> fragments = new ArrayList<Fragment>();
             fragments.add(MyAlarms.newInstance());
             fragments.add(FriendsFragment.newInstance(user));
@@ -103,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         });
 
         //add functionality to find friends button
-        Button search_friend_button = (Button)findViewById(R.id.search_friend_button);
+        Button search_friend_button = (Button) findViewById(R.id.search_friend_button);
         search_friend_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         int id = item.getItemId();
 
         if (id == R.id.nav_settings) {
-            //TODO: Implement
         } else if (id == R.id.nav_logout) { //Logout and return to LoginActivity
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -143,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
                 Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
 
                 //pass user data to statistics activity
-                intent.putExtra("user",  user);
+                intent.putExtra("user", user);
                 startActivity(intent);
             });
         } else if (id == R.id.nav_disable) {

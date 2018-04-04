@@ -23,7 +23,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Database class used to push user data to the firebase database
  */
 public class UserDatabase {
-
+  
     public static final FirebaseFirestore db = DatabaseSingleton.getInstance();
 
     private static final String TAG = "UserDatabase";
@@ -110,7 +110,6 @@ public class UserDatabase {
      * @param user
      */
     public static void addUser(User user){
-        // Add a new document with a generated ID
         db.collection("users").document(user.getId()).set(user);
     }
 }
