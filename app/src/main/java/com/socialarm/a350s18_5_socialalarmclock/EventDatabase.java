@@ -90,7 +90,6 @@ public final class EventDatabase {
                     //events filtered by last week, month, year
                     List<Event> filteredEvents = new ArrayList<>();
 
-                    System.out.println(events);
                     for(Event event : events)
                     {
                         if(isWithinDuration(event, duration, calendar) &&
@@ -99,7 +98,6 @@ public final class EventDatabase {
                             filteredEvents.add(event);
                         }
                     }
-                    System.out.println(filteredEvents);
 
                     String friendName = friend.getFirst_name() + " " + friend.getLast_name();
                     entryList.add(new LeaderboardEntry(friendName, filteredEvents.size(), direction));
