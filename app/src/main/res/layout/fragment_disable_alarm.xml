@@ -1,0 +1,37 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.DisableAlarmFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/disable_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Disable Alarms for how many hours?"
+            android:textSize="18sp" />
+
+        <SeekBar
+            android:id="@+id/hour_selector"
+            style="@android:style/Widget.DeviceDefault.Light.SeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="7"
+            android:progress="3" />
+
+        <TextView
+            android:id="@+id/hour_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</FrameLayout>

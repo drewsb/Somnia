@@ -6,17 +6,23 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/**
+ * The adapter to be hooked into LeaderboardRow (Similar to FriendRow)
+ */
 public class LeaderboardRowAdapter extends RecyclerView.Adapter<LeaderboardRowAdapter.ViewHolder> {
 
+    /**
+     * A list of names and numbered statistics to display as rows
+     */
     private String[] myNames;
     private String[] myOversleeps;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
+    /**
+     * Static inner view holder class
+     */
     static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        LeaderboardRow row; // TODO: Customize this to be a Profile object
+        LeaderboardRow row;
         ViewHolder(LeaderboardRow v) {
             super(v);
             row = v;
@@ -29,20 +35,32 @@ public class LeaderboardRowAdapter extends RecyclerView.Adapter<LeaderboardRowAd
         myOversleeps = oversleeps;
     }
 
-    // Create new views (invoked by the layout manager)
+    /**
+     * Create the new viewholder with the new ViewHolder inside
+     *
+     * @param parent the parent view group that the row is to be in
+     * @param viewType ?
+     * @return a new ViewHolder
+     */
     @Override
     public LeaderboardRowAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
         RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_leader_board, parent, false); // TODO: Change this?
+                .inflate(R.layout.fragment_leader_board, parent, false);
         LeaderboardRow newRow = new LeaderboardRow(v.getContext(), null);
 
         ViewHolder rh = new ViewHolder(newRow);
         return rh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    /**
+     * Get the element from the dataset at this position and replace the contents of
+     * the view with that element
+     *
+     * @param holder the ViewHolder that contains this view
+     * @param position the position in the leaderboard arrays that we want to fetch from
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
@@ -51,7 +69,10 @@ public class LeaderboardRowAdapter extends RecyclerView.Adapter<LeaderboardRowAd
         holder.row.setTime(myOversleeps[position]);
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    /**
+     * Return the size of your dataset (invoked by the layout manager)
+     * @return min of the names and the oversleep arrays lengths
+     */
     @Override
     public int getItemCount() {
         if (myNames == null) {

@@ -13,9 +13,10 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="my_alarms_tab_text">My alarms</string>
+    <string name="my_alarms_tab_text">Alarms</string>
     <string name="friends_tab_text">Friends</string>
-    <string name="leaderboard_tab_text">Leader Board</string>
+    <string name="leaderboard_tab_text">Ranking</string>
+    <string name="events_tab_text">Feed</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_search_friend">SearchFriendActivity</string>
 
@@ -28,96 +29,26 @@
     </string-array>
 
     <string-array name="sorting_options_array">
-        <item>Times Overslept</item>
-        <item>Times Snoozed</item>
-        <item>Times Woken up</item>
+        <item>Most Oversleeps</item>
+        <item>Least Oversleeps</item>
+        <item>Most Snoozes</item>
+        <item>Least Snoozes</item>
+        <!--<item>Most Wakes</item>  Will put back in when we have the right events-->
+        <!--<item>Least Wakes</item>-->
     </string-array>
 
-    <string-array name="leaderboard_name_array">
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-        <item>Liam Dugan</item>
-        <item>Henry Zhu</item>
-        <item>Drew Boyette</item>
-        <item>Alex Perry</item>
-    </string-array>
-
-    <string-array name="leaderboard_oversleep_count">
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-        <item>4</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
-    </string-array>
     <string name="title_activity_statistics">StatisticsActivity</string>
+
+    <!-- Friends page usage -->
+    <string name="friend_join_text">Join Alarm</string>
+    <string name="radio_button_week">Week</string>
+    <string name="radio_button_month">Month</string>
+    <string name="radio_button_year">Year</string>
+
+    <!-- Notification/Privilege options -->
+    <string-array name="on_off_options">
+        <item>On</item>
+        <item>Off</item>
+    </string-array>
 
 </resources>

@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeaderBoardFragment extends Fragment {
 
@@ -22,14 +24,29 @@ public class LeaderBoardFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private User user;
+
+    /**
+     * Set of leaderboard sorting related enums
+     */
+    enum Duration { THIS_WEEK, THIS_MONTH, ALL_TIME }
+    private Duration statDuration = Duration.THIS_WEEK; // default to this week
+
+    enum SleepStatType { OVERSLEEP, SNOOZE, WAKE_UP }
+    private SleepStatType statType = SleepStatType.OVERSLEEP; // default to oversleep
+
+    enum SortDirection { MOST, LEAST }
+    private SortDirection sortDirection = SortDirection.MOST; // default to most
+
     public LeaderBoardFragment() {
         // Required empty public constructor
     }
 
-    public static LeaderBoardFragment newInstance() {
+    public static LeaderBoardFragment newInstance(User user) {
         LeaderBoardFragment fragment = new LeaderBoardFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.user = user;
         return fragment;
     }
 
@@ -38,127 +55,202 @@ public class LeaderBoardFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * onCreateView creates the two spinners and attaches their listeners and creates the recyclerview
+     * for the rows
+     *
+     * @param inflater the tool to inflate the xml objects
+     * @param container the container that is the parent view of this view
+     * @param savedInstanceState any other important state
+     * @return the finished leaderboard view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_leader_board, container, false);
-
         mRecyclerView = myView.findViewById(R.id.my_recycler_view);
-
         mRecyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
+        // use a linear layout manager for the spinners
         mLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
-        String[] lbNames = getResources().getStringArray(R.array.leaderboard_name_array);
-        String[] lbOversleeps = getResources().getStringArray(R.array.leaderboard_oversleep_count);
-        mAdapter = new LeaderboardRowAdapter(lbNames, lbOversleeps);
-        mRecyclerView.setAdapter(mAdapter);
+        // Create the first spinner with its drop down
+        Spinner times_spinner = createSpinnerWithDropDown(R.id.spinner_options_time,
+                R.array.times_options_array, myView);
 
-        Spinner spinner = (Spinner) myView.findViewById(R.id.spinner_options_time);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
-                R.array.times_options_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        // Create the first spinner's action listener
+        times_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view, int position, long row_id) {
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
+                // update state based on first spinner choice
+                updateStatDuration(position);
+
+                // make database call and display statistic asynchronously
+                List<String> leaderboardUsers = new ArrayList<>();
+                leaderboardUsers.addAll(user.getFriend_ids());
+                leaderboardUsers.add(user.getId());
+                EventDatabase.getLeaderboardEventsSince(leaderboardUsers,
+                        statDuration, statType, sortDirection, entries -> {displayRanking(entries);});
 
             }
 
             @Override
-            public void onItemSelected(AdapterView<?> arg0, View view,
-                                       int position, long row_id) {
-                Context context = getContext();
-                CharSequence text = "Times Overslept Selected";
-                int duration = Toast.LENGTH_SHORT;
-                switch(position){
-                    case 0:
-                        text = "This Week Selected";
-                        break;
-                    case 1:
-                        text = "This Month Selected";
-                        break;
-                    case 2:
-                        text = "All Time Selected";
-                        break;
-                    default:
-                        break;
-                }
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
 
+        // Create the spinner with its drop down
+        Spinner sort_spinner = createSpinnerWithDropDown(R.id.spinner_options_sort_by,
+                R.array.sorting_options_array, myView);
 
-        Spinner spinner_sort = (Spinner) myView.findViewById(R.id.spinner_options_sort_by);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter_sort = ArrayAdapter.createFromResource(this.getContext(),
-                R.array.sorting_options_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner_sort.setAdapter(adapter_sort);
+        sort_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view, int position, long row_id) {
 
-        spinner_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
+                // update state based on second spinner choice
+                updateStatTypeAndSortDirection(position);
 
+                // make database call and display statistic asynchronously
+                List<String> leaderboardUsers = new ArrayList<>();
+                leaderboardUsers.addAll(user.getFriend_ids());
+                leaderboardUsers.add(user.getId());
+                EventDatabase.getLeaderboardEventsSince(leaderboardUsers,
+                        statDuration, statType, sortDirection, entries -> {displayRanking(entries);});
             }
 
             @Override
-            public void onItemSelected(AdapterView<?> arg0, View view,
-                                       int position, long row_id) {
-                Context context = getContext();
-                CharSequence text = "Times Overslept Selected";
-                int duration = Toast.LENGTH_SHORT;
-                switch(position){
-                    case 0:
-                        text = "Times Overslept Selected";
-                        break;
-                    case 1:
-                        text = "Times Snoozed Selected";
-                        break;
-                    case 2:
-                        text = "Times Woken up Selected";
-                        break;
-                    default:
-                        break;
-                }
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
 
         return myView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    /**
+     * Based on spinner selection update the fragment's "statDuration" field
+     *
+     * @param selection the index in the time_spinner
+     */
+    private void updateStatDuration(int selection) {
+        switch(selection){
+            case 0:
+                statDuration = Duration.THIS_WEEK;
+                break;
+            case 1:
+                statDuration = Duration.THIS_MONTH;
+                break;
+            case 2:
+                statDuration = Duration.ALL_TIME;
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Based on spinner selection update the fragment's "statType" and "sortDirection" fields
+     *
+     * @param selection the index in the sort_spinner
+     */
+    private void updateStatTypeAndSortDirection(int selection) {
+        switch(selection){
+            case 0:
+                statType = SleepStatType.OVERSLEEP;
+                sortDirection = SortDirection.MOST;
+                break;
+            case 1:
+                statType = SleepStatType.OVERSLEEP;
+                sortDirection = SortDirection.LEAST;
+                break;
+            case 2:
+                statType = SleepStatType.SNOOZE;
+                sortDirection = SortDirection.MOST;
+                break;
+            case 3:
+                statType = SleepStatType.SNOOZE;
+                sortDirection = SortDirection.LEAST;
+                break;
+            case 4:
+                statType = SleepStatType.WAKE_UP;
+                sortDirection = SortDirection.MOST;
+                break;
+            case 5:
+                statType = SleepStatType.WAKE_UP;
+                sortDirection = SortDirection.LEAST;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Create and attach a dropdown menu to a spinner
+     *
+     * @param view ID for the view the spinner is in
+     * @param options what should the dropdown menu display?
+     * @param myView the parent view of the spinner
+     * @return the spinner
+     */
+    private Spinner createSpinnerWithDropDown(int view, int options, View myView) {
+
+        Spinner spinner = (Spinner) myView.findViewById(view);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
+                options, android.R.layout.simple_spinner_item);
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        return spinner;
+    }
+
+    /**
+     * This function takes in a sorted list of leaderboard entries and displays them
+     *
+     * displayRanking is usually used as a callback after fetching from the DB
+     *
+     * @param entries the list of leaderboard entries
+     */
+    public void displayRanking(List<LeaderboardEntry> entries) {
+
+        // get the values into arrays
+        ArrayList<String> sortedFriendNames = new ArrayList<String>();
+        ArrayList<String> sortedStatistic = new ArrayList<String>();
+
+        for (LeaderboardEntry entry : entries) {
+            sortedFriendNames.add(entry.name);
+            sortedStatistic.add(entry.statistic.toString());
+        }
+
+        String[] friendNames = sortedFriendNames.toArray(new String[sortedFriendNames.size()]);
+        String[] stats = sortedStatistic.toArray(new String[sortedStatistic.size()]);
+
+        // instantiate a new leaderboardRowAdapter with this data
+        mAdapter = new LeaderboardRowAdapter(friendNames, stats);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    // ------------------Other required methods---------------------
+
+    /**
+     *   Possibly could rename method, update argument and hook method into UI event
+     *   if we wanted to have a global onButtonPressed. This method will sit here unused otherwise
+     */
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
 
+    /**
+     * Have to implement this one
+     * @param context global context of the app
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -170,6 +262,9 @@ public class LeaderBoardFragment extends Fragment {
         }
     }
 
+    /**
+     * Called when the view is detached from the view (set listener to null)
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -181,13 +276,8 @@ public class LeaderBoardFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

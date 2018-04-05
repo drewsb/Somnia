@@ -1,14 +1,12 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,10 +20,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
+import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.SomniaFirebaseInstanceIDService;
+
 import android.support.v4.app.Fragment;
-import android.view.View;
 import android.widget.Button;
-import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,30 +36,88 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     private ViewPager viewPager;
     private Intent i;
     private Bundle extras;
+    private EventDatabase eventDB;
     private static final String TAG = "MainActivity";
 
     @Override
-    public void onFragmentInteraction(Uri uri){
+    public void onFragmentInteraction(Uri uri) {
         //you can leave it empty
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    private View setupNav() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(this);
+        return headerView;
+    }
 
+    private void setFirebaseId() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        boolean hasSetFirebaseId = prefs.getBoolean("setFirebaseId", false);
+
+        if (!hasSetFirebaseId) {
+            SomniaFirebaseInstanceIDService service = new SomniaFirebaseInstanceIDService();
+            service.onTokenRefresh();
+            SharedPreferences.Editor e = prefs.edit();
+            e.putBoolean("setFirebaseId", true);
+            e.apply();
+        }
+    }
+
+    private void setupDrawerLayout(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
+    private void setupPager() {
+        UserDatabase.getUser(extras.getString("idFacebook"), user -> {
+
+            List<Fragment> fragments = new ArrayList<Fragment>();
+            MyAlarms myAlarms = MyAlarms.newInstance();
+            fragments.add(myAlarms);
+            fragments.add(FriendsFragment.newInstance(user));
+            fragments.add(LeaderBoardFragment.newInstance(user));
+            fragments.add(LiveFeedFragment.newInstance(user));
+
+            // Create the adapter that will return a fragment
+            pagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
+
+            // Set up the ViewPager with the sections adapter.
+            viewPager = findViewById(R.id.viewPagerContainer);
+            viewPager.setAdapter(pagerAdapter);
+
+            TabLayout tabLayout = findViewById(R.id.tabs);
+
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            TabLayout.ViewPagerOnTabSelectedListener viewPagerListener = new TabLayout.ViewPagerOnTabSelectedListener(viewPager);
+
+            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    int i = tab.getPosition();
+                    if(i == 0) {
+                        myAlarms.onResume();
+                    }
+                    viewPager.setCurrentItem(i);
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {}
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {}
+            });
+        });
+    }
+
+    private void setupScreen() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         i = getIntent();
         extras = i.getExtras();
@@ -69,7 +126,10 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         String name = extras.getString("first_name") + " " + extras.getString("last_name");
         String email = extras.getString("email");
 
-        TextView nameView =  headerView.findViewById(R.id.nameView);
+        setupDrawerLayout(toolbar);
+        View headerView = setupNav();
+
+        TextView nameView = headerView.findViewById(R.id.nameView);
         TextView emailView = headerView.findViewById(R.id.emailView);
 
         //Set profile pic image
@@ -79,25 +139,13 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         nameView.setText(name);
         emailView.setText(email);
 
-        List<Fragment> fragments = new ArrayList<Fragment>();
-        fragments.add(MyAlarms.newInstance());
-        fragments.add(FriendsFragment.newInstance());
-        fragments.add(LeaderBoardFragment.newInstance());
+        setFirebaseId();
+        CreateTutorial();
 
-        // Create the adapter that will return a fragment
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
-
-        // Set up the ViewPager with the sections adapter.
-        viewPager = findViewById(R.id.viewPagerContainer);
-        viewPager.setAdapter(pagerAdapter);
-
-        TabLayout tabLayout = findViewById(R.id.tabs);
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+        setupPager();
 
         //add functionality to find friends button
-        Button search_friend_button = (Button)findViewById(R.id.search_friend_button);
+        Button search_friend_button = (Button) findViewById(R.id.search_friend_button);
         search_friend_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,8 +155,16 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         });
     }
 
-    /*
-    Control navigation drawer display
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        setupScreen();
+    }
+
+    /**
+     *  Control navigation drawer display
      */
     @Override
     public void onBackPressed() {
@@ -120,6 +176,11 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         }
     }
 
+    /**
+     * Navigation bar selection function
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -127,17 +188,21 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         int id = item.getItemId();
 
         if (id == R.id.nav_settings) {
-            //TODO: Implement
         } else if (id == R.id.nav_logout) { //Logout and return to LoginActivity
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
-            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+                UserDatabase.getUser(extras.getString("idFacebook"), user -> {
+                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
 
-            //pass facebook data to statistics activity
-            intent.putExtras(this.getIntent().getExtras());
-            startActivity(intent);
+                //pass user data to statistics activity
+                intent.putExtra("user", user);
+                startActivity(intent);
+            });
+        } else if (id == R.id.nav_disable) {
+            DisableAlarmFragment disableAlarmFragment = new DisableAlarmFragment();
+            disableAlarmFragment.show(getSupportFragmentManager(), "disable");
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -145,31 +210,26 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         return true;
     }
 
-    /*
-        DownloadImageTask is a private class used to convert URL's into a Bitmap asynchronously
+    /**
+     * check if user opened tutorial
      */
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
+    private void CreateTutorial() {
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
+        //  Intro App Initialize SharedPreferences
+        SharedPreferences getSharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
 
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getSharedPreferences.getBoolean("firstStart", true);
 
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
+        //  Check either activity or app is open very first time or not and do action
+        if (isFirstStart) {
+            //  Launch application introduction screen
+            Intent i = new Intent(MainActivity.this, TutorialActivity.class);
+            startActivity(i);
+            SharedPreferences.Editor e = getSharedPreferences.edit();
+            e.putBoolean("firstStart", false);
+            e.apply();
         }
     }
 }

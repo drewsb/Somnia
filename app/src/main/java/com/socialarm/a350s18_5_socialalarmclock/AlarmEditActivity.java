@@ -14,12 +14,18 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.NumberPicker;
+import android.widget.SeekBar;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
@@ -31,10 +37,17 @@ import static com.socialarm.a350s18_5_socialalarmclock.GetPathFromURI.getPathFro
 public class AlarmEditActivity extends AppCompatActivity {
 
     AlarmsOpenHelper dbHelper;
+    private SharedPreferences prefs;
 
     private int days_of_week;
     private String ringtone_path;
 
+    private static final String TAG = "AlarmEditActivity";
+
+    /**
+     * Set certain defaults for the pickers.
+     * @param savedInstanceState previous instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,10 +55,27 @@ public class AlarmEditActivity extends AppCompatActivity {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         picker.setIs24HourView(DateFormat.is24HourFormat(this));
 
+        NumberPicker interval = findViewById(R.id.interval_selector);
+        interval.setMinValue(1);
+        interval.setMaxValue(30);
+        interval.setWrapSelectorWheel(true);
+        interval.setValue(5);
+
+        NumberPicker count = findViewById(R.id.snooze_count);
+        count.setMinValue(1);
+        count.setMaxValue(5);
+        count.setWrapSelectorWheel(true);
+        count.setValue(3);
+
         dbHelper = new AlarmsOpenHelper(this);
         ringtone_path = new String();
+        Context applicationContext = LoginActivity.getContextOfApplication();
+        prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
     }
 
+    /**
+     * Whenever the user reopens the app, recheck whether they are in 12 or 24 hour time.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -53,15 +83,31 @@ public class AlarmEditActivity extends AppCompatActivity {
         picker.setIs24HourView(DateFormat.is24HourFormat(this));
     }
 
+    /**
+     * Send the cancel result back the calling activity.
+     * @param view The View that was selected.
+     */
     public void onCancel(View view) {
         Intent i = new Intent();
         setResult(RESULT_CANCELED, i);
         finish();
     }
 
+    /**
+     * Collect the data from the settings and make a new alarm.
+     * @param view The View that was selected.
+     */
     public void onAccept(View view) {
         TimePicker picker = findViewById(R.id.alarm_time_picker);
-        long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(), days_of_week, ringtone_path);
+        NumberPicker interval = findViewById(R.id.interval_selector);
+        NumberPicker count = findViewById(R.id.snooze_count);
+        SeekBar volume = findViewById(R.id.volume_slider);
+        String user_id = prefs.getString("id", null);
+        Alarm alarm = new Alarm(user_id, picker.getCurrentMinute(), picker.getCurrentHour(),
+                dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue(), volume.getProgress());
+        AlarmDatabase.addAlarm(alarm);
+        long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),
+                days_of_week, ringtone_path, interval.getValue(), count.getValue(), volume.getProgress());
 
         Intent i = new Intent();
         i.putExtra("new_alarm", row);
@@ -69,6 +115,10 @@ public class AlarmEditActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Stores the of the days of week in a single integer and updates as the buttons are pressed.
+     * @param view The button that was tapped.
+     */
     public void onDayOfWeekClick(View view) {
         ToggleButton b = (ToggleButton) view;
         if (b.isChecked()) {
@@ -117,6 +167,7 @@ public class AlarmEditActivity extends AppCompatActivity {
      * @param view not used
      */
     public void onSelectMusicPlayerClick(View view) {
+        RequestReadPermission();
         Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, SELECT_SOUND);
     }
@@ -133,8 +184,6 @@ public class AlarmEditActivity extends AppCompatActivity {
                 case SELECT_SOUND:
 
                     Uri uri = data.getData();
-
-                    RequestReadPermission();
 
                     ringtone_path = getPathFromURI(getApplicationContext(), uri);
 
@@ -160,6 +209,5 @@ public class AlarmEditActivity extends AppCompatActivity {
                     PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         }
     }
-
 
 }

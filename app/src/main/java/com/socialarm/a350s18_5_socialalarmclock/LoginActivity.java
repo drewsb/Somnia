@@ -1,7 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -20,11 +20,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONObject;
 
@@ -33,20 +29,25 @@ import org.json.JSONObject;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    public final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     private static final String TAG = "LoginActivity";
 
     // UI references.
     private CallbackManager callbackManager;
     private LoginButton loginButton;
     private static final String[] permissions = new String[]{"public_profile", "email", "user_friends"};
-    private final UserInfo userInfo = new UserInfo(LoginActivity.this);
+    private UserInfo userInfo;
+    public static Context contextOfApplication;
+
+    public static Context getContextOfApplication(){
+        return contextOfApplication;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        contextOfApplication = getApplicationContext();
         setContentView(R.layout.activity_login);
+        userInfo = new UserInfo(this);
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -85,7 +86,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    //Retrieve user data from JSON object
+
+    /**
+     * Retrieve user data from JSON object
+     * @param object
+     * @return Bundle containing data
+     */
     private Bundle getFacebookData(JSONObject object) {
         Bundle bundle = new Bundle();
 
@@ -100,9 +106,10 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
             bundle.putString("idFacebook", id);
-            if (object.has("user_friends")) {
-                bundle.putString("user_friends", object.getString("user_friends"));
-            }
+            Log.d(TAG, id);
+            Log.d(TAG, object.getString("friends"));
+            if (object.has("friends"))
+                bundle.putString("friends", object.getString("friends"));
             if (object.has("first_name"))
                 bundle.putString("first_name", object.getString("first_name"));
             if (object.has("last_name"))
@@ -111,18 +118,18 @@ public class LoginActivity extends AppCompatActivity {
                 bundle.putString("email", object.getString("email"));
             if (object.has("gender"))
                 bundle.putString("gender", object.getString("gender"));
-
-
-            userInfo.saveFacebookUserInfo(object.getString("first_name"),
+            userInfo.saveFacebookUserInfo(id, object.getString("first_name"),
                     object.getString("last_name"),object.getString("email"),
                     object.getString("gender"), profile_pic.toString());
-
         } catch (Exception e) {
             Log.d(TAG, "BUNDLE Exception : "+e.toString());
         }
         return bundle;
     }
 
+    /**
+     * Delete facebook access token
+     */
     private void deleteAccessToken() {
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -131,16 +138,16 @@ public class LoginActivity extends AppCompatActivity {
                     AccessToken currentAccessToken) {
                 if (currentAccessToken == null){
                     //User logged out
-                    userInfo.clearToken();
                     LoginManager.getInstance().logOut();
                 }
             }
         };
     }
 
-    /*
-        Submit read permissions and retrieve user data. Send data as a bundle and
-        transition to the MainActivity
+    /**
+     * Submit read permissions and retrieve user data. Send data as a bundle and
+     transition to the MainActivity
+     * @param token
      */
     private void sendRequest(AccessToken token){
         GraphRequest request = GraphRequest.newMeRequest(token,
@@ -148,8 +155,11 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Bundle facebookData = getFacebookData(object);
-                        final User user = new User(facebookData);
-                        UserDatabase.checkUserExists(user);
+                        Log.d(TAG, facebookData.getString("idFacebook"));
+                        Log.d(TAG, facebookData.getString("friends"));
+                        User user = new User(facebookData);
+                        user.setFirebase_id(FirebaseInstanceId.getInstance().getToken());
+                        UserDatabase.addNewUser(user);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtras(facebookData);
                         startActivity(intent);
