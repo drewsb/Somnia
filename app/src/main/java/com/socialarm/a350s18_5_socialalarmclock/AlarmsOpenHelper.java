@@ -172,8 +172,8 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
                 "SET " + LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH + "=?" +
                 "WHERE " + LocalDBContract.Alarm._ID + "=?";
         SQLiteStatement stmt = db_write.compileStatement(query);
+        stmt.bindString(1, ringtone_path);
         stmt.bindLong(2, row_id);
-        stmt.bindString(5, ringtone_path);
         stmt.executeUpdateDelete();
     }
 

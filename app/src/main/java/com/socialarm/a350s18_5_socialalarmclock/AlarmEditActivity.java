@@ -178,19 +178,11 @@ public class AlarmEditActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //play the song if found
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case SELECT_SOUND:
+        //store song url if song is foud
+        if (resultCode == RESULT_OK && requestCode == SELECT_SOUND) {
+            Uri uri = data.getData();
 
-                    Uri uri = data.getData();
-
-                    ringtone_path = getPathFromURI(getApplicationContext(), uri);
-
-                    break;
-                default:
-                    break;
-            }
+            ringtone_path = getPathFromURI(getApplicationContext(), uri);
         }
     }
 
