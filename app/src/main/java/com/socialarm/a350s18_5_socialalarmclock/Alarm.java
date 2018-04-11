@@ -4,7 +4,6 @@ package com.socialarm.a350s18_5_socialalarmclock;
  * Created by drewboyette on 3/13/18.
  */
 
-
 import java.util.Calendar;
 
 /**
@@ -24,7 +23,6 @@ public class Alarm {
     int snooze_count;
     int snooze_interval;
     int volume;
-    String time;
 
     public String getUser_id(){
         return user_id;
@@ -70,17 +68,6 @@ public class Alarm {
 
     public int getVolume(){ return volume; }
 
-    public String getTime() {
-        if (time == null) {
-            if(min < 10) {
-                return hour + ":0" + min;
-            }
-            return hour + ":" + min;
-        }
-        return time;
-    }
-
-
     public Alarm() {}
 
     public Alarm(String user_id, int min, int hour, String day_of_week, int snooze_count, int snooze_interval, int volume){
@@ -91,7 +78,6 @@ public class Alarm {
         this.snooze_count = snooze_count;
         this.snooze_interval = snooze_interval;
         this.volume = volume;
-        this.time = hour + ":" + min;
     }
 
     /**
@@ -166,6 +152,10 @@ public class Alarm {
                 return Calendar.SATURDAY;
         }
         return 0;
+    }
+
+    public static String getTime(int min, int hour) {
+        return String.format("%d:%02d", hour, min);
     }
 
 }

@@ -1,9 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
