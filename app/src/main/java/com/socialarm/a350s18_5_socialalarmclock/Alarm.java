@@ -37,7 +37,7 @@ public class Alarm {
 
     public String getDay_of_week() {return day_of_week;}
 
-    public int getInt_day_of_week() {
+    public int getIntDayOfWeek() {
         switch(day_of_week) {
             case "Sunday":
                 return 1;
