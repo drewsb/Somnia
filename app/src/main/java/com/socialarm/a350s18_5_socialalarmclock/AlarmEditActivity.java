@@ -1,5 +1,19 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,12 +29,18 @@ import android.widget.SeekBar;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import java.io.File;
+import java.io.IOException;
+
+import static com.socialarm.a350s18_5_socialalarmclock.GetPathFromURI.getPathFromURI;
+
 public class AlarmEditActivity extends AppCompatActivity {
 
     AlarmsOpenHelper dbHelper;
     private SharedPreferences prefs;
 
     private int days_of_week;
+    private String ringtone_path;
 
     private static final String TAG = "AlarmEditActivity";
 
@@ -48,6 +68,7 @@ public class AlarmEditActivity extends AppCompatActivity {
         count.setValue(3);
 
         dbHelper = new AlarmsOpenHelper(this);
+        ringtone_path = new String();
         Context applicationContext = LoginActivity.getContextOfApplication();
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
     }
@@ -86,7 +107,7 @@ public class AlarmEditActivity extends AppCompatActivity {
                 dbHelper.getDayOfWeek(days_of_week), interval.getValue(), count.getValue(), volume.getProgress());
         AlarmDatabase.addAlarm(alarm);
         long row = dbHelper.addAlarm(picker.getCurrentHour(), picker.getCurrentMinute(),
-                days_of_week, interval.getValue(), count.getValue(), volume.getProgress());
+                days_of_week, ringtone_path, interval.getValue(), count.getValue(), volume.getProgress());
 
         Intent i = new Intent();
         i.putExtra("new_alarm", row);
@@ -129,4 +150,56 @@ public class AlarmEditActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    final int SELECT_SOUND = 2;
+
+    /**
+     * OnClickListener for when a user clicks the record button and brings up the recording page
+     * @param view not used
+     */
+    public void onGoToRecordClick(View view) {
+        Intent i = new Intent(this, RecordActivity.class);
+        startActivity(i);
+    }
+
+    /**
+     * OnClickListener for when a user clicks the select button and brings up the selection page
+     * @param view not used
+     */
+    public void onSelectMusicPlayerClick(View view) {
+        RequestReadPermission();
+        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, SELECT_SOUND);
+    }
+
+    final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 11;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //store song url if song is foud
+        if (resultCode == RESULT_OK && requestCode == SELECT_SOUND) {
+            Uri uri = data.getData();
+
+            ringtone_path = getPathFromURI(getApplicationContext(), uri);
+        }
+    }
+
+    /**
+     * Request read permission from user
+     */
+    private void RequestReadPermission() {
+        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (shouldShowRequestPermissionRationale(
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            }
+
+            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        }
+    }
+
 }
