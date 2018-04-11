@@ -12,10 +12,10 @@ import java.util.Calendar;
  */
 public class Alarm {
 
-    private static final Double MAX_TIME = getTimeSinceWeekOrigin(Calendar.SATURDAY, 23, 59);
     private static final Double MS_IN_DAY =  8.64 * Math.pow(10, 7);
     private static final Double MS_IN_HOUR =  3.6 * Math.pow(10, 6);
-    private static final Double MS_IN_MIN = new Double(60000);
+    private static final Double MS_IN_MIN = 60000.0;
+    private static final Double MAX_TIME = getTimeSinceWeekOrigin(Calendar.SATURDAY, 23, 59);
 
     String user_id;
     int min;

@@ -85,7 +85,7 @@ public class FriendRow extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(MyAlarms.getContextOfApplication());
-                dbHelper.addAlarm(alarm.getHour(), alarm.getMin(), alarm.getIntDayOfWeek(), alarm.getSnooze_count(),
+                dbHelper.addAlarm(alarm.getHour(), alarm.getMin(), alarm.getIntDayOfWeek(), "", alarm.getSnooze_count(),
                         alarm.getSnooze_interval(), alarm.getVolume());
                 AlarmDatabase.addAlarm(newAlarm);
                 String text = "You have successfully joined " + user.getFirst_name() + "'s alarm!";

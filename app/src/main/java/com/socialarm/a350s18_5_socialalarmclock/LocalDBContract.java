@@ -14,6 +14,7 @@ public class LocalDBContract {
         public static final String COLUMN_NAME_MINUTE = "minute";
         public static final String COLUMN_NAME_ENABLED = "enabled";
         public static final String COLUMN_NAME_DAY_OF_WEEK = "day_of_week";
+        public static final String COLUMN_NAME_RINGTONE_PATH = "ringtone_path";
         public static final String COLUMN_NAME_SNOOZE_COUNT = "snooze_count";
         public static final String COLUMN_NAME_SNOOZE_INTERVAL = "snooze_interval";
         public static final String COLUMN_NAME_CURRENT_SNOOZE_COUNT = "current_snooze_count";

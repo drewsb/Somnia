@@ -146,7 +146,7 @@ public class UserDatabase {
      * @return
      */
     public static void getMostRecentAlarm(User user, final AlarmsLambda alarmsLambda) {
-        TreeMap<Double, Alarm> alarmMap = new TreeMap<Integer, Alarm>();
+        TreeMap<Double, Alarm> alarmMap = new TreeMap<Double, Alarm>();
         IntegerCounter alarmCounter = new IntegerCounter();
         String user_id = user.getId();
         FirebaseFirestore db = DatabaseSingleton.getInstance();
