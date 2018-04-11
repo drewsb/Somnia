@@ -43,8 +43,8 @@ public class AlarmDatabase {
         // Add a new document with a generated ID
         String alarmID = "" + alarm.hashCode();
         getAlarm(alarmID, userID, alarmResult -> {
-            Log.d(TAG, "Successfully added alarm to database.");
             if (alarmResult == null) {
+                Log.d(TAG, "Successfully added alarm to database.");
                 HashMap<String, Object> data = new HashMap<String, Object>();
                 data.put("On", true);
                 db.collection("alarms").document(userID + alarmID).set(alarm);

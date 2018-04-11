@@ -48,6 +48,9 @@ public class UserDatabase {
         public void callback(Alarm alarm);
     }
 
+    /**
+     * Simple class used to update a counter memory rather than using a primitive.
+     */
     private static class IntegerCounter {
         int counter;
 

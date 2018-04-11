@@ -78,10 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                 deleteAccessToken();
             }
         });
-
-
-
-        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
