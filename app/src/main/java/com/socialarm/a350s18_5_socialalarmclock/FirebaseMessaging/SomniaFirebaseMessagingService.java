@@ -7,8 +7,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.socialarm.a350s18_5_socialalarmclock.AlarmEditActivity;
-import com.socialarm.a350s18_5_socialalarmclock.AlarmEvent;
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.AlarmEvent;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 
 public class SomniaFirebaseMessagingService extends FirebaseMessagingService {

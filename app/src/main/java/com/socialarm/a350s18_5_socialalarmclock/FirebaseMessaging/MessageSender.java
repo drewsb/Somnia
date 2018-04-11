@@ -5,8 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.firebase.functions.FirebaseFunctions;
-import com.socialarm.a350s18_5_socialalarmclock.LoginActivity;
-import com.socialarm.a350s18_5_socialalarmclock.User;
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Main.LoginActivity;
 
 import java.util.HashMap;
 import java.util.Map;

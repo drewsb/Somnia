@@ -7,9 +7,8 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.socialarm.a350s18_5_socialalarmclock.LoginActivity;
-import com.socialarm.a350s18_5_socialalarmclock.User;
-import com.socialarm.a350s18_5_socialalarmclock.UserDatabase;
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Main.LoginActivity;
+import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
 
 /**
  * Created by Alex on 3/28/2018.

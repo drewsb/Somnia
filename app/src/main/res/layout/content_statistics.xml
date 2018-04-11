@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.socialarm.a350s18_5_socialalarmclock.StatisticsActivity"
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.Activity.Statistic.StatisticsActivity"
     tools:showIn="@layout/activity_statistics">
 
     <LinearLayout

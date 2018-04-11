@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.socialarm.a350s18_5_socialalarmclock.LeaderBoardFragment">
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.Activity.Leaderboard.LeaderBoardFragment">
 
     <LinearLayout
         android:id="@+id/spinner_layout"
