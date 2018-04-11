@@ -12,7 +12,10 @@ import java.util.Calendar;
  */
 public class Alarm {
 
-    private static final int maxTime = getTimeSinceWeekOrigin(Calendar.SATURDAY, 23, 59);
+    private static final Double MAX_TIME = getTimeSinceWeekOrigin(Calendar.SATURDAY, 23, 59);
+    private static final Double MS_IN_DAY =  8.64 * Math.pow(10, 7);
+    private static final Double MS_IN_HOUR =  3.6 * Math.pow(10, 6);
+    private static final Double MS_IN_MIN = new Double(60000);
 
     String user_id;
     int min;
@@ -37,7 +40,7 @@ public class Alarm {
 
     public String getDay_of_week() {return day_of_week;}
 
-    public int getInt_day_of_week() {
+    public int getIntDayOfWeek() {
         switch(day_of_week) {
             case "Sunday":
                 return 1;
@@ -128,22 +131,21 @@ public class Alarm {
         return result;
     }
 
-    public Integer getTimeUntilAlarm(){
+    public Double getTimeUntilAlarm(){
         Calendar cal = Calendar.getInstance();
         int day = cal.get(Calendar.DAY_OF_WEEK);
         int hour = cal.get(Calendar.HOUR);
         int min = cal.get(Calendar.MINUTE);
 
-        Integer todayTime = getTimeSinceWeekOrigin(day, hour, min);
-        Integer alarmTime = getTimeSinceWeekOrigin(getCalendarDayOfWeek(), this.getHour(), this.getMin());
+        Double todayTime = getTimeSinceWeekOrigin(day, hour, min);
+        Double alarmTime = getTimeSinceWeekOrigin(getCalendarDayOfWeek(), this.getHour(), this.getMin());
 
-        return alarmTime - todayTime >= 0 ? alarmTime - todayTime : maxTime + (alarmTime - todayTime);
+        return alarmTime - todayTime >= 0 ? alarmTime - todayTime : MAX_TIME + (alarmTime - todayTime);
     }
 
 
-    public static Integer getTimeSinceWeekOrigin(int day, int hour, int min) {
-        return Double.valueOf(day * 8.64 * Math.pow(10, 7) + hour * 3.6 * Math.pow(10, 6)
-                + min * 60000).intValue();
+    public static Double getTimeSinceWeekOrigin(int day, int hour, int min) {
+        return day * MS_IN_DAY + hour * MS_IN_HOUR + min * MS_IN_MIN;
     }
 
     public int getCalendarDayOfWeek(){

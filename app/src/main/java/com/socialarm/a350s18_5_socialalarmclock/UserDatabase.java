@@ -39,7 +39,6 @@ public class UserDatabase {
         void callback(List<User> friends);
     }
 
-
     interface UserLambda {
         public void callback(User user);
     }
@@ -147,7 +146,7 @@ public class UserDatabase {
      * @return
      */
     public static void getMostRecentAlarm(User user, final AlarmsLambda alarmsLambda) {
-        TreeMap<Integer, Alarm> alarmMap = new TreeMap<Integer, Alarm>();
+        TreeMap<Double, Alarm> alarmMap = new TreeMap<Integer, Alarm>();
         IntegerCounter alarmCounter = new IntegerCounter();
         String user_id = user.getId();
         FirebaseFirestore db = DatabaseSingleton.getInstance();
