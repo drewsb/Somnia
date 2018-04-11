@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.socialarm.a350s18_5_socialalarmclock.EventDatabase.TimeDifference.MONTH;
 import static com.socialarm.a350s18_5_socialalarmclock.EventDatabase.TimeDifference.WEEK;
@@ -49,14 +51,26 @@ public class StatisticsActivity extends AppCompatActivity {
         DrawUserInfo();
         DrawNumberStats();
         DrawGraphs(WEEK);
-        SetupSpinner();
+        if(extras.get("own_profile") == null) {
+            setUpSpinner();
+        } else {
+            TextView notTextView = findViewById(R.id.notificationTextView);
+            TextView privTextView = findViewById(R.id.privilegeTextView);
+            notTextView.setVisibility(View.GONE);
+            privTextView.setVisibility(View.GONE);
+
+            Spinner notifications = findViewById(R.id.notifcationDropdown);
+            Spinner privileges = findViewById(R.id.privilegeDropdown);
+            notifications.setVisibility(View.GONE);
+            privileges .setVisibility(View.GONE);
+        }
     }
 
     /**
      * Setup the spinner
      */
-    private void SetupSpinner() {
-        Spinner notifications = (Spinner)findViewById(R.id.notifcationDropdown);
+    private void setUpSpinner() {
+        Spinner notifications = findViewById(R.id.notifcationDropdown);
 
         notifications.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
