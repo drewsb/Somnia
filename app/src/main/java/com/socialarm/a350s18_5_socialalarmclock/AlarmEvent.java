@@ -52,13 +52,23 @@ public class AlarmEvent extends AppCompatActivity {
         initialize();
         setContentView(R.layout.activity_alarm_event);
 
+        //get alarm id and fetch path to ringtone
+        Intent i = getIntent();
+        int alarm_id = i.getIntExtra("Alarm", -1);
+        AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
+        Cursor cursor = dbHelper.getAlarm(alarm_id);
+        final String ringtone_path = cursor.getString(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH));
+        dbHelper.close();
+
         Context applicationContext = LoginActivity.getContextOfApplication();
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
 
-        Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        if (alarm == null) {
+        Uri alarm = Uri.parse(ringtone_path);
+        if (ringtone_path.isEmpty()) {
             alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
+
+        //create media player
         media = new MediaPlayer();
         float actualVolume = (float)Math.pow(((float)volume)/16, 2);
         media.setVolume(actualVolume, actualVolume);

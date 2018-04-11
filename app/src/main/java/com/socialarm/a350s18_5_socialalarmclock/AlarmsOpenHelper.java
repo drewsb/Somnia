@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteStatement;
  * This class has utility methods for interacting with the local Alarms db.
  */
 public class AlarmsOpenHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "somnia.db";
 
     public static final int SUNDAY = 1;
@@ -30,6 +30,7 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
       LocalDBContract.Alarm.COLUMN_NAME_MINUTE + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_ENABLED + " TINYINT, " +
       LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + " TINYINT, " +
+      LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH + " TEXT, " +
       LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL + " INTEGER, " +
       LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT + " INTEGER, " +
@@ -106,25 +107,28 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
      * @param volume how loud to play an alarm
      * @return the id of the new alarm
      */
-    public long addAlarm(int hour, int minute, int active_alarms, int snooze_interval,
-                         int snooze_count, int volume) {
+    public long addAlarm(int hour, int minute, int active_alarms, String ringtone_path,
+                         int snooze_interval, int snooze_count, int volume) {
         SQLiteDatabase db_write = getWritableDatabase();
         String query = "INSERT INTO " + LocalDBContract.Alarm.TABLE_NAME + " " +
                        "(" + LocalDBContract.Alarm.COLUMN_NAME_HOUR + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_MINUTE + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_ENABLED + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK + ", " +
+                       LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL + ", " +
                        LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT  + ", " +
-                       LocalDBContract.Alarm.COLUMN_NAME_VOLUME + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
+                       LocalDBContract.Alarm.COLUMN_NAME_VOLUME + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, hour);
         stmt.bindLong(2, minute);
         stmt.bindLong(3, 0);
         stmt.bindLong(4, active_alarms);
-        stmt.bindLong(5, snooze_interval);
-        stmt.bindLong(6, snooze_count);
-        stmt.bindLong(7, volume);
+        stmt.bindString(5, ringtone_path);
+        stmt.bindLong(6, snooze_interval);
+        stmt.bindLong(7, snooze_count);
+        stmt.bindLong(8, volume);
+
         long ret = stmt.executeInsert();
 
         return ret;
@@ -158,6 +162,17 @@ public class AlarmsOpenHelper extends SQLiteOpenHelper {
                        "WHERE " + LocalDBContract.Alarm._ID + "=?";
         SQLiteStatement stmt = db_write.compileStatement(query);
         stmt.bindLong(1, enable ? 1 : 0);
+        stmt.bindLong(2, row_id);
+        stmt.executeUpdateDelete();
+    }
+
+    public void setRingtonePath(long row_id, String ringtone_path) {
+        SQLiteDatabase db_write = getWritableDatabase();
+        String query = "UPDATE " + LocalDBContract.Alarm.TABLE_NAME + " " +
+                "SET " + LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH + "=?" +
+                "WHERE " + LocalDBContract.Alarm._ID + "=?";
+        SQLiteStatement stmt = db_write.compileStatement(query);
+        stmt.bindString(1, ringtone_path);
         stmt.bindLong(2, row_id);
         stmt.executeUpdateDelete();
     }
