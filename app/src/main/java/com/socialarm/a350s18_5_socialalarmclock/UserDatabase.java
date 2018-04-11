@@ -44,6 +44,22 @@ public class UserDatabase {
         public void callback(User user);
     }
 
+    interface AlarmsLambda {
+        public void callback(Alarm alarm);
+    }
+
+    private static class IntegerCounter {
+        int counter;
+
+        public IntegerCounter() {
+            this.counter = 0;
+        }
+
+        public void update(){
+            this.counter++;
+        }
+    }
+
     /**
      * Check if the user is already in the Firebase database. If not, call addUser(user).
      *
@@ -122,29 +138,40 @@ public class UserDatabase {
     }
 
     /**
-     * Retrieve the user's next alarm.
+     * Retrieve the user's next alarm by querying all the user's alarms and
+     * finding the closest relative to the current time.
      * @param user
      * @return
      */
-    public static Alarm getMostRecentAlarm(User user) {
+    public static void getMostRecentAlarm(User user, final AlarmsLambda alarmsLambda) {
+        TreeMap<Integer, Alarm> alarmMap = new TreeMap<Integer, Alarm>();
+        IntegerCounter alarmCounter = new IntegerCounter();
         String user_id = user.getId();
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         CollectionReference ref = DatabaseSingleton.getInstance().collection("users").document(user_id)
                 .collection("alarms");
-        TreeMap<Alarm, Integer> alarmTimeMap = new TreeMap<Alarm,Integer>();
         ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (DocumentSnapshot doc : task.getResult()) {
-                                Log.d(TAG, doc.getId() + " => " + doc.getData());
+                                AlarmDatabase.getAlarm(doc.getId(), user_id, alarmResult -> {
+                                    if (alarmResult == null) {
+                                        Log.d(TAG, "Error searching for alarm: " + alarmResult.hashCode());
+                                        return;
+                                    }
+                                    alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
+                                    alarmCounter.update();
+                                    if (alarmCounter.counter == task.getResult().size()) {
+                                        alarmsLambda.callback(alarmMap.get(alarmMap.firstKey()));
+                                    }
+                                });
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 });
-        return new Alarm(user.getId(), 41, 1, "Wednesday", 5, 0, 10);
     }
 
     /**

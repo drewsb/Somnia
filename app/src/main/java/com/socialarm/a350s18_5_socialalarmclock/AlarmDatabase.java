@@ -1,7 +1,9 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -36,13 +38,19 @@ public class AlarmDatabase {
      * @param alarm
      */
     public static void addAlarm(final Alarm alarm) {
+        FirebaseFirestore db =  DatabaseSingleton.getInstance();
         String userID = alarm.getUser_id();
         // Add a new document with a generated ID
         String alarmID = "" + alarm.hashCode();
-        DatabaseSingleton.getInstance().collection("alarms").document(userID + alarmID).set(alarm);
-        HashMap<String, Object> data = new HashMap<String, Object>();
-        data.put("On", true);
-        DatabaseSingleton.getInstance().collection("users").document(userID).collection("alarms").document(alarmID).set(data);
+        getAlarm(alarmID, userID, alarmResult -> {
+            Log.d(TAG, "Successfully added alarm to database.");
+            if (alarmResult == null) {
+                HashMap<String, Object> data = new HashMap<String, Object>();
+                data.put("On", true);
+                db.collection("alarms").document(userID + alarmID).set(alarm);
+                db.collection("users").document(userID).collection("alarms").document(alarmID).set(data);
+            }
+        });
     }
 
     /**
@@ -104,8 +112,14 @@ public class AlarmDatabase {
                         //callback
                         alarmLambda.callback(alarm);
                     }
+                    else {
+                        alarmLambda.callback(null);
+                    }
                 })
-                .addOnFailureListener(e -> Log.d("Alarm", "Error getting specified alarm"));
+                .addOnFailureListener( error -> {
+                    Log.d(TAG, "Error retrieving alarm");
+                    alarmLambda.callback(null);
+                });
     }
 
 }

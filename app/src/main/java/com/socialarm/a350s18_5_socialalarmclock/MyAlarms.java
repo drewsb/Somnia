@@ -93,7 +93,6 @@ public class MyAlarms extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.d(TAG, "CREATED VIEW");
         v = inflater.inflate(R.layout.fragment_my_alarms, container, false);
         updateValues();
         FloatingActionButton b = v.findViewById(R.id.add_alarm_button);
@@ -123,7 +122,6 @@ public class MyAlarms extends Fragment {
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "ACTIVITY RESULT");
         updateValues();
     }
 
@@ -132,7 +130,6 @@ public class MyAlarms extends Fragment {
      */
     private void updateValues() {
         Cursor c = dbHelper.getAlarms();
-        Log.d(TAG, "" + c.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
         SingleAlarmAdapter adapter = new SingleAlarmAdapter(getContext(), c,0);
         ListView lv = v.findViewById(R.id.my_alarm_list);
         lv.setAdapter(adapter);

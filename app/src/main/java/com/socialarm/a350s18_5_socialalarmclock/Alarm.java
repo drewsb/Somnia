@@ -5,10 +5,14 @@ package com.socialarm.a350s18_5_socialalarmclock;
  */
 
 
+import java.util.Calendar;
+
 /**
  * Holds information for every alarm. Used to push data to the Firebase database
  */
 public class Alarm {
+
+    private static final int maxTime = getTimeSinceWeekOrigin(Calendar.SATURDAY, 23, 59);
 
     String user_id;
     int min;
@@ -17,6 +21,7 @@ public class Alarm {
     int snooze_count;
     int snooze_interval;
     int volume;
+    String time;
 
     public String getUser_id(){
         return user_id;
@@ -32,7 +37,7 @@ public class Alarm {
 
     public String getDay_of_week() {return day_of_week;}
 
-    public int getInt_Day_of_week() {
+    public int getInt_day_of_week() {
         switch(day_of_week) {
             case "Sunday":
                 return 1;
@@ -63,7 +68,13 @@ public class Alarm {
     public int getVolume(){ return volume; }
 
     public String getTime() {
-        return hour + ":" + min;
+        if (time == null) {
+            if(min < 10) {
+                return hour + ":0" + min;
+            }
+            return hour + ":" + min;
+        }
+        return time;
     }
 
 
@@ -77,6 +88,7 @@ public class Alarm {
         this.snooze_count = snooze_count;
         this.snooze_interval = snooze_interval;
         this.volume = volume;
+        this.time = hour + ":" + min;
     }
 
     /**
@@ -115,4 +127,43 @@ public class Alarm {
         result = 31 * result + getVolume();
         return result;
     }
+
+    public Integer getTimeUntilAlarm(){
+        Calendar cal = Calendar.getInstance();
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        int hour = cal.get(Calendar.HOUR);
+        int min = cal.get(Calendar.MINUTE);
+
+        Integer todayTime = getTimeSinceWeekOrigin(day, hour, min);
+        Integer alarmTime = getTimeSinceWeekOrigin(getCalendarDayOfWeek(), this.getHour(), this.getMin());
+
+        return alarmTime - todayTime >= 0 ? alarmTime - todayTime : maxTime + (alarmTime - todayTime);
+    }
+
+
+    public static Integer getTimeSinceWeekOrigin(int day, int hour, int min) {
+        return Double.valueOf(day * 8.64 * Math.pow(10, 7) + hour * 3.6 * Math.pow(10, 6)
+                + min * 60000).intValue();
+    }
+
+    public int getCalendarDayOfWeek(){
+        switch(this.day_of_week) {
+            case "Sunday" :
+                return Calendar.SUNDAY;
+            case "Monday" :
+                return Calendar.MONDAY;
+            case "Tuesday" :
+                return Calendar.TUESDAY;
+            case "Wednesday" :
+                return Calendar.WEDNESDAY;
+            case "Thursday" :
+                return Calendar.THURSDAY;
+            case "Friday" :
+                return Calendar.FRIDAY;
+            case "Saturday" :
+                return Calendar.SATURDAY;
+        }
+        return 0;
+    }
+
 }
