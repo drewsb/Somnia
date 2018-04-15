@@ -7,6 +7,8 @@ import android.view.View;
 
 import com.socialarm.a350s18_5_socialalarmclock.R;
 
+import java.util.HashMap;
+
 public class Response extends AppCompatActivity {
 
     String other_id;
@@ -22,6 +24,6 @@ public class Response extends AppCompatActivity {
 
     public void sendWakeup(View view) {
         MessageSender ms = new MessageSender();
-        ms.sendAlarm(other_id);
+        ms.sendDirect(other_id, "alarm", new HashMap<>());
     }
 }

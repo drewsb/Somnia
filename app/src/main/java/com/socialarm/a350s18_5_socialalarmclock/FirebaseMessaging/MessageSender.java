@@ -28,8 +28,7 @@ public class MessageSender {
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
     }
 
-    public void notifyFriends(String type) {
-        Map<String, Object> data = new HashMap<>();
+    public void notifyFriends(String type, Map<String, Object> data) {
         String id = prefs.getString("id", null);
         data.put("id", id);
         data.put("type", type);
@@ -37,12 +36,12 @@ public class MessageSender {
         functions.getHttpsCallable("notifyFriends").call(data);
     }
 
-    public void sendAlarm(String friendId) {
-        Map<String, Object> data = new HashMap<>();
+    public void sendDirect(String friendId, String type, Map<String, Object> data) {
         String id = prefs.getString("id", null);
         data.put("id", id);
         data.put("other_id", friendId);
+        data.put("type", type);
 
-        functions.getHttpsCallable("sendAlarm").call(data);
+        functions.getHttpsCallable("sendDirect").call(data);
     }
 }

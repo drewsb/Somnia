@@ -16,6 +16,8 @@ import android.widget.ListView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.MessageSender;
 
+import java.util.HashMap;
+
 /**
  * This fragment lists all the current alarms and lets the user create new ones.
  */
@@ -108,7 +110,7 @@ public class MyAlarms extends Fragment {
         debug.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 MessageSender m = new MessageSender();
-                m.notifyFriends("snooze");
+                m.notifyFriends("snooze", new HashMap<>());
             }
         });
         return v;
