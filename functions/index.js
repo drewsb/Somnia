@@ -78,25 +78,8 @@ function sendToFriend(friend_id, payload) {
 
 exports.sendDirect = functions.https.onCall((data, context) => {
   const send_to = data.other_id;
-  //const user = admin.firestore().collection('users').doc(send_to);
   const payload = {
     data: data
   }
   sendToFriend(send_to, payload)
-  /*
-  var getDoc = user.get()
-    .then(doc => {
-      if (!doc.exists) {
-        console.log('user ' + send_to + " doesn't exist");
-        return -1;
-      } else {
-        var firebase_id = doc.get('firebase_id');
-        admin.messaging().sendToDevice(firebase_id, payload);
-        return 0;
-      }
-    })
-    .catch(err => {
-      console.log('Error getting user', err);
-    });
-    */
 });
