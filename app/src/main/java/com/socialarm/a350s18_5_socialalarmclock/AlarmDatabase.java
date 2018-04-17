@@ -20,12 +20,12 @@ public class AlarmDatabase {
 
     private AlarmDatabase() {}
 
-    interface AlarmListLambda
+    interface AlarmListCallback
     {
         void callback(List<Alarm> alarms);
     }
 
-    interface SingleAlarmLambda
+    interface SingleAlarmCallback
     {
         void callback(Alarm alarm);
     }
@@ -78,9 +78,9 @@ public class AlarmDatabase {
     /**
      * Get all alarms since beginning
      *
-     * @param alarmListLambda the function to run once the call is complete
+     * @param alarmListCallback the function to run once the call is complete
      */
-    static void getAllAlarms(final AlarmListLambda alarmListLambda) {
+    static void getAllAlarms(final AlarmListCallback alarmListCallback) {
         DatabaseSingleton.getInstance().collection("alarms").get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (!documentSnapshots.isEmpty()) {
@@ -88,7 +88,7 @@ public class AlarmDatabase {
                         List<Alarm> alarms = documentSnapshots.toObjects(Alarm.class);
 
                         //callback
-                        alarmListLambda.callback(alarms);
+                        alarmListCallback.callback(alarms);
                     }
                 })
                 .addOnFailureListener(e -> Log.d("Alarm", "Error getting alarms"));
@@ -98,9 +98,9 @@ public class AlarmDatabase {
      * Get alarm that matches the given alarm id
      *
      * @param alarm_id the ID of the alarm to get
-     * @param alarmLambda the function to run once the call is complete
+     * @param alarmCallback the function to run once the call is complete
      */
-    static void getAlarm(String alarm_id, String user_id, final SingleAlarmLambda alarmLambda) {
+    static void getAlarm(String alarm_id, String user_id, final SingleAlarmCallback alarmCallback) {
         DatabaseSingleton.getInstance().collection("alarms").document(user_id + alarm_id).get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (documentSnapshots.exists()) {
@@ -108,15 +108,15 @@ public class AlarmDatabase {
                         Alarm alarm = documentSnapshots.toObject(Alarm.class);
 
                         //callback
-                        alarmLambda.callback(alarm);
+                        alarmCallback.callback(alarm);
                     }
                     else {
-                        alarmLambda.callback(null);
+                        alarmCallback.callback(null);
                     }
                 })
                 .addOnFailureListener( error -> {
                     Log.d(TAG, "Error retrieving alarm");
-                    alarmLambda.callback(null);
+                    alarmCallback.callback(null);
                 });
     }
 

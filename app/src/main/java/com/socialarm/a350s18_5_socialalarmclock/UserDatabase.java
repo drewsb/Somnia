@@ -35,15 +35,15 @@ public class UserDatabase {
     private UserDatabase() {
     }
 
-    interface FriendsLambda {
+    interface FriendsCallback {
         void callback(List<User> friends);
     }
 
-    interface UserLambda {
+    interface UserCallback {
         public void callback(User user);
     }
 
-    interface AlarmsLambda {
+    interface AlarmsCallback {
         public void callback(Alarm alarm);
     }
 
@@ -89,7 +89,7 @@ public class UserDatabase {
     /**
      * Gets all users and only returns the one that matches someone with more exp w/ db check it out
      */
-    public static void getUser(String user_id, final UserLambda userLambda) {
+    public static void getUser(String user_id, final UserCallback userCallback) {
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         db.collection("users").document(user_id).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -97,7 +97,7 @@ public class UserDatabase {
                         User user = documentSnapshot.toObject(User.class);
 
                         //callback
-                        userLambda.callback(user);
+                        userCallback.callback(user);
                     }
                 })
                 .addOnFailureListener(e -> Log.d("User", "Error getting user"));
@@ -106,7 +106,7 @@ public class UserDatabase {
     /**
      * Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
      */
-    public static void getFriends(User user, final FriendsLambda friendsLambda) {
+    public static void getFriends(User user, final FriendsCallback friendsCallback) {
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         // TODO: refactor this slow code
         db.collection("users").get()
@@ -124,7 +124,7 @@ public class UserDatabase {
                             }
                         }
                         //callback
-                        friendsLambda.callback(friends);
+                        friendsCallback.callback(friends);
                     }
                 })
                 .addOnFailureListener(e -> Log.d("Friend", "Error getting friends"));
@@ -145,7 +145,7 @@ public class UserDatabase {
      * @param user
      * @return
      */
-    public static void getMostRecentAlarm(User user, final AlarmsLambda alarmsLambda) {
+    public static void getMostRecentAlarm(User user, final AlarmsCallback alarmsCallback) {
         TreeMap<Double, Alarm> alarmMap = new TreeMap<Double, Alarm>();
         IntegerCounter alarmCounter = new IntegerCounter();
         String user_id = user.getId();
@@ -165,7 +165,7 @@ public class UserDatabase {
                                     alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
                                     alarmCounter.update();
                                     if (alarmCounter.counter == task.getResult().size()) {
-                                        alarmsLambda.callback(alarmMap.get(alarmMap.firstKey()));
+                                        alarmsCallback.callback(alarmMap.get(alarmMap.firstKey()));
                                     }
                                 });
                             }
