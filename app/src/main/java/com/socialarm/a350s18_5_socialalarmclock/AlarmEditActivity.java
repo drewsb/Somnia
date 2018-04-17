@@ -27,11 +27,12 @@ import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
 import java.io.File;
 import java.io.IOException;
-
 import static com.socialarm.a350s18_5_socialalarmclock.GetPathFromURI.getPathFromURI;
 
 public class AlarmEditActivity extends AppCompatActivity {
@@ -98,6 +99,10 @@ public class AlarmEditActivity extends AppCompatActivity {
      * @param view The View that was selected.
      */
     public void onAccept(View view) {
+        if (days_of_week == 0) {
+            Toast.makeText(getApplicationContext(), "You must select at least one day.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         TimePicker picker = findViewById(R.id.alarm_time_picker);
         NumberPicker interval = findViewById(R.id.interval_selector);
         NumberPicker count = findViewById(R.id.snooze_count);

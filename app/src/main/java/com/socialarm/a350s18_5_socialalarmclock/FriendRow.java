@@ -1,12 +1,8 @@
 package com.socialarm.a350s18_5_socialalarmclock;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.support.v4.content.ContextCompat.startActivity;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -90,7 +85,7 @@ public class FriendRow extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(MyAlarms.getContextOfApplication());
-                dbHelper.addAlarm(alarm.getHour(), alarm.getMin(), alarm.getInt_Day_of_week(), "", alarm.getSnooze_count(),
+                dbHelper.addAlarm(alarm.getHour(), alarm.getMin(), alarm.getIntDayOfWeek(), "", alarm.getSnooze_count(),
                         alarm.getSnooze_interval(), alarm.getVolume());
                 AlarmDatabase.addAlarm(newAlarm);
                 String text = "You have successfully joined " + user.getFirst_name() + "'s alarm!";

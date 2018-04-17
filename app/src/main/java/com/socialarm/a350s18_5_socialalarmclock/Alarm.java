@@ -4,11 +4,17 @@ package com.socialarm.a350s18_5_socialalarmclock;
  * Created by drewboyette on 3/13/18.
  */
 
+import java.util.Calendar;
 
 /**
  * Holds information for every alarm. Used to push data to the Firebase database
  */
 public class Alarm {
+
+    private static final Double MS_IN_DAY =  8.64 * Math.pow(10, 7);
+    private static final Double MS_IN_HOUR =  3.6 * Math.pow(10, 6);
+    private static final Double MS_IN_MIN = 60000.0;
+    private static final Double MAX_TIME = getTimeSinceWeekOrigin(Calendar.SATURDAY, 23, 59);
 
     String user_id;
     int min;
@@ -32,7 +38,7 @@ public class Alarm {
 
     public String getDay_of_week() {return day_of_week;}
 
-    public int getInt_Day_of_week() {
+    public int getIntDayOfWeek() {
         switch(day_of_week) {
             case "Sunday":
                 return 1;
@@ -61,11 +67,6 @@ public class Alarm {
     }
 
     public int getVolume(){ return volume; }
-
-    public String getTime() {
-        return hour + ":" + min;
-    }
-
 
     public Alarm() {}
 
@@ -115,4 +116,46 @@ public class Alarm {
         result = 31 * result + getVolume();
         return result;
     }
+
+    public Double getTimeUntilAlarm(){
+        Calendar cal = Calendar.getInstance();
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        int hour = cal.get(Calendar.HOUR);
+        int min = cal.get(Calendar.MINUTE);
+
+        Double todayTime = getTimeSinceWeekOrigin(day, hour, min);
+        Double alarmTime = getTimeSinceWeekOrigin(getCalendarDayOfWeek(), this.getHour(), this.getMin());
+
+        return alarmTime - todayTime >= 0 ? alarmTime - todayTime : MAX_TIME + (alarmTime - todayTime);
+    }
+
+
+    public static Double getTimeSinceWeekOrigin(int day, int hour, int min) {
+        return day * MS_IN_DAY + hour * MS_IN_HOUR + min * MS_IN_MIN;
+    }
+
+    public int getCalendarDayOfWeek(){
+        switch(this.day_of_week) {
+            case "Sunday" :
+                return Calendar.SUNDAY;
+            case "Monday" :
+                return Calendar.MONDAY;
+            case "Tuesday" :
+                return Calendar.TUESDAY;
+            case "Wednesday" :
+                return Calendar.WEDNESDAY;
+            case "Thursday" :
+                return Calendar.THURSDAY;
+            case "Friday" :
+                return Calendar.FRIDAY;
+            case "Saturday" :
+                return Calendar.SATURDAY;
+        }
+        return 0;
+    }
+
+    public static String getTime(int min, int hour) {
+        return String.format("%d:%02d", hour, min);
+    }
+
 }

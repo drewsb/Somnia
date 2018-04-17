@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
 
                 //pass user data to statistics activity
                 intent.putExtra("user", user);
+                intent.putExtra("own_profile", false);
                 startActivity(intent);
             });
         } else if (id == R.id.nav_disable) {

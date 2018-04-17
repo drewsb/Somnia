@@ -18,12 +18,12 @@ public final class EventDatabase {
     //private constructor
     private EventDatabase() {}
 
-    interface EventLambda
+    interface EventCallback
     {
         void callback(List<Event> events);
     }
 
-    interface LeaderboardEntryLambda
+    interface LeaderboardEntryCallback
     {
         void callback(List<LeaderboardEntry> events);
     }
@@ -41,9 +41,9 @@ public final class EventDatabase {
     /**
      * Get all events since beginning
      *
-     * @param eventLambda the function to run once the call is complete
+     * @param eventCallback the function to run once the call is complete
      */
-    public static void getAllEvents(final EventLambda eventLambda) {
+    public static void getAllEvents(final EventCallback eventCallback) {
 
         DatabaseSingleton.getInstance().collection("events").get()
                 .addOnSuccessListener(documentSnapshots -> {
@@ -52,7 +52,7 @@ public final class EventDatabase {
                         List<Event> events = documentSnapshots.toObjects(Event.class);
 
                         //callback
-                        eventLambda.callback(events);
+                        eventCallback.callback(events);
                     }
                 })
                 .addOnFailureListener(e -> Log.d("Event", "Error getting events"));
@@ -67,13 +67,13 @@ public final class EventDatabase {
      * @param duration the timeframe we want to filter for
      * @param type the type of event we want to recieve
      * @param direction the sort direction of the resulting list
-     * @param lbeLambda the function to run once the call is complete
+     * @param lbeCallback the function to run once the call is complete
      */
     public static void getLeaderboardEventsSince(List<String> friends_list,
                                                  Duration duration,
                                                  SleepStatType type,
                                                  SortDirection direction,
-                                                 final LeaderboardEntryLambda lbeLambda) {
+                                                 final LeaderboardEntryCallback lbeCallback) {
         List<LeaderboardEntry> entryList = new ArrayList<>();
 
         for (String friend_id : friends_list) {
@@ -98,7 +98,7 @@ public final class EventDatabase {
                     Collections.sort(entryList);
 
                     if (entryList.size() == friends_list.size()) {
-                        lbeLambda.callback(entryList);
+                        lbeCallback.callback(entryList);
                     }
                 });
             });
@@ -194,9 +194,9 @@ public final class EventDatabase {
      *
      * @param difference time period to filter for
      * @param user_id user to filter for
-     * @param eventLambda callback function
+     * @param eventCallback callback function
      */
-    public static void getEventsSince(TimeDifference difference, String user_id, final EventLambda eventLambda) {
+    public static void getEventsSince(TimeDifference difference, String user_id, final EventCallback eventCallback) {
         getAllEvents(events ->
         {
             Calendar calender = Calendar.getInstance();
@@ -235,7 +235,7 @@ public final class EventDatabase {
             }
 
             // call the callback
-            eventLambda.callback(filteredEvents);
+            eventCallback.callback(filteredEvents);
         });
     }
   
