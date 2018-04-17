@@ -34,19 +34,6 @@ public class UserDatabase {
     private UserDatabase() {
     }
 
-    public interface FriendsCallback {
-        void callback(List<User> friends);
-    }
-
-
-    public interface UserCallback {
-        public void callback(User user);
-    }
-
-    public interface AlarmsCallback {
-        public void callback(Alarm alarm);
-    }
-
     /**
      * Simple class used to update a counter memory rather than using a primitive.
      */
@@ -89,7 +76,7 @@ public class UserDatabase {
     /**
      * Gets all users and only returns the one that matches someone with more exp w/ db check it out
      */
-    public static void getUser(String user_id, final UserCallback userCallback) {
+    public static void getUser(String user_id, final Consumer<User> userCallback) {
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         db.collection("users").document(user_id).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -106,7 +93,7 @@ public class UserDatabase {
     /**
      * Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
      */
-    public static void getFriends(User user, final FriendsCallback friendsCallback) {
+    public static void getFriends(User user, final Consumer<List<User>> friendsCallback) {
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         // TODO: refactor this slow code
         db.collection("users").get()
@@ -145,7 +132,7 @@ public class UserDatabase {
      * @param user
      * @return
      */
-    public static void getMostRecentAlarm(User user, final AlarmsCallback alarmsCallback) {
+    public static void getMostRecentAlarm(User user, final Consumer<Alarm> alarmsCallback) {
         TreeMap<Double, Alarm> alarmMap = new TreeMap<Double, Alarm>();
         IntegerCounter alarmCounter = new IntegerCounter();
         String user_id = user.getId();

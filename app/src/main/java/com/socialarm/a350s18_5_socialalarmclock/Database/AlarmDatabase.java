@@ -3,7 +3,6 @@ package com.socialarm.a350s18_5_socialalarmclock.Database;
 import android.util.Log;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,16 +19,6 @@ public class AlarmDatabase {
     private static final String TAG = "AlarmDatabase";
 
     private AlarmDatabase() {}
-
-    public interface AlarmListCallback
-    {
-        void callback(List<Alarm> alarms);
-    }
-
-    public interface SingleAlarmCallback
-    {
-        void callback(Alarm alarm);
-    }
 
     /**
      * Add alarm to alarm collection, and add alarm id to user alarm collection
@@ -81,7 +70,7 @@ public class AlarmDatabase {
      *
      * @param alarmListCallback the function to run once the call is complete
      */
-    static void getAllAlarms(final AlarmListCallback alarmListCallback) {
+    static void getAllAlarms(Consumer<List<Alarm>> alarmListCallback) {
         DatabaseSingleton.getInstance().collection("alarms").get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (!documentSnapshots.isEmpty()) {
@@ -101,7 +90,7 @@ public class AlarmDatabase {
      * @param alarm_id the ID of the alarm to get
      * @param alarmCallback the function to run once the call is complete
      */
-    public static void getAlarm(String alarm_id, String user_id, final SingleAlarmCallback alarmCallback) {
+    static void getAlarm(String alarm_id, String user_id, final Consumer<Alarm> alarmCallback) {
         DatabaseSingleton.getInstance().collection("alarms").document(user_id + alarm_id).get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (documentSnapshots.exists()) {
