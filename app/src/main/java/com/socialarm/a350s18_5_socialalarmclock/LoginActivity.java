@@ -161,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtras(facebookData);
                         startActivity(intent);
+                        finish();
                     }
                 });
         Bundle parameters = new Bundle();
