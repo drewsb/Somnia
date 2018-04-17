@@ -68,9 +68,11 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.row.setName(users.get(position));
-        holder.row.setTime(alarms.get(position).getTime(), users.get(position));
-        holder.row.setJoinButton(users.get(position), alarms.get(position));
+        User user  = users.get(position);
+        Alarm alarm = alarms.get(position);
+        holder.row.setName(user);
+        holder.row.setTime(Alarm.getTime(alarm.getMin(), alarm.getHour()), user);
+        holder.row.setJoinButton(user, alarm);
     }
 
     /**

@@ -84,10 +84,14 @@ public class FriendsFragment extends Fragment {
                 // specify an adapter (see also next example)
             ArrayList<Alarm> alarms = new ArrayList<Alarm>();
             for(User f : friends) {
-                alarms.add(UserDatabase.getMostRecentAlarm(f));
+                UserDatabase.getMostRecentAlarm(f, alarm -> {
+                    alarms.add(alarm);
+                    if (alarms.size() == friends.size()) {
+                        mAdapter = new FriendRowAdapter(friends, alarms);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+                });
             }
-            mAdapter = new FriendRowAdapter(friends, alarms);
-            mRecyclerView.setAdapter(mAdapter);
         });
 
         return myView;

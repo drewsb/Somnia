@@ -2,6 +2,7 @@ package com.socialarm.a350s18_5_socialalarmclock.Activity.Livefeed;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,6 +61,10 @@ public class LiveFeedRow extends LinearLayout {
 
         // get the time of this alarm and put it in
         AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
+            if (alarm == null) {
+                Log.d("LiveFeedRow", "Error finding alarm: " + event.getAlarm_id());
+                return;
+            }
             String alarmText = alarm.getHour() + ":" + alarm.getMin();
             eventTextView.setText(alarmText);
         });
