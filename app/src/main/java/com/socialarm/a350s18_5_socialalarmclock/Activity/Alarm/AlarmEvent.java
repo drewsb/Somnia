@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
@@ -45,6 +46,7 @@ public class AlarmEvent extends AppCompatActivity {
     private int current_snooze_count;
 
     private int volume;
+    private String ringtone_path;
 
     AlarmsOpenHelper dbHelper;
     private SharedPreferences prefs;
@@ -60,12 +62,19 @@ public class AlarmEvent extends AppCompatActivity {
         initialize();
         setContentView(R.layout.activity_alarm_event);
 
+        if (alarm_id == -1) {
+            Button snooze = findViewById(R.id.snooze_button);
+            snooze.setClickable(false);
+            snooze.setFocusable(false);
+            snooze.setVisibility(View.INVISIBLE);
+        }
+
+
         //get alarm id and fetch path to ringtone
         Intent i = getIntent();
         int alarm_id = i.getIntExtra("Alarm", -1);
         AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
         Cursor cursor = dbHelper.getAlarm(alarm_id);
-        final String ringtone_path = cursor.getString(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH));
         dbHelper.close();
 
         Context applicationContext = LoginActivity.getContextOfApplication();
@@ -96,17 +105,20 @@ public class AlarmEvent extends AppCompatActivity {
     private void initialize() {
         Intent i = getIntent();
         alarm_id = i.getIntExtra("Alarm", -1);
-        dbHelper = new AlarmsOpenHelper(this);
-        Cursor cursor = dbHelper.getAlarm(alarm_id);
+        if (alarm_id != -1) {
+            dbHelper = new AlarmsOpenHelper(this);
+            Cursor cursor = dbHelper.getAlarm(alarm_id);
 
-        snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT));
-        snooze_interval = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL));
-        current_snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT));
-        hour = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_HOUR));
-        minute = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
-        enabled = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
-        days_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
-        volume = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_VOLUME));
+            snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_COUNT));
+            snooze_interval = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_SNOOZE_INTERVAL));
+            current_snooze_count = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_CURRENT_SNOOZE_COUNT));
+            hour = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_HOUR));
+            minute = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_MINUTE));
+            enabled = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_ENABLED));
+            days_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
+            volume = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_VOLUME));
+            ringtone_path = cursor.getString(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH));
+        }
     }
 
     /**
@@ -158,13 +170,16 @@ public class AlarmEvent extends AppCompatActivity {
         media.stop();
         Intent i = getIntent();
         int alarm_id = i.getIntExtra("Alarm", -1);
-        AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
-        Cursor cursor = dbHelper.getAlarm(alarm_id);
 
-        setNextAlarm();
-        dbHelper.setSnooze(alarm_id, 0);
+        if (alarm_id != -1) {
+            AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
+            Cursor cursor = dbHelper.getAlarm(alarm_id);
 
-        dbHelper.close();
+            setNextAlarm();
+            dbHelper.setSnooze(alarm_id, 0);
+
+            dbHelper.close();
+        }
 
         finish();
     }

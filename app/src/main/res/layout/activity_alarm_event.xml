@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/dismiss_button"
         style="@android:style/Widget.Material.Button.Colored"
         android:layout_width="163dp"
         android:layout_height="77dp"
@@ -29,12 +29,12 @@
         android:onClick="onDismiss"
         android:text="Dismiss"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/button4"
+        app:layout_constraintBottom_toTopOf="@+id/snooze_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/snooze_button"
         android:layout_width="145dp"
         android:layout_height="67dp"
         android:layout_marginBottom="32dp"
