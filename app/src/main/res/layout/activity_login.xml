@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.socialarm.a350s18_5_socialalarmclock.LoginActivity">
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.Activity.Main.LoginActivity">
 
     <!-- Login progress -->
 
