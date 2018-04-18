@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.socialarm.a350s18_5_socialalarmclock.FriendsFragment">
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.Activity.Friend.FriendsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/live_feed_recycler_view"

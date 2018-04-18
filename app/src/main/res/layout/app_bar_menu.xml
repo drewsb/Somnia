@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.socialarm.a350s18_5_socialalarmclock.MainActivity">
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.Activity.Main.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
