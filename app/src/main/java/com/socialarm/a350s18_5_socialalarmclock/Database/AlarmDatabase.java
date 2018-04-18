@@ -3,6 +3,8 @@ package com.socialarm.a350s18_5_socialalarmclock.Database;
 import android.util.Log;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
+import com.socialarm.a350s18_5_socialalarmclock.Helper.Consumer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -90,7 +92,7 @@ public class AlarmDatabase {
      * @param alarm_id the ID of the alarm to get
      * @param alarmCallback the function to run once the call is complete
      */
-    static void getAlarm(String alarm_id, String user_id, final Consumer<Alarm> alarmCallback) {
+    public static void getAlarm(String alarm_id, String user_id, final Consumer<Alarm> alarmCallback) {
         DatabaseSingleton.getInstance().collection("alarms").document(user_id + alarm_id).get()
                 .addOnSuccessListener(documentSnapshots -> {
                     if (documentSnapshots.exists()) {

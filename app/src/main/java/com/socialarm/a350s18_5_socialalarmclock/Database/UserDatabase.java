@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
+import com.socialarm.a350s18_5_socialalarmclock.Helper.Consumer;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.ArrayList;

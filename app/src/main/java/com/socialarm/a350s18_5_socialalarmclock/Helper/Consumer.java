@@ -1,4 +1,4 @@
-package com.socialarm.a350s18_5_socialalarmclock;
+package com.socialarm.a350s18_5_socialalarmclock.Helper;
 
 /**
  * Created by Alex on 4/17/2018.
