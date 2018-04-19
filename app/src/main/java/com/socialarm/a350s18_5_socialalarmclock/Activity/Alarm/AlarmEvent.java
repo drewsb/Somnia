@@ -119,6 +119,8 @@ public class AlarmEvent extends AppCompatActivity {
             days_of_week = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_DAY_OF_WEEK));
             volume = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_VOLUME));
             ringtone_path = cursor.getString(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH));
+        } else {
+            ringtone_path = "";
         }
     }
 
@@ -147,7 +149,10 @@ public class AlarmEvent extends AppCompatActivity {
         EventDatabase.addEvent(event);
 
         MessageSender ms = new MessageSender();
-        ms.notifyFriends("snooze", new HashMap<>());
+        Map<String, Object> data = new HashMap<>();
+        data.put("hour", ""+hour);
+        data.put("minute", ""+minute);
+        ms.notifyFriends("snooze", data);
 
         dbHelper.setSnooze(alarm_id, current_snooze_count+1);
 
