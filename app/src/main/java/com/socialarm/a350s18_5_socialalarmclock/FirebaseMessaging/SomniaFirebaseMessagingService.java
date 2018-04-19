@@ -10,6 +10,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.AlarmEvent;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 
+import java.util.Map;
+
 public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
@@ -18,7 +20,10 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
             String type = remoteMessage.getData().get("type");
             if (type.equalsIgnoreCase("snooze")) {
                 Intent response = new Intent(this, Response.class);
-                response.putExtra("user_id", remoteMessage.getData().get("id"));
+                Map<String, String> data = remoteMessage.getData();
+                response.putExtra("user_id", data.get("id"));
+                response.putExtra("hour", Integer.parseInt(data.get("hour")));
+                response.putExtra("minute", Integer.parseInt(data.get("minute")));
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, response, 0);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
                         .setSmallIcon(R.mipmap.ic_launcher)
@@ -28,10 +33,9 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                         .setAutoCancel(true);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                 notificationManager.notify(1,builder.build());
-            } else if (type.equalsIgnoreCase("wakeup")) {
+            } else if (type.equalsIgnoreCase("alarm")) {
                 Intent i = new Intent(this, AlarmEvent.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("Alarm", 1);// id of alarm
                 startActivity(i);
             }
         }
