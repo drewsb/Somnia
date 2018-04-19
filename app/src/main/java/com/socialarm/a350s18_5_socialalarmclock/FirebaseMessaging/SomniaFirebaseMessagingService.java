@@ -18,7 +18,7 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
             String type = remoteMessage.getData().get("type");
             if (type.equalsIgnoreCase("snooze")) {
                 Intent response = new Intent(this, Response.class);
-                response.putExtra("id", remoteMessage.getData().get("id"));
+                response.putExtra("user_id", remoteMessage.getData().get("id"));
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, response, 0);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
                         .setSmallIcon(R.mipmap.ic_launcher)

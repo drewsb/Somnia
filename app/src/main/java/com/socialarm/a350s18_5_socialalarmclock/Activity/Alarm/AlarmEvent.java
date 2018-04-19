@@ -29,6 +29,7 @@ import com.socialarm.a350s18_5_socialalarmclock.R;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AlarmEvent extends AppCompatActivity {
 
