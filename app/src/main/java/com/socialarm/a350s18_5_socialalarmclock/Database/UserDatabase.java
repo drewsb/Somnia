@@ -110,16 +110,15 @@ public class UserDatabase {
     public static void getFriends(User user, final FriendsCallback friendsCallback) {
         IntegerCounter friendCounter = new IntegerCounter();
         List<String> friend_ids = user.getFriend_ids();
-        List<User>
-                friendsList = new ArrayList<User>();
+        List<User> friendsList = new ArrayList<User>();
         for(String id : friend_ids) {
             getUser(id, userResult -> {
+                friendCounter.update();
                 if (userResult == null) {
                     Log.d(TAG, "Error searching for user: " + userResult);
                     return;
                 }
                 friendsList.add(userResult);
-                friendCounter.update();
                 if (friendCounter.counter == friend_ids.size()) {
                     friendsCallback.callback(friendsList);
                 }
