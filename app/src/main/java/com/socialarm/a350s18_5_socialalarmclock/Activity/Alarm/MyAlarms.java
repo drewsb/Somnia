@@ -2,7 +2,6 @@ package com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +14,6 @@ import android.widget.ListView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.AlarmsOpenHelper;
-import com.socialarm.a350s18_5_socialalarmclock.Alarm.LocalDBContract;
 import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.MessageSender;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 
@@ -137,19 +135,5 @@ public class MyAlarms extends Fragment {
         ListView lv = v.findViewById(R.id.my_alarm_list);
         lv.setAdapter(adapter);
         lv.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

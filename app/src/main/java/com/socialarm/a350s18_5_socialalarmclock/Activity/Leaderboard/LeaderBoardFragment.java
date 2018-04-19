@@ -1,7 +1,5 @@
 package com.socialarm.a350s18_5_socialalarmclock.Activity.Leaderboard;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LeaderBoardFragment extends Fragment {
-
-    private OnFragmentInteractionListener mListener;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -237,51 +233,5 @@ public class LeaderBoardFragment extends Fragment {
         // instantiate a new leaderboardRowAdapter with this data
         mAdapter = new LeaderboardRowAdapter(friendNames, stats);
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    // ------------------Other required methods---------------------
-
-    /**
-     *   Possibly could rename method, update argument and hook method into UI event
-     *   if we wanted to have a global onButtonPressed. This method will sit here unused otherwise
-     */
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    /**
-     * Have to implement this one
-     * @param context global context of the app
-     */
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    /**
-     * Called when the view is detached from the view (set listener to null)
-     */
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }
