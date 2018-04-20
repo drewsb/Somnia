@@ -16,7 +16,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="190dp"
+        android:layout_height="120dp"
         android:adjustViewBounds="true"
         android:background="@drawable/somnia"
         android:scaleType="centerInside" />

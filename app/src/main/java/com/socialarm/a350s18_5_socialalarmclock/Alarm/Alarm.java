@@ -11,10 +11,10 @@ import java.util.Calendar;
  */
 public class Alarm {
 
-    private static final Double MS_IN_DAY =  8.64 * Math.pow(10, 7);
-    private static final Double MS_IN_HOUR =  3.6 * Math.pow(10, 6);
-    private static final Double MS_IN_MIN = 60000.0;
-    private static final Double MAX_TIME = getTimeSinceWeekOrigin(Calendar.SATURDAY, 23, 59);
+    private static final double MS_IN_DAY =  8.64 * Math.pow(10, 7);
+    private static final double MS_IN_HOUR =  3.6 * Math.pow(10, 6);
+    private static final double MS_IN_MIN = 60000.0;
+    private static final double MAX_TIME = getTimeSinceWeekOrigin(Calendar.SATURDAY, 23, 59);
 
     String user_id;
     int min;
@@ -117,20 +117,20 @@ public class Alarm {
         return result;
     }
 
-    public Double getTimeUntilAlarm(){
+    public double getTimeUntilAlarm(){
         Calendar cal = Calendar.getInstance();
         int day = cal.get(Calendar.DAY_OF_WEEK);
         int hour = cal.get(Calendar.HOUR);
         int min = cal.get(Calendar.MINUTE);
 
-        Double todayTime = getTimeSinceWeekOrigin(day, hour, min);
-        Double alarmTime = getTimeSinceWeekOrigin(getCalendarDayOfWeek(), this.getHour(), this.getMin());
+        double todayTime = getTimeSinceWeekOrigin(day, hour, min);
+        double alarmTime = getTimeSinceWeekOrigin(getCalendarDayOfWeek(), this.getHour(), this.getMin());
 
         return alarmTime - todayTime >= 0 ? alarmTime - todayTime : MAX_TIME + (alarmTime - todayTime);
     }
 
 
-    public static Double getTimeSinceWeekOrigin(int day, int hour, int min) {
+    public static double getTimeSinceWeekOrigin(int day, int hour, int min) {
         return day * MS_IN_DAY + hour * MS_IN_HOUR + min * MS_IN_MIN;
     }
 

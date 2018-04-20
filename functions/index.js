@@ -46,7 +46,7 @@ exports.notifyFriends = functions.https.onCall((data, context) => {
 	    console.log(doc);
 	    var friends = doc.get('friend_ids');
 	    for (var i = 0; i < friends.length; i++) {
-	      notifyFriend(friends[i], payload);
+	      sendToFriend(friends[i], payload);
 	    }
       }
       return uid;
@@ -57,7 +57,7 @@ exports.notifyFriends = functions.https.onCall((data, context) => {
     });
 });
 
-function notifyFriend(friend_id, payload) {
+function sendToFriend(friend_id, payload) {
   const user = admin.firestore().collection('users').doc(friend_id);
   var getDoc = user.get()
     .then(doc => {
@@ -76,21 +76,10 @@ function notifyFriend(friend_id, payload) {
     });
 }
 
-exports.sendAlarm = functions.https.onCall((data, context) => {
+exports.sendDirect = functions.https.onCall((data, context) => {
   const send_to = data.other_id;
-  const user = admin.firestore().collection('users').doc(send_to);
-  var getDoc = user.get()
-    .then(doc => {
-      if (!doc.exists) {
-        console.log('user ' + send_to + " doesn't exist");
-        return -1;
-      } else {
-        var firebase_id = doc.get('firebase_id');
-        admin.messaging().sendToDevice(firebase_id, data);
-        return 0;
-      }
-    })
-    .catch(err => {
-      console.log('Error getting user', err);
-    });
+  const payload = {
+    data: data
+  }
+  sendToFriend(send_to, payload)
 });

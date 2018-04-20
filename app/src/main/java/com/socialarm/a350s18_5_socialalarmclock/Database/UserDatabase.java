@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -12,6 +13,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
+import com.socialarm.a350s18_5_socialalarmclock.Helper.Consumer;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.ArrayList;
@@ -32,19 +34,6 @@ public class UserDatabase {
     private static final String TAG = "UserDatabase";
 
     private UserDatabase() {
-    }
-
-    public interface FriendsCallback {
-        void callback(List<User> friends);
-    }
-
-
-    public interface UserCallback {
-        public void callback(User user);
-    }
-
-    public interface AlarmsCallback {
-        public void callback(Alarm alarm);
     }
 
     /**
@@ -89,7 +78,7 @@ public class UserDatabase {
     /**
      * Gets all users and only returns the one that matches someone with more exp w/ db check it out
      */
-    public static void getUser(String user_id, final UserCallback userCallback) {
+    public static void getUser(String user_id, final Consumer<User> userCallback) {
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         db.collection("users").document(user_id).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -106,28 +95,23 @@ public class UserDatabase {
     /**
      * Gets all users and checks if they are in list and populate. someone with more exp w/ db check it out
      */
-    public static void getFriends(User user, final FriendsCallback friendsCallback) {
-        FirebaseFirestore db = DatabaseSingleton.getInstance();
-        // TODO: refactor this slow code
-        db.collection("users").get()
-                .addOnSuccessListener(documentSnapshots -> {
-                    if (!documentSnapshots.isEmpty()) {
-                        List<User> friends = new ArrayList<User>();
-                        for (DocumentSnapshot ds : documentSnapshots) {
-                            User friend = ds.toObject(User.class);
-
-                            if (user != null && user.getFriend_ids() != null && user.getFriend_ids().contains(friend.getId())) {
-                                friends.add(friend);
-                            } else {
-                                CharSequence text = "You do not have a friends list";
-                                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        //callback
-                        friendsCallback.callback(friends);
-                    }
-                })
-                .addOnFailureListener(e -> Log.d("Friend", "Error getting friends"));
+    public static void getFriends(User user, final Consumer<List<User>> friendsCallback) {
+        IntegerCounter friendCounter = new IntegerCounter();
+        List<String> friend_ids = user.getFriend_ids();
+        List<User> friendsList = new ArrayList<User>();
+        for(String id : friend_ids) {
+            getUser(id, userResult -> {
+                friendCounter.update();
+                if (userResult == null) {
+                    Log.d(TAG, "Error searching for user: " + userResult);
+                    return;
+                }
+                friendsList.add(userResult);
+                if (friendCounter.counter == friend_ids.size()) {
+                    friendsCallback.callback(friendsList);
+                }
+            });
+        }
     }
 
     /**
@@ -145,7 +129,7 @@ public class UserDatabase {
      * @param user
      * @return
      */
-    public static void getMostRecentAlarm(User user, final AlarmsCallback alarmsCallback) {
+    public static void getMostRecentAlarm(User user, final Consumer<Alarm> alarmsCallback) {
         TreeMap<Double, Alarm> alarmMap = new TreeMap<Double, Alarm>();
         IntegerCounter alarmCounter = new IntegerCounter();
         String user_id = user.getId();
