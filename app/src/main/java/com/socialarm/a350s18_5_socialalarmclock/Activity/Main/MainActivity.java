@@ -42,9 +42,7 @@ import android.widget.Button;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements FriendsFragment.OnFragmentInteractionListener,
-        MyAlarms.OnFragmentInteractionListener, LeaderBoardFragment.OnFragmentInteractionListener,
-        NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private PagerAdapter pagerAdapter;
     private ViewPager viewPager;
@@ -52,11 +50,6 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     private Bundle extras;
     private EventDatabase eventDB;
     private static final String TAG = "MainActivity";
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        //you can leave it empty
-    }
 
     private View setupNav() {
         NavigationView navigationView = findViewById(R.id.nav_view);

@@ -27,6 +27,7 @@ import com.socialarm.a350s18_5_socialalarmclock.R;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class AlarmEvent extends AppCompatActivity {
 
@@ -133,7 +134,7 @@ public class AlarmEvent extends AppCompatActivity {
         EventDatabase.addEvent(event);
 
         MessageSender ms = new MessageSender();
-        ms.notifyFriends("snooze");
+        ms.notifyFriends("snooze", new HashMap<>());
 
         dbHelper.setSnooze(alarm_id, current_snooze_count+1);
 
