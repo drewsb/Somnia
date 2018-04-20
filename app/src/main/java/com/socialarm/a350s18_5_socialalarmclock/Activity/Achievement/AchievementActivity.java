@@ -40,6 +40,7 @@ public class AchievementActivity extends AppCompatActivity {
         silver_star = getResources().getDrawable(R.drawable.silver_star);
         gold_star = getResources().getDrawable(R.drawable.gold_star);
 
+        //will be replaced will actual calls to draw achievements (Drew is working on this)
         DrawAchievementForWeek(new Date(), 1.0);
         DrawAchievementForWeek(new Date(), 0.96);
         DrawAchievementForWeek(new Date(), 0.80);
