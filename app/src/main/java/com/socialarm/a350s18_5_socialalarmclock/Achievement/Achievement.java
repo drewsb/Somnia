@@ -16,7 +16,7 @@ public class Achievement implements Serializable {
 
 
     public enum Metal {
-        BRONZE, SILVER, GOLD
+       NONE, BRONZE, SILVER, GOLD
     }
 
     public Achievement() {}

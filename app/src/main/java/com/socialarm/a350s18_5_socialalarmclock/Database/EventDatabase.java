@@ -10,9 +10,9 @@ import java.util.List;
 
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Leaderboard.LeaderBoardFragment.*;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Leaderboard.LeaderboardEntry;
-import com.socialarm.a350s18_5_socialalarmclock.Database.DatabaseSingleton;
-import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.Event.Event;
+import com.socialarm.a350s18_5_socialalarmclock.Helper.Consumer;
+
 
 public final class EventDatabase {
 
@@ -195,9 +195,9 @@ public final class EventDatabase {
      *
      * @param difference time period to filter for
      * @param user_id user to filter for
-     * @param eventCallback callback function
+     * @param consumer callback function
      */
-    public static void getEventsSince(TimeDifference difference, String user_id, final EventCallback eventCallback) {
+    public static void getEventsSince(TimeDifference difference, String user_id, final Consumer<List<Event>> consumer) {
         getAllEvents(events ->
         {
             Calendar calender = Calendar.getInstance();
@@ -236,7 +236,7 @@ public final class EventDatabase {
             }
 
             // call the callback
-            eventCallback.callback(filteredEvents);
+            consumer.callback(filteredEvents);
         });
     }
   
