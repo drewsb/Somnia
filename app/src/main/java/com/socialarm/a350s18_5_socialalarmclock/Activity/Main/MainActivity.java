@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    /**
+    /**x
      * check if user opened tutorial
      */
     private void CreateTutorial() {

@@ -34,7 +34,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class RecordActivity extends AppCompatActivity {
 
-    private Button startbtn, stopbtn, playbtn, stopplay;
+    private Button startbtn, stopbtn, playbtn, stopplay, goback;
     private MediaRecorder mRecorder;
     private MediaPlayer mPlayer;
     private static final String LOG_TAG = "AudioRecording";
@@ -49,11 +49,12 @@ public class RecordActivity extends AppCompatActivity {
         stopbtn = (Button)findViewById(R.id.btnStop);
         playbtn = (Button)findViewById(R.id.btnPlay);
         stopplay = (Button)findViewById(R.id.btnStopPlay);
+        goback = (Button)findViewById(R.id.goBackBtn);
         stopbtn.setEnabled(false);
         playbtn.setEnabled(false);
         stopplay.setEnabled(false);
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName += "/AudioRecording.3gp";
+        mFileName += "/SomniaAudioRecording.3gp";
         setupButtons();
     }
 
@@ -129,6 +130,12 @@ public class RecordActivity extends AppCompatActivity {
                 playbtn.setEnabled(true);
                 stopplay.setEnabled(false);
                 Toast.makeText(getApplicationContext(),"Playing Audio Stopped", Toast.LENGTH_SHORT).show();
+            }
+        });
+        goback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
