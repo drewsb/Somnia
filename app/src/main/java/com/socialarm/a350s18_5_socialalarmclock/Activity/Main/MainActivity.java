@@ -247,8 +247,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     ListIterator<User> friend_iterator = friends.listIterator();
                     while(friend_iterator.hasNext()) {
                         User f = friend_iterator.next();
-                        String username = f.getFirst_name() + " " + f.getLast_name();
-                        if (!username.toLowerCase().startsWith(search_string)) {
+                        if (!f.getFirst_name().toLowerCase().startsWith(search_string) &&
+                                !f.getLast_name().toLowerCase().startsWith(search_string)) {
                             friend_iterator.remove();
                         }
                     }
