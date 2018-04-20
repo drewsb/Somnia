@@ -3,15 +3,19 @@ package com.socialarm.a350s18_5_socialalarmclock.Activity.Achievement;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.socialarm.a350s18_5_socialalarmclock.R;
 
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class AchievementActivity extends AppCompatActivity {
@@ -36,6 +40,10 @@ public class AchievementActivity extends AppCompatActivity {
         silver_star = getResources().getDrawable(R.drawable.silver_star);
         gold_star = getResources().getDrawable(R.drawable.gold_star);
 
+        DrawAchievementForWeek(new Date(), 1.0);
+        DrawAchievementForWeek(new Date(), 0.96);
+        DrawAchievementForWeek(new Date(), 0.80);
+        DrawAchievementForWeek(new Date(), 0.60);
     }
 
     /**
@@ -60,8 +68,12 @@ public class AchievementActivity extends AppCompatActivity {
 
         //draw text
         TextView week_text = new TextView(this);
-        String beginning_date_string = new SimpleDateFormat("mm/dd/yyyy").format(beginning_date);
+        week_text.setTextSize(20);
+        week_text.setGravity(Gravity.CENTER_HORIZONTAL);
+        String beginning_date_string =
+                new SimpleDateFormat("MM/dd/yyyy").format(beginning_date);
         week_text.setText(beginning_date_string);
+
         achievement_layout.addView(week_text);
     }
 }
