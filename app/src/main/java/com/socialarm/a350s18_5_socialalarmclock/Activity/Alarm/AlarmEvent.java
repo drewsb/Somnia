@@ -70,14 +70,6 @@ public class AlarmEvent extends AppCompatActivity {
             snooze.setVisibility(View.INVISIBLE);
         }
 
-
-        //get alarm id and fetch path to ringtone
-        Intent i = getIntent();
-        int alarm_id = i.getIntExtra("Alarm", -1);
-        AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
-        Cursor cursor = dbHelper.getAlarm(alarm_id);
-        dbHelper.close();
-
         Context applicationContext = LoginActivity.getContextOfApplication();
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
 
@@ -121,6 +113,7 @@ public class AlarmEvent extends AppCompatActivity {
             ringtone_path = cursor.getString(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH));
         } else {
             ringtone_path = "";
+            volume = 4;
         }
     }
 
