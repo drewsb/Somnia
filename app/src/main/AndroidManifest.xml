@@ -8,10 +8,10 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -72,7 +72,7 @@
             android:name=".Activity.Statistic.StatisticsActivity"
             android:label="@string/title_activity_statistics"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.Alarm.RecordActivity"></activity>
+        <activity android:name=".Activity.Alarm.RecordActivity" />
         <activity android:name=".Activity.Tutorial.TutorialActivity" />
 
         <service
@@ -92,7 +92,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".FirebaseMessaging.Response"></activity>
+        <activity android:name=".FirebaseMessaging.Response" />
+        <activity android:name=".Activity.Achievement.AchievementActivity"></activity>
     </application>
 
 </manifest>
