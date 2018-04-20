@@ -247,10 +247,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     ListIterator<User> friend_iterator = friends.listIterator();
                     while(friend_iterator.hasNext()) {
                         User f = friend_iterator.next();
-                        if (!f.getFirst_name().toLowerCase().startsWith(search_string) &&
-                                !f.getLast_name().toLowerCase().startsWith(search_string)) {
+
+                        String search = search_string.toLowerCase();
+                        String fullname = (f.getFirst_name() + " " + f.getLast_name()).toLowerCase();
+                        String lastname = f.getLast_name().toLowerCase();
+
+                        //filter by checking if the search starts with name and name contains the search
+                        if(!(fullname.startsWith(search, 0) || lastname.startsWith(search, 0))) {
                             friend_iterator.remove();
                         }
+                    }
+
+                    //clear entire friend recycler view early (because having 0 friends will still produce friends in adapter for some reason)
+                    if(friends.isEmpty()) {
+                        friendsFragment.getmRecyclerView().setAdapter(null);
+                        return;
                     }
 
                     //find the friend's alarms as well
