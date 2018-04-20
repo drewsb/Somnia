@@ -24,23 +24,26 @@ import android.widget.TextView;
 import com.facebook.login.LoginManager;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.DisableAlarmFragment;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.MyAlarms;
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Friend.FriendRowAdapter;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Friend.FriendsFragment;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Leaderboard.LeaderBoardFragment;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Livefeed.LiveFeedFragment;
-import com.socialarm.a350s18_5_socialalarmclock.Activity.SearchFriend.SearchFriendActivity;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Statistic.StatisticsActivity;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Tutorial.TutorialActivity;
+import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
 import com.socialarm.a350s18_5_socialalarmclock.Helper.DownloadImageTask;
 import com.socialarm.a350s18_5_socialalarmclock.Database.EventDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.SomniaFirebaseInstanceIDService;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
+import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -50,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Bundle extras;
     private EventDatabase eventDB;
     private static final String TAG = "MainActivity";
+    private FriendsFragment friendsFragment;
+    private User current_user;
 
     private View setupNav() {
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -87,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             List<Fragment> fragments = new ArrayList<Fragment>();
             MyAlarms myAlarms = MyAlarms.newInstance();
             fragments.add(myAlarms);
-            fragments.add(FriendsFragment.newInstance(user));
+            friendsFragment = FriendsFragment.newInstance(user);
+            fragments.add(friendsFragment);
             fragments.add(LeaderBoardFragment.newInstance(user));
             fragments.add(LiveFeedFragment.newInstance(user));
 
@@ -208,6 +214,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * Function is called when user clicks on the magnifying glass
+     * @param menu Menu of the magnifying glass
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -215,19 +226,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         inflater.inflate(R.menu.friend_search_menu, menu);
         MenuItem item = menu.findItem(R.id.friendMenu);
         SearchView searchView = (SearchView)item.getActionView();
+        UserDatabase.getUser(extras.getString("idFacebook"), user -> {
+            current_user = user;
+        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
+            public boolean onQueryTextSubmit(String search_string) {
+                viewPager.setCurrentItem(1);
+                return true;
             }
 
             @Override
-            public boolean onQueryTextChange(String s) {
-                //adapter.getFilter().filter(s);
+            public boolean onQueryTextChange(String search_string) {
+                viewPager.setCurrentItem(1);
+                UserDatabase.getFriends(current_user, friends -> {
+                    ArrayList<Alarm> alarms = new ArrayList<Alarm>();
+
+                    //only store friends that begin with search string
+                    ListIterator<User> friend_iterator = friends.listIterator();
+                    while(friend_iterator.hasNext()) {
+                        User f = friend_iterator.next();
+                        String username = f.getFirst_name() + " " + f.getLast_name();
+                        if (!username.toLowerCase().startsWith(search_string)) {
+                            friend_iterator.remove();
+                        }
+                    }
+
+                    //find the friend's alarms as well
+                    for (User f : friends) {
+                        UserDatabase.getMostRecentAlarm(f, alarm -> {
+                            alarms.add(alarm);
+                            if (alarms.size() == friends.size()) {
+                                friendsFragment.getmRecyclerView().setAdapter(new FriendRowAdapter(friends, alarms));
+                            }
+                        });
+                    }
+                });
                 return false;
-            }
-        });
+            }}
+        );
         return super.onCreateOptionsMenu(menu);
     }
 
