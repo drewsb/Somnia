@@ -13,9 +13,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
@@ -154,16 +157,6 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         CreateTutorial();
 
         setupPager();
-
-        //add functionality to find friends button
-        Button search_friend_button = (Button) findViewById(R.id.search_friend_button);
-        search_friend_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), SearchFriendActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -220,6 +213,29 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.friend_search_menu, menu);
+        MenuItem item = menu.findItem(R.id.friendMenu);
+        SearchView searchView = (SearchView)item.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                //adapter.getFilter().filter(s);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
