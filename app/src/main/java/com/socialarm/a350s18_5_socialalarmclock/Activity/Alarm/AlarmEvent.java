@@ -26,6 +26,7 @@ import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.MessageSender;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Main.LoginActivity;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -112,8 +113,11 @@ public class AlarmEvent extends AppCompatActivity {
             volume = cursor.getInt(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_VOLUME));
             ringtone_path = cursor.getString(cursor.getColumnIndex(LocalDBContract.Alarm.COLUMN_NAME_RINGTONE_PATH));
         } else {
-            ringtone_path = "";
-            volume = 4;
+            ringtone_path = i.getStringExtra("audio");
+            if (ringtone_path == null) {
+                ringtone_path = "";
+            }
+            volume = 10;
         }
     }
 
@@ -178,6 +182,8 @@ public class AlarmEvent extends AppCompatActivity {
             dbHelper.setSnooze(alarm_id, 0);
 
             dbHelper.close();
+        } else {
+            new File(ringtone_path).delete();
         }
 
         finish();
