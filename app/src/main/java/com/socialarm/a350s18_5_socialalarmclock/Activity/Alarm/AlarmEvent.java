@@ -9,12 +9,14 @@ import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
@@ -48,6 +50,9 @@ public class AlarmEvent extends AppCompatActivity {
     private int snooze_interval;
     private int current_snooze_count;
 
+    private int mathProblemAnswer;
+    private boolean isMathProblemSolved;
+
     private int volume;
     private String ringtone_path;
     private String message;
@@ -72,6 +77,33 @@ public class AlarmEvent extends AppCompatActivity {
             snooze.setFocusable(false);
             snooze.setVisibility(View.INVISIBLE);
         }
+
+        // create the math problem itself
+        TextView mathProblem = (TextView) findViewById(R.id.mathProblem);
+        int mathProblemFirstNumber = (int) (Math.random() * 100);
+        int mathProblemSecondNumber = (int) (Math.random() * 100);
+        this.mathProblemAnswer = mathProblemFirstNumber + mathProblemSecondNumber;
+        String problemText = mathProblemFirstNumber + " + " + mathProblemSecondNumber + " = ";
+        mathProblem.setText(problemText);
+
+        // create the countdown timer thing
+        TextView countdown = (TextView) findViewById(R.id.timeRemaining);
+        isMathProblemSolved = false;
+        new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                String text = "Seconds remaining: " + millisUntilFinished / 1000;
+                countdown.setText(text);
+            }
+
+            public void onFinish() {
+                // trigger the onOversleep
+                if (!isMathProblemSolved) {
+                    onOversleep();
+                }
+            }
+
+        }.start();
 
         if (message != "") {
             TextView message_view = findViewById(R.id.message_view);
@@ -177,27 +209,92 @@ public class AlarmEvent extends AppCompatActivity {
     }
 
     /**
-     * Set an alarm for the next valid time.
-     * @param view dismiss button
+     * Trigger the oversleep and set an alarm for the next valid time
      */
-    protected void onDismiss(View view) {
+    protected void onOversleep() {
         media.stop();
-        Intent i = getIntent();
-        int alarm_id = i.getIntExtra("Alarm", -1);
+
+        // Create Event instance
+        String user_id = prefs.getString("id", null);
+        String dayOfWeek = dbHelper.getDayOfWeek(days_of_week);
+        Alarm alarm = new Alarm(user_id, minute, hour, dayOfWeek, snooze_count, snooze_interval, volume);
+        int alarmId = alarm.hashCode();
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        Event event = new Event("Oversleep", "" + alarmId, user_id, user_id + ts, tsLong);
+        EventDatabase.addEvent(event);
+
+        MessageSender ms = new MessageSender();
+        Map<String, Object> data = new HashMap<>();
+        data.put("hour", ""+hour);
+        data.put("minute", ""+minute);
+        ms.notifyFriends("oversleep", data);
 
         if (alarm_id != -1) {
-            AlarmsOpenHelper dbHelper = new AlarmsOpenHelper(this);
-            Cursor cursor = dbHelper.getAlarm(alarm_id);
-
             setNextAlarm();
             dbHelper.setSnooze(alarm_id, 0);
-
-            dbHelper.close();
         } else {
             new File(ringtone_path).delete();
         }
 
+        dbHelper.close();
         finish();
+    }
+
+    /**
+     * Tigger a wake up event and set an alarm for the next valid time
+     */
+    protected void onWakeUp() {
+        media.stop();
+
+        // Create Event instance
+        String user_id = prefs.getString("id", null);
+        String dayOfWeek = dbHelper.getDayOfWeek(days_of_week);
+        Alarm alarm = new Alarm(user_id, minute, hour, dayOfWeek, snooze_count, snooze_interval, volume);
+        int alarmId = alarm.hashCode();
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        Event event = new Event("Wakeup", "" + alarmId, user_id, user_id + ts, tsLong);
+        EventDatabase.addEvent(event);
+
+        MessageSender ms = new MessageSender();
+        Map<String, Object> data = new HashMap<>();
+        data.put("hour", ""+hour);
+        data.put("minute", ""+minute);
+        ms.notifyFriends("wakeup", data);
+
+        if (alarm_id != -1) {
+            setNextAlarm();
+            dbHelper.setSnooze(alarm_id, 0);
+        } else {
+            new File(ringtone_path).delete();
+        }
+
+        dbHelper.close();
+        finish();
+    }
+
+    /**
+     * Check to see if the user has entered the correct answer for the math problem
+     */
+    protected void onEnter(View view) {
+        EditText answer = (EditText) findViewById(R.id.answerBox);
+        String answerString = answer.getText().toString();
+        try {
+            int answerNumber = Integer.parseInt(answerString);
+            if (answerNumber == this.mathProblemAnswer) {
+                isMathProblemSolved = true;
+                Toast.makeText(getApplicationContext(), "Correct! You've woken up!",
+                        Toast.LENGTH_LONG).show();
+                onWakeUp();
+            } else {
+                Toast.makeText(getApplicationContext(), "Incorrect, Try again",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(getApplicationContext(), "Incorrect, Try again",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

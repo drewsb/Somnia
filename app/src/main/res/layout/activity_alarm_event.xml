@@ -18,6 +18,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/mathProblemText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:textSize="12sp"
+        android:text="Solve The Math Problem!"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textClock2" />
+
+    <TextView
+        android:id="@+id/timeRemaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mathProblemText" />
+
+    <TextView
+        android:id="@+id/mathProblem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeRemaining" />
+
+    <EditText
+        android:id="@+id/answerBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@id/mathProblem"
+        app:layout_constraintTop_toTopOf="@id/mathProblem"
+        app:layout_constraintBottom_toBottomOf="@id/mathProblem"/>
+
+
     <Button
         android:id="@+id/dismiss_button"
         style="@android:style/Widget.Material.Button.Colored"
@@ -26,8 +74,8 @@
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:onClick="onDismiss"
-        android:text="Dismiss"
+        android:onClick="onEnter"
+        android:text="ENTER"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/snooze_button"
         app:layout_constraintEnd_toEndOf="parent"
