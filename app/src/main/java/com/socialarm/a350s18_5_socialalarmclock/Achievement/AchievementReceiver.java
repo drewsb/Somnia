@@ -40,13 +40,14 @@ public class AchievementReceiver extends BroadcastReceiver {
         AchievementInfo achievementInfo = new AchievementInfo(context);
 
         achievementInfo.getMostRecentAchievement(user_id, a -> {
-            String message = String.format("Congratulations! You have received a %s star this week.", a.getMetal().toString());
+            String message = String.format("Congratulations! You have received a %s star this week.", a.getMetal().toString().toLowerCase());
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             achievementInfo.saveAchievementInfo(a);
         });
     }
 
     public static void setAlarm(Context context) {
+        Log.d("AchievementReceiver", "Setting Alarm");
         Context applicationContext = LoginActivity.getContextOfApplication();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
         String user_id =  prefs.getString("id", null);
@@ -60,9 +61,8 @@ public class AchievementReceiver extends BroadcastReceiver {
         // Set the alarm to start at approximately 12:00 p.m on Monday.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.MINUTE, 30);
-        calendar.set(Calendar.HOUR_OF_DAY, 15);
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
 
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

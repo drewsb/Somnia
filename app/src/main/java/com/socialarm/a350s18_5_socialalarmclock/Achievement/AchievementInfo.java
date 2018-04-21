@@ -82,7 +82,7 @@ public class AchievementInfo {
 
             double percentage = getAlarmPercentage(eventList);
             Achievement a = new Achievement(week, Achievement.Metal.NONE);
-
+            percentage = 1.0;
             if (percentage == 1.0) {
                 a.setMetal(Achievement.Metal.GOLD);
             } else if (percentage >= .9) {
