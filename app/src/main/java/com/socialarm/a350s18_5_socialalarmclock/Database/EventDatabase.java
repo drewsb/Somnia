@@ -165,6 +165,12 @@ public final class EventDatabase {
                 return event.getAction().equalsIgnoreCase("Snooze");
             case OVERSLEEP:
                 return event.getAction().equalsIgnoreCase("Overslept");
+            case CHALLENGE:
+                return event.getAction().equalsIgnoreCase("Challenge");
+            case WAKE_UP:
+                return event.getAction().equalsIgnoreCase("Wakeup");
+            case CHALLENGE_SUCCESS:
+                return event.getAction().equalsIgnoreCase("ChallengeSuccess");
             default:
                 return event.getAction().equalsIgnoreCase("Overslept");
         }

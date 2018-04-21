@@ -12,55 +12,66 @@
         android:id="@+id/card_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="100dp"
         android:backgroundTint="@color/cardview_light_background"
         card_view:cardUseCompatPadding="true"
         android:elevation="20dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
 
-                <TextView
-                    android:id="@+id/live_feed_name_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textStyle="bold"
-                    android:textSize="12sp"/>
+                <RelativeLayout
+                    android:id="@+id/top_event_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
 
-                <TextView
-                    android:id="@+id/live_feed_event_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_toRightOf="@id/live_feed_name_text"
-                    android:gravity="center_vertical"
-                    android:textSize="12sp"/>
+                    <TextView
+                        android:id="@+id/live_feed_name_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textStyle="bold"
+                        android:textSize="12sp"/>
 
-                <TextView
-                    android:id="@+id/live_feed_alarm_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:layout_toRightOf="@id/live_feed_event_text"
-                    android:textStyle="bold"
-                    android:textSize="12sp"/>
+                    <TextView
+                        android:id="@+id/live_feed_event_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/live_feed_name_text"
+                        android:textSize="12sp"/>
 
-                <TextView
-                    android:id="@+id/live_feed_timestamp_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_toRightOf="@id/live_feed_alarm_text"
-                    android:gravity="center_vertical"
-                    android:textSize="12sp"/>
-        </RelativeLayout>
+                    <TextView
+                        android:id="@+id/live_feed_alarm_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/live_feed_event_text"
+                        android:textStyle="bold"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/live_feed_timestamp_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/live_feed_alarm_text"
+                        android:textSize="12sp"/>
+
+                    <View android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/live_feed_name_text"
+                        android:background="@android:color/darker_gray"/>
+
+                    <Button
+                        android:id="@+id/like_button"
+                        android:onClick="incrementLikes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:textAlignment="center"
+                        android:background="@color/com_facebook_blue" />
+
+                </RelativeLayout>
     </android.support.v7.widget.CardView>
 
-    <!--<View-->
-        <!--android:id="@+id/divider"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@android:color/darker_gray"/>-->
 
 </RelativeLayout>

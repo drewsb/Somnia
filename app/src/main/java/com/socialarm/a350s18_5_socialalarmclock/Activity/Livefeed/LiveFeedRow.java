@@ -1,9 +1,12 @@
 package com.socialarm.a350s18_5_socialalarmclock.Activity.Livefeed;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -11,8 +14,10 @@ import com.socialarm.a350s18_5_socialalarmclock.Database.AlarmDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.Event.Event;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
+import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by liamdugan on 2018/04/03.
@@ -37,7 +42,7 @@ public class LiveFeedRow extends LinearLayout {
      * Set the name that appears on the row
      * @param event the event object to add
      */
-    public void setEvent(final Event event) {
+    public void setEvent(final Event event, User currentUser) {
         // get the user that this event corresponds to and put it in
         TextView nameView = myView.findViewById(R.id.live_feed_name_text);
         String user_id = event.getUser_id();
@@ -73,5 +78,28 @@ public class LiveFeedRow extends LinearLayout {
         TextView timestampView = myView.findViewById(R.id.live_feed_timestamp_text);
         String tsText = " alarm on " + new Date(event.getTimestamp() * 1000).toString().split("E")[0];
         timestampView.setText(tsText);
+
+        // get the like button and get the number of likes and put it in
+        Button likeButton = myView.findViewById(R.id.like_button);
+        List<String> likedBy = event.getLikedBy();
+        String likes = "\uD83D\uDE34 ";
+        if (likedBy == null) {
+            likes += "0";
+        } else {
+            likes += likedBy.size();
+        }
+        likeButton.setText(likes);
+        likeButton.setOnClickListener(v -> {
+            TextView textView = (TextView) v;
+            event.addToLiked(currentUser.getId());
+            List<String> likedByList = event.getLikedBy();
+            String likesNewText = "\uD83D\uDE34 ";
+            if (likedBy == null) {
+                likesNewText += "0";
+            } else {
+                likesNewText += likedBy.size();
+            }
+            textView.setText(likesNewText);
+        });
     }
 }
