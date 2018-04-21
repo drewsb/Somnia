@@ -66,17 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setFirebaseId() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
-        boolean hasSetFirebaseId = prefs.getBoolean("setFirebaseId", false);
-
-        if (!hasSetFirebaseId) {
-            SomniaFirebaseInstanceIDService service = new SomniaFirebaseInstanceIDService();
-            service.onTokenRefresh();
-            SharedPreferences.Editor e = prefs.edit();
-            e.putBoolean("setFirebaseId", true);
-            e.apply();
-        }
+        SomniaFirebaseInstanceIDService service = new SomniaFirebaseInstanceIDService();
+        service.onTokenRefresh();
     }
 
     private void setupDrawerLayout(Toolbar toolbar) {
