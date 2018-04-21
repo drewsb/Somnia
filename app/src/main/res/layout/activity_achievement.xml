@@ -30,16 +30,15 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/achievement_layout"
+        <GridView
+            android:id="@+id/achievementGrid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:numColumns="auto_fit"
+            android:columnWidth="100dp"
+            android:gravity="center">
 
-
-
-        </LinearLayout>
+        </GridView>
 
     </android.support.v4.widget.NestedScrollView>
 

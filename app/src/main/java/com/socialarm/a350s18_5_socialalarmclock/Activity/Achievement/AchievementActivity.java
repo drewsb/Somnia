@@ -1,10 +1,12 @@
 package com.socialarm.a350s18_5_socialalarmclock.Activity.Achievement;
 
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,7 +18,9 @@ import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AchievementActivity extends AppCompatActivity {
 
@@ -24,57 +28,49 @@ public class AchievementActivity extends AppCompatActivity {
     private Drawable bronze_star;
     private Drawable silver_star;
     private Drawable gold_star;
+    private GridView achievementGrid;
 
     final double BRONZE_THRESHOLD = 0.75;
     final double SILVER_THRESHOLD = 0.90;
     final double GOLD_THRESHOLD = 0.99;
+
+    List<Achievement> achievements;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement);
 
-        //load resources
-        achievement_layout = (LinearLayout)findViewById(R.id.achievement_layout);
-        bronze_star = getResources().getDrawable(R.drawable.bronze_star);
-        silver_star = getResources().getDrawable(R.drawable.silver_star);
-        gold_star = getResources().getDrawable(R.drawable.gold_star);
-
-        //will be replaced will actual calls to draw achievements (Drew is working on this)
-        DrawAchievementForWeek(new Date(), 1.0);
-        DrawAchievementForWeek(new Date(), 0.96);
-        DrawAchievementForWeek(new Date(), 0.80);
-        DrawAchievementForWeek(new Date(), 0.60);
+        achievementGrid = findViewById(R.id.achievementGrid);
     }
 
     /**
-     * Draws badge and week text and appends it to the view
-     * @param beginning_date Start date of achivement
-     * @param sleep_percentage Sleep percentage (used to fetch appropriate badge picture)
+     * Setups all the achievments and reads from db to see if it has been collected
      */
-    private void DrawAchievementForWeek(Date beginning_date, double sleep_percentage) {
+    private void setupAchievements() {
+        Resources resources = getResources();
 
-        //draw badge
-        ImageView image = new ImageView(this);
+        Drawable bronze_star = resources.getDrawable(R.drawable.bronze_star);
+        Drawable silver_star = resources.getDrawable(R.drawable.silver_star);
+        Drawable gold_star = resources.getDrawable(R.drawable.gold_star);
+        Drawable coffee = resources.getDrawable(R.drawable.coffee);
+        Drawable dream = resources.getDrawable(R.drawable.dream);
+        Drawable cookie = resources.getDrawable(R.drawable.cookie);
+        Drawable ghost = resources.getDrawable(R.drawable.ghost);
+        Drawable sleeping = resources.getDrawable(R.drawable.sleeping);
+        Drawable night = resources.getDrawable(R.drawable.night);
+        Drawable night_1 = resources.getDrawable(R.drawable.night_1);
+        Drawable night_2 = resources.getDrawable(R.drawable.night_2);
+        Drawable hot_drink = resources.getDrawable(R.drawable.hot_drink);
+        Drawable pijamas = resources.getDrawable(R.drawable.pijamas);
+        Drawable pijamas_1 = resources.getDrawable(R.drawable.pijamas_1);
+        Drawable pillow = resources.getDrawable(R.drawable.pillow);
+        Drawable slippers = resources.getDrawable(R.drawable.slippers);
+        Drawable toothbrush = resources.getDrawable(R.drawable.toothbrush);
 
-        if(sleep_percentage > GOLD_THRESHOLD) {
-            image.setImageDrawable(gold_star);
-        } else if(sleep_percentage > SILVER_THRESHOLD) {
-            image.setImageDrawable(silver_star);
-        } else if(sleep_percentage > BRONZE_THRESHOLD) {
-            image.setImageDrawable(bronze_star);
-        }
-
-        achievement_layout.addView(image);
-
-        //draw text
-        TextView week_text = new TextView(this);
-        week_text.setTextSize(20);
-        week_text.setGravity(Gravity.CENTER_HORIZONTAL);
-        String beginning_date_string =
-                new SimpleDateFormat("MM/dd/yyyy").format(beginning_date);
-        week_text.setText(beginning_date_string);
-
-        achievement_layout.addView(week_text);
+        //initialize achievments
+        achievements = new ArrayList<Achievement>(){{
+            add(new Achievement())
+        }};
     }
 }
