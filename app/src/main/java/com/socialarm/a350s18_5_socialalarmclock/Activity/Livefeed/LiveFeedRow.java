@@ -1,6 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock.Activity.Livefeed;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -10,9 +11,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Statistic.StatisticsActivity;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
 import com.socialarm.a350s18_5_socialalarmclock.Database.AlarmDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.Event.Event;
+import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.Response;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
@@ -29,6 +32,8 @@ public class LiveFeedRow extends LinearLayout {
     final String SLEEP_EMOJI = "😴";
 
     private LinearLayout myView;
+    private int alarmHour;
+    private int alarmMin;
 
     /**
      * Base constructor for a FriendRow
@@ -91,6 +96,23 @@ public class LiveFeedRow extends LinearLayout {
             TextView textView = (TextView) v;
             event.addToLiked(currentUser.getId());
             setLikeText(textView, event.getLikedBy());
+        });
+
+        // hook into response event
+        myView.setOnClickListener(v -> {
+
+            // trigger response activity
+            if (event.getAction().equalsIgnoreCase("snooze")) {
+                Intent intent = new Intent(getContext(), Response.class);
+
+                AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
+                    intent.putExtra("user_id", event.getUser_id());
+                    intent.putExtra("hour", alarm.getHour());
+                    intent.putExtra("minute", alarm.getMin());
+                    getContext().startActivity(intent);
+                });
+            }
+
         });
     }
 
