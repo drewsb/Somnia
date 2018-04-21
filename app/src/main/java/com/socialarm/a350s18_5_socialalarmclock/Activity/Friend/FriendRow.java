@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Challenge.AcceptOrDeclineChallengeActivity;
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Challenge.ChallengeActivity;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
 import com.socialarm.a350s18_5_socialalarmclock.Database.AlarmDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.AlarmsOpenHelper;
@@ -56,6 +58,21 @@ public class FriendRow extends LinearLayout {
 
                 //pass facebook data to statistics activity
                 intent.putExtra("user", user);
+                getContext().startActivity(intent);
+            }
+        });
+    }
+
+    public void setChallenge(final User user, final User friend) {
+        Button challengeBtn = myView.findViewById(R.id.friend_challenge_button);
+        challengeBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ChallengeActivity.class);
+
+                //pass facebook data to challenge activity
+                intent.putExtra("user", user);
+                intent.putExtra("friend", friend);
                 getContext().startActivity(intent);
             }
         });

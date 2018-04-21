@@ -23,8 +23,10 @@ import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.AlarmsOpenHelper;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.AlarmsUtil;
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.LocalDBContract;
+import com.socialarm.a350s18_5_socialalarmclock.Database.ChallengeDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.Event.Event;
 import com.socialarm.a350s18_5_socialalarmclock.Database.EventDatabase;
+import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.ChallengeReceiver;
 import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.MessageSender;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Main.LoginActivity;
 import com.socialarm.a350s18_5_socialalarmclock.R;
@@ -203,6 +205,8 @@ public class AlarmEvent extends AppCompatActivity {
         PendingIntent reAlarm = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         AlarmManager manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         manager.setAlarmClock(new AlarmManager.AlarmClockInfo(time, reAlarm), reAlarm);
+
+        ChallengeDatabase.cancelChallenges(user_id);
 
         dbHelper.close();
         finish();
