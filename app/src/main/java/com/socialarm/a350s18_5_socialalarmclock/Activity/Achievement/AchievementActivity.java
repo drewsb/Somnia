@@ -44,7 +44,6 @@ public class AchievementActivity extends AppCompatActivity {
     final long WEEK = 1000 * 60 * 60 * 24 * 7;
 
     private static List<Achievement> achievements;
-    public static Boolean displayAchievements = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +54,7 @@ public class AchievementActivity extends AppCompatActivity {
 
         //set the grid adapter
         AchievementGridAdapter gridAdapter = new AchievementGridAdapter(this, achievements);
-
-        displayAchievements = false;
+        
         achievementGrid.setAdapter(gridAdapter);
     }
 
