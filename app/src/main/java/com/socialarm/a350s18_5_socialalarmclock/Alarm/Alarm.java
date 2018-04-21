@@ -4,6 +4,8 @@ package com.socialarm.a350s18_5_socialalarmclock.Alarm;
  * Created by drewboyette on 3/13/18.
  */
 
+import android.util.Log;
+
 import java.util.Calendar;
 
 /**
@@ -108,12 +110,15 @@ public class Alarm {
     @Override
     public int hashCode() {
         int result = getUser_id().hashCode();
-        result = 31 * result + getMin();
-        result = 31 * result + getHour();
-        result = 31 * result + getDay_of_week().hashCode();
-        result = 31 * result + getSnooze_count();
-        result = 31 * result + getSnooze_interval();
-        result = 31 * result + getVolume();
+        Log.d("Hashcode1: ", result + " and user " + getUser_id());
+        result = 7 * result + getMin();
+        Log.d("Alarm hashcode2: ", result + " and user " + getUser_id());
+        result = 7 * result + getHour();
+        Log.d("Alarm hashcode3: ", result + " and user " + getUser_id());
+        result = 7 * result + getDay_of_week().hashCode();
+        Log.d("Alarm hashcode4: ", result + " and user " + getUser_id());
+        result = 7 * result + getVolume();
+        Log.d("Alarm hashcode7: ", result + " and user " + getUser_id());
         return result;
     }
 

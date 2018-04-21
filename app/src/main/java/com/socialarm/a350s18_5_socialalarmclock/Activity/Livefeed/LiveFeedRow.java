@@ -66,12 +66,13 @@ public class LiveFeedRow extends LinearLayout {
 
         // get the time of this alarm and put it in
         AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
+            TextView alarmView = myView.findViewById(R.id.live_feed_alarm_text);
             if (alarm == null) {
-                Log.d("LiveFeedRow", "Error finding alarm: " + event.getAlarm_id());
+                Log.d("LiveFeedRow", "Error finding alarm: " + event.getUser_id() + event.getAlarm_id());
                 return;
             }
             String alarmText = alarm.getHour() + ":" + alarm.getMin();
-            eventTextView.setText(alarmText);
+            alarmView.setText(alarmText);
         });
 
         // get the date of the event's timestamp and put it in

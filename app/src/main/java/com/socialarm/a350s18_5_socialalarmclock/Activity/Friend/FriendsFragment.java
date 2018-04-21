@@ -82,6 +82,7 @@ public class FriendsFragment extends Fragment {
             for(User f : friends) {
                 UserDatabase.getMostRecentAlarm(f, alarm -> {
                     alarms.add(alarm);
+                    Log.d("Sizes: ", alarms.size() + ", " + friends.size() + ", " + alarm);
                     if (alarms.size() == friends.size()) {
                         mAdapter = new FriendRowAdapter(friends, alarms);
                         mRecyclerView.setAdapter(mAdapter);
