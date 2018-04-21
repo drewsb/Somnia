@@ -18,6 +18,7 @@ import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -143,15 +144,18 @@ public class UserDatabase {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (DocumentSnapshot doc : task.getResult()) {
                                 AlarmDatabase.getAlarm(doc.getId(), user_id, alarmResult -> {
-                                    if (alarmResult == null) {
-                                        Log.d(TAG, "Error searching for alarm: ");
-                                        alarmsCallback.callback(null);
-                                        return;
-                                    }
-                                    alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
                                     alarmCounter.update();
+                                    if (alarmResult == null) {
+                                        Log.d(TAG, "Error searching for alarm: " + doc.getId());
+                                    } else {
+                                        alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
+                                    }
                                     if (alarmCounter.counter == task.getResult().size()) {
-                                        alarmsCallback.callback(alarmMap.get(alarmMap.firstKey()));
+                                        if (!alarmMap.isEmpty()) {
+                                            alarmsCallback.callback(alarmMap.get(alarmMap.firstKey()));
+                                        } else {
+                                            alarmsCallback.callback(null);
+                                        }
                                     }
                                 });
                             }
