@@ -95,7 +95,7 @@
 
         <activity android:name=".FirebaseMessaging.Response" />
         <activity android:name=".Activity.Challenge.ChallengeActivity" />
-        <activity android:name=".Activity.Challenge.AcceptOrDeclineChallengeActivity"></activity>
+        <activity android:name=".Activity.Challenge.AcceptOrDeclineChallengeActivity"/>
     </application>
 
 </manifest>
