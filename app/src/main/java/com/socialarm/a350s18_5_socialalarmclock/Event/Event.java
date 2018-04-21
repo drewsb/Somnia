@@ -1,5 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock.Event;
 
+import com.socialarm.a350s18_5_socialalarmclock.Database.EventDatabase;
+
 import java.util.ArrayList;
 
 public class Event {
@@ -50,6 +52,7 @@ public class Event {
         } else if (likedBy != null && likedBy.contains(user_id)) {
             this.likedBy.remove(user_id);
         }
+        EventDatabase.updateLikedBy(this);
     }
 
     public long getTimestamp() {

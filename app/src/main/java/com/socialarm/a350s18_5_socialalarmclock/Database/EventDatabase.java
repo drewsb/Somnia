@@ -256,4 +256,12 @@ public final class EventDatabase {
         String userID = event.getUser_id();
         DatabaseSingleton.getInstance().collection("events").document(userID + event.getTimestamp()).set(event);
     }
+
+    /**
+     * Update given user's firebase id
+     * @param thisEvent
+     */
+    public static void updateLikedBy(Event thisEvent) {
+        DatabaseSingleton.getInstance().collection("events").document(thisEvent.getEvent_id()).update("likedBy", thisEvent.getLikedBy());
+    }
 }
