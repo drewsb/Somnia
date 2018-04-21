@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.socialarm.a350s18_5_socialalarmclock.Event.Event;
 import com.socialarm.a350s18_5_socialalarmclock.R;
+import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class LiveFeedRowAdapter extends RecyclerView.Adapter<LiveFeedRowAdapter.
      * A list of users to be displayed on the friends page (canonically the logged in user's friends list)
      */
     private List<Event> events;
+    private User currentUser;
 
     /**
      * Static inner view holder class
@@ -34,8 +36,9 @@ public class LiveFeedRowAdapter extends RecyclerView.Adapter<LiveFeedRowAdapter.
         }
     }
 
-    LiveFeedRowAdapter(List<Event> events) {
+    LiveFeedRowAdapter(List<Event> events, User currentUser) {
         this.events = events;
+        this.currentUser = currentUser;
     }
 
     /**
@@ -66,7 +69,7 @@ public class LiveFeedRowAdapter extends RecyclerView.Adapter<LiveFeedRowAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.row.setEvent(events.get(position));
+        holder.row.setEvent(events.get(position), currentUser);
     }
 
     /**

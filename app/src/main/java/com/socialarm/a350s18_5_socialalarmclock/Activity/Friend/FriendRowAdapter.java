@@ -71,8 +71,10 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         User user  = users.get(position);
         Alarm alarm = alarms.get(position);
         holder.row.setName(user);
-        holder.row.setTime(Alarm.getTime(alarm.getMin(), alarm.getHour()), user);
-        holder.row.setJoinButton(user, alarm);
+        if (alarm != null) {
+            holder.row.setTime(Alarm.getTime(alarm.getMin(), alarm.getHour()), user);
+            holder.row.setJoinButton(user, alarm);
+        }
     }
 
     /**

@@ -33,8 +33,12 @@
         <item>Least Oversleeps</item>
         <item>Most Snoozes</item>
         <item>Least Snoozes</item>
-        <!--<item>Most Wakes</item>  Will put back in when we have the right events-->
-        <!--<item>Least Wakes</item>-->
+        <item>Most Wakes</item>
+        <item>Least Wakes</item>
+        <item>Most Challenges Accepted</item>
+        <item>Least Challenges Accepted</item>
+        <item>Most Challenges Completed</item>
+        <item>Least Challenges Completed</item>
     </string-array>
 
     <string name="title_activity_statistics">StatisticsActivity</string>

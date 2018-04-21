@@ -69,7 +69,7 @@ public class LiveFeedFragment extends Fragment {
         // fetch events
         EventDatabase.getAllEvents(events -> {
             // specify an adapter (see also next example)
-            mAdapter = new LiveFeedRowAdapter(events);
+            mAdapter = new LiveFeedRowAdapter(events, user);
             mRecyclerView.setAdapter(mAdapter);
         });
 

@@ -136,14 +136,16 @@ public class UserDatabase {
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         CollectionReference ref = DatabaseSingleton.getInstance().collection("users").document(user_id)
                 .collection("alarms");
+        Log.d("Collection: ", "is " + ref);
         ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (DocumentSnapshot doc : task.getResult()) {
                                 AlarmDatabase.getAlarm(doc.getId(), user_id, alarmResult -> {
                                     if (alarmResult == null) {
-                                        Log.d(TAG, "Error searching for alarm: " + alarmResult.hashCode());
+                                        Log.d(TAG, "Error searching for alarm: ");
+                                        alarmsCallback.callback(null);
                                         return;
                                     }
                                     alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
@@ -155,9 +157,11 @@ public class UserDatabase {
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
+                            alarmsCallback.callback(null);
                         }
                     }
                 });
+        Log.d("Kek: ", "is " + ref);
     }
 
     /**
