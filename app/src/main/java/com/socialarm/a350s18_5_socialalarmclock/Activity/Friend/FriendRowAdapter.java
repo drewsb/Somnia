@@ -34,7 +34,7 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         }
     }
 
-    FriendRowAdapter(List<User> users, List<Alarm> alarms) {
+    public FriendRowAdapter(List<User> users, List<Alarm> alarms) {
         this.users = users;
         this.alarms = alarms;
     }
