@@ -60,65 +60,56 @@ public class Response extends AppCompatActivity {
         my_id = prefs.getString("id", null);
         RadioGroup rg = findViewById(R.id.response_type);
         rg.check(R.id.basic_retrigger);
+
+        // Set the visible options depending on which check box is selected.
         rg.setOnCheckedChangeListener((RadioGroup radioGroup, int checkedId) -> {
             Button select = findViewById(R.id.select_response);
             Button record = findViewById(R.id.record_response);
             EditText message = findViewById(R.id.message_response);
             switch (checkedId) {
                 case R.id.basic_retrigger:
-                    select.setVisibility(View.INVISIBLE);
-                    select.setClickable(false);
-                    select.setFocusable(false);
-
-                    record.setVisibility(View.INVISIBLE);
-                    record.setClickable(false);
-                    record.setFocusable(false);
-
-                    message.setVisibility(View.INVISIBLE);
-                    message.setClickable(false);
-                    message.setFocusableInTouchMode(false);
+                    setVisibility(select, false);
+                    setVisibility(record, false);
+                    setVisibility(message, false);
                     break;
                 case R.id.voice_retrigger:
-                    select.setVisibility(View.VISIBLE);
-                    select.setClickable(true);
-                    select.setFocusable(true);
-
-                    record.setVisibility(View.VISIBLE);
-                    record.setClickable(true);
-                    record.setFocusable(true);
-
-                    message.setVisibility(View.INVISIBLE);
-                    message.setClickable(false);
-                    message.setFocusableInTouchMode(false);
+                    setVisibility(select, true);
+                    setVisibility(record, true);
+                    setVisibility(message, false);
                     break;
                 case R.id.message_retrigger:
-                    select.setVisibility(View.INVISIBLE);
-                    select.setClickable(false);
-                    select.setFocusable(false);
-
-                    record.setVisibility(View.INVISIBLE);
-                    record.setClickable(false);
-                    record.setFocusable(false);
-
-                    message.setVisibility(View.VISIBLE);
-                    message.setClickable(true);
-                    message.setFocusableInTouchMode(true);
+                    setVisibility(select, false);
+                    setVisibility(record, false);
+                    setVisibility(message, true);
                     break;
             }
         });
 
         Button select = findViewById(R.id.select_response);
-        select.setVisibility(View.INVISIBLE);
-        select.setClickable(false);
-        select.setFocusable(false);
         Button record = findViewById(R.id.record_response);
-        record.setVisibility(View.INVISIBLE);
-        record.setClickable(false);
-        record.setFocusable(false);
         EditText message = findViewById(R.id.message_response);
-        message.setVisibility(View.INVISIBLE);
-        message.setClickable(false);
-        message.setFocusableInTouchMode(false);
+
+        setVisibility(select, false);
+        setVisibility(record, false);
+        setVisibility(message, false);
+    }
+
+    /**
+     * Sets whether a givin view should be available for interaction.
+     * Hides and disables it.
+     * @param v The view to affect
+     * @param should_show Whether to enable or disable the view.
+     */
+    private void setVisibility(View v, boolean should_show) {
+        if (should_show) {
+            v.setVisibility(View.VISIBLE);
+            v.setClickable(true);
+            v.setFocusableInTouchMode(true);
+        } else {
+            v.setVisibility(View.INVISIBLE);
+            v.setClickable(false);
+            v.setFocusable(false);
+        }
     }
 
     /**
