@@ -9,11 +9,13 @@ import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
@@ -70,6 +72,23 @@ public class AlarmEvent extends AppCompatActivity {
             snooze.setFocusable(false);
             snooze.setVisibility(View.INVISIBLE);
         }
+
+        // create the countdown timer thing
+        TextView countdown = (TextView) findViewById(R.id.timeRemaining);
+        new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                String text = "Seconds remaining: " + millisUntilFinished / 1000;
+                countdown.setText(text);
+                //here you can have your logic to set text to edittext
+            }
+
+            public void onFinish() {
+                // do something else
+                countdown.setText("done!");
+            }
+
+        }.start();
 
         Context applicationContext = LoginActivity.getContextOfApplication();
         prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
