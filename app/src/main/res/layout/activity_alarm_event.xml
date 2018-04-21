@@ -60,6 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
+        android:inputType="number"
         app:layout_constraintStart_toEndOf="@id/mathProblem"
         app:layout_constraintTop_toTopOf="@id/mathProblem"
         app:layout_constraintBottom_toBottomOf="@id/mathProblem"/>
@@ -74,7 +75,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:onClick="onEnter"
-        android:text="Enter"
+        android:text="ENTER"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/snooze_button"
         app:layout_constraintEnd_toEndOf="parent"
