@@ -26,4 +26,6 @@
 
     <include layout="@layout/content_statistics" />
 
+
+
 </android.support.design.widget.CoordinatorLayout>

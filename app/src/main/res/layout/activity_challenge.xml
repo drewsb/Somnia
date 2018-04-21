@@ -6,4 +6,26 @@
     android:layout_height="match_parent"
     tools:context="com.socialarm.a350s18_5_socialalarmclock.Activity.Challenge.ChallengeActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/challengeDaysEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:inputType = "numberPassword" />
+
+        <Button
+            android:id="@+id/challengeFriendBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "numberPassword"
+            android:textSize="40dp"
+            android:gravity="center_horizontal"
+            android:onClick="onClickChallenge"/>
+
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

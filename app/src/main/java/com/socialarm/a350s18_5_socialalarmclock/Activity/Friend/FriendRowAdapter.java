@@ -17,6 +17,11 @@ import java.util.List;
 public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.ViewHolder> {
 
     /**
+     * The current user that is using the app
+     */
+    private User current_user;
+
+    /**
      * A list of users to be displayed on the friends page (canonically the logged in user's friends list)
      */
     private List<User> users;
@@ -34,7 +39,8 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         }
     }
 
-    FriendRowAdapter(List<User> users, List<Alarm> alarms) {
+    FriendRowAdapter(User current_user, List<User> users, List<Alarm> alarms) {
+        this.current_user = current_user;
         this.users = users;
         this.alarms = alarms;
     }
@@ -71,6 +77,7 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         User user  = users.get(position);
         Alarm alarm = alarms.get(position);
         holder.row.setName(user);
+        holder.row.setChallenge(current_user, user);
         holder.row.setTime(Alarm.getTime(alarm.getMin(), alarm.getHour()), user);
         holder.row.setJoinButton(user, alarm);
     }
