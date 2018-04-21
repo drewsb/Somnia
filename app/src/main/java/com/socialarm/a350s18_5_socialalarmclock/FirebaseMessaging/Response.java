@@ -73,20 +73,26 @@ public class Response extends AppCompatActivity {
                 break;
             case R.id.voice_retrigger:
                 if (ringtone_path == null) {
-                    Toast.makeText(this, "Must select an audio souce to upload", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Must select an audio source to upload", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 File f = new File(ringtone_path);
+
+                // Get a reference to a firebase storage file for the audio clip.
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference root = storage.getReference();
                 StorageReference user = root.child(my_id);
                 StorageReference file = user.child(f.getName());
                 UploadTask uploadTask = file.putFile(Uri.fromFile(f));
+
+                // Create a progress dialog so the user knows what is going on.
                 ProgressDialog pd = new ProgressDialog(this);
                 pd.setTitle("Uploading Media");
                 pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 pd.setMax((int)uploadTask.getSnapshot().getTotalByteCount());
                 pd.show();
+
+                // Handle status of the upload.
                 uploadTask.addOnProgressListener(taskSnapshot ->  {
                     long progress = taskSnapshot.getBytesTransferred();
                     pd.setProgress((int)progress);
