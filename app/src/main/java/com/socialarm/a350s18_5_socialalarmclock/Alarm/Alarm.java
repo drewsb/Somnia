@@ -110,15 +110,10 @@ public class Alarm {
     @Override
     public int hashCode() {
         int result = getUser_id().hashCode();
-        Log.d("Hashcode1: ", result + " and user " + getUser_id());
         result = 7 * result + getMin();
-        Log.d("Alarm hashcode2: ", result + " and user " + getUser_id());
         result = 7 * result + getHour();
-        Log.d("Alarm hashcode3: ", result + " and user " + getUser_id());
         result = 7 * result + getDay_of_week().hashCode();
-        Log.d("Alarm hashcode4: ", result + " and user " + getUser_id());
         result = 7 * result + getVolume();
-        Log.d("Alarm hashcode7: ", result + " and user " + getUser_id());
         return result;
     }
 
