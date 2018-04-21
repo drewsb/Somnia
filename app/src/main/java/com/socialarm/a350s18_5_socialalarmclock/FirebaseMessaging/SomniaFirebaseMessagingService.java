@@ -166,6 +166,48 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                         });
                     });
                 }
+                //success challenge
+                else if(challengeType.equals("success")) {
+                    UserDatabase.getUser(challenger_id, challenger -> {
+                        UserDatabase.getUser(challengee_id, challengee -> {
+                            //display to user that user has declined challenge
+                            String response = challengee.getFirst_name() + " " + challengee.getLast_name() + " has succeeded your challenge";
+                            Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle("Somnia")
+                                    .setContentText(response)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                            notificationManager.notify(1,builder.build());
+
+                            //send challenge event to db
+                            ChallengeDatabase.SendChallengeToDBSpecific(challengee, "Success", challenger, "succeeded");
+                        });
+                    });
+                }
+                //failure challenge
+                else if(challengeType.equals("failure")) {
+                    UserDatabase.getUser(challenger_id, challenger -> {
+                        UserDatabase.getUser(challengee_id, challengee -> {
+                            //display to user that user has declined challenge
+                            String response = challengee.getFirst_name() + " " + challengee.getLast_name() + " has failed your challenge";
+                            Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle("Somnia")
+                                    .setContentText(response)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                            notificationManager.notify(1,builder.build());
+
+                            //send challenge event to db
+                            ChallengeDatabase.SendChallengeToDBSpecific(challengee, "Failure", challenger, "succeeded");
+                        });
+                    });
+                }
             }
         }
     }
