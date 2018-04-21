@@ -44,7 +44,7 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                 response.putExtra("user_id", data.get("id"));
                 response.putExtra("hour", Integer.parseInt(data.get("hour")));
                 response.putExtra("minute", Integer.parseInt(data.get("minute")));
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, response, 0);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, response, PendingIntent.FLAG_CANCEL_CURRENT);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Somnia")

@@ -4,7 +4,6 @@ package com.socialarm.a350s18_5_socialalarmclock.Alarm;
  * Created by drewboyette on 3/13/18.
  */
 
-import android.util.Log;
 
 import java.util.Calendar;
 
@@ -113,6 +112,7 @@ public class Alarm {
         result = 31 * result + getMin();
         result = 31 * result + getHour();
         result = 31 * result + getDay_of_week().hashCode();
+        result = 31 * result + getSnooze_interval();
         result = 31 * result + getVolume();
         return result;
     }

@@ -14,10 +14,8 @@ import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
 import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 public class FriendsFragment extends Fragment {
 
