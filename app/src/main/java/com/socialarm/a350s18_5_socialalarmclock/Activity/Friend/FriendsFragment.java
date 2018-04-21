@@ -92,4 +92,12 @@ public class FriendsFragment extends Fragment {
 
         return myView;
     }
+
+    /**
+     * Get recycler view of friends
+     * @return
+     */
+    public RecyclerView getmRecyclerView() {
+        return this.mRecyclerView;
+    }
 }
