@@ -60,6 +60,10 @@ public class Response extends AppCompatActivity {
         rg.check(R.id.basic_retrigger);
     }
 
+    /**
+     * Called to collect data from activity and send to other user.
+     * @param view not used
+     */
     public void sendWakeup(View view) {
         RadioGroup rg = findViewById(R.id.response_type);
         int selected_id = rg.getCheckedRadioButtonId();
@@ -104,6 +108,10 @@ public class Response extends AppCompatActivity {
 
     }
 
+    /**
+     * Creates a messageSender and sends a direct message.
+     * @param extra_data required for complex retriggers
+     */
     private void sendMessage(Map<String, Object> extra_data) {
         MessageSender ms = new MessageSender();
         ms.sendDirect(other_id, "alarm", extra_data);
