@@ -98,6 +98,8 @@ public class LiveFeedRow extends LinearLayout {
                 String text = " was challenged by " + user.getFirst_name() + " " + user.getLast_name() + " ";
                 eventTextView.setText(text);
             });
+        } else if (eventAction.equalsIgnoreCase("ChallengeSuccess")) {
+            eventText = " succeeded their challenge ";
         } else {
             eventText = eventAction;
         }

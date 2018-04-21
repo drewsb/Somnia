@@ -35,10 +35,12 @@
         <item>Least Snoozes</item>
         <item>Most Wakes</item>
         <item>Least Wakes</item>
-        <item>Most Challenges Accepted</item>
-        <item>Least Challenges Accepted</item>
-        <item>Most Challenges Completed</item>
-        <item>Least Challenges Completed</item>
+        <item>Most Challenged</item>
+        <item>Least Challenged</item>
+        <item>Most Challenges Won</item>
+        <item>Least Challenges Won</item>
+        <item>Most Achievements</item>
+        <item>Least Achievements</item>
     </string-array>
 
     <string name="title_activity_statistics">StatisticsActivity</string>

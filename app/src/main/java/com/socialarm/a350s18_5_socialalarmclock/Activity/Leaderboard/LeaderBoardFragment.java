@@ -32,7 +32,7 @@ public class LeaderBoardFragment extends Fragment {
     public enum Duration { THIS_WEEK, THIS_MONTH, ALL_TIME }
     private Duration statDuration = Duration.THIS_WEEK; // default to this week
 
-    public enum SleepStatType { OVERSLEEP, SNOOZE, WAKE_UP, CHALLENGE, CHALLENGE_SUCCESS }
+    public enum SleepStatType { OVERSLEEP, SNOOZE, WAKE_UP, CHALLENGE, CHALLENGE_SUCCESS, ACHIEVEMENT }
     private SleepStatType statType = SleepStatType.OVERSLEEP; // default to oversleep
 
     public enum SortDirection { MOST, LEAST }
@@ -187,6 +187,7 @@ public class LeaderBoardFragment extends Fragment {
             case 7:
                 statType = SleepStatType.CHALLENGE;
                 sortDirection = SortDirection.LEAST;
+                break;
             case 8:
                 statType = SleepStatType.CHALLENGE_SUCCESS;
                 sortDirection = SortDirection.MOST;
@@ -194,6 +195,15 @@ public class LeaderBoardFragment extends Fragment {
             case 9:
                 statType = SleepStatType.CHALLENGE_SUCCESS;
                 sortDirection = SortDirection.LEAST;
+                break;
+            case 10:
+                statType = SleepStatType.ACHIEVEMENT;
+                sortDirection = SortDirection.MOST;
+                break;
+            case 11:
+                statType = SleepStatType.ACHIEVEMENT;
+                sortDirection = SortDirection.LEAST;
+                break;
             default:
                 break;
         }
