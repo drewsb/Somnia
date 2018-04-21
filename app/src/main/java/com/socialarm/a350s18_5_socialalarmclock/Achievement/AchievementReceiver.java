@@ -38,9 +38,11 @@ public class AchievementReceiver extends BroadcastReceiver {
         AchievementInfo achievementInfo = new AchievementInfo(context);
 
         achievementInfo.getMostRecentAchievement(user_id, a -> {
-            String message = String.format("Congratulations! You have received a %s star this week.", a.getMetal().toString().toLowerCase());
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-            achievementInfo.saveAchievementInfo(a);
+            if (!a.getMetal().equals(Achievement.Metal.NONE)) {
+                String message = String.format("Congratulations! You have received a %s star this week.", a.getMetal().toString().toLowerCase());
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                achievementInfo.saveAchievementInfo(a);
+            }
         });
     }
 
