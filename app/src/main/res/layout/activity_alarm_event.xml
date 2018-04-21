@@ -51,7 +51,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:textSize="24sp"
-        android:text="2 + 2 = "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timeRemaining" />
@@ -74,8 +73,8 @@
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:onClick="onDismiss"
-        android:text="Dismiss"
+        android:onClick="onEnter"
+        android:text="Enter"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/snooze_button"
         app:layout_constraintEnd_toEndOf="parent"
