@@ -7,12 +7,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.util.Log;
-
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.socialarm.a350s18_5_socialalarmclock.Database.DatabaseSingleton;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -24,53 +20,42 @@ import java.util.Map;
 
 public class ChallengeReceiver extends BroadcastReceiver {
 
-    int days;;
-    String challengerID;
-    String challengeeID;
 
-    public static ChallengeReceiver receiverInstance;
-
-    public ChallengeReceiver() {}
-
-    /**
-     * Retrieve single instance. Create one if one doesn't already exist
-     * @return
-     */
-    public static ChallengeReceiver getInstance() {
-        if (receiverInstance == null) {
-            receiverInstance = new ChallengeReceiver();
-        }
-        return receiverInstance;
-    }
-
-    public ChallengeReceiver(int days, String challengerID, String challengeeID) {
-        this.days = days;
-        this.challengerID = challengerID;
-        this.challengeeID = challengeeID;
+    public ChallengeReceiver() {
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("Achievement", "Challenge Completed!");
         //Challenge completed
-        challengeFinish(true);
+
+        Bundle b = intent.getExtras();
+        int days = b.getInt("days");
+        String challengeeID = b.getString("challengeeID");
+        String challengerID = b.getString("challengerID");
+
+        challengeFinish(true, days, challengerID, challengeeID);
     }
 
     /**
      * Set challenge alarm to a specific number of days in advance
      * @param context
      */
-    public void setAlarm(Context context) {
+    public void setAlarm(Context context, int days, String challengeeID, String challengerID) {
         Log.d("ChallengeReceiver", "Setting Challenge");
 
         Intent i = new Intent(context, com.socialarm.a350s18_5_socialalarmclock.Achievement.AchievementReceiver.class);
+
+        i.putExtra("days", days);
+        i.putExtra("challengeeID", challengeeID);
+        i.putExtra("challengerID", challengerID);
 
         AlarmManager alarmMgr;
         PendingIntent alarmIntent;
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.DATE, this.days);
+        calendar.add(Calendar.DATE, days);
 
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmIntent = PendingIntent.getBroadcast(context, 0, i,  PendingIntent.FLAG_UPDATE_CURRENT);
@@ -78,16 +63,7 @@ public class ChallengeReceiver extends BroadcastReceiver {
                 1000 * 60 * 20, alarmIntent);
     }
 
-    public void cancelAlarm(Context context) {
-        ComponentName receiver = new ComponentName(context, ChallengeReceiver.class);
-        PackageManager pm = context.getPackageManager();
-
-        pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
-    }
-
-    public void challengeFinish(boolean success) {
+    public static void challengeFinish(boolean success, int days, String challengerID, String challengeeID) {
         MessageSender ms = new MessageSender();
         Map<String, Object> data = new HashMap<>();
         data.put("days", "" + days);
