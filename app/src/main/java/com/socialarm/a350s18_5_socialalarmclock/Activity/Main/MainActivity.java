@@ -22,6 +22,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Achievement.Achievement;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Achievement.AchievementActivity;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.DisableAlarmFragment;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.MyAlarms;
@@ -149,6 +150,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         CreateTutorial();
 
         setupPager();
+
+        //setup achievements
+        UserDatabase.getUser(extras.getString("idFacebook"), user -> {
+            AchievementActivity.updateAchievements(user, getApplicationContext());
+        });
     }
 
     @Override
