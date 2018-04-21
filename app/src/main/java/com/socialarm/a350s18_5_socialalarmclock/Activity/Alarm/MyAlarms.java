@@ -106,17 +106,6 @@ public class MyAlarms extends Fragment {
                 startActivityForResult(i, CREATE_ALARM_REQUEST);
             }
         });
-
-        FloatingActionButton debug = v.findViewById(R.id.debug);
-        debug.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                MessageSender m = new MessageSender();
-                Map<String, Object> data = new HashMap<>();
-                data.put("hour", ""+6);
-                data.put("minute", ""+15);
-                m.notifyFriends("snooze", data);
-            }
-        });
         return v;
     }
 
