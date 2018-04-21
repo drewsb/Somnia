@@ -49,12 +49,15 @@ public class Response extends AppCompatActivity {
         other_id = i.getStringExtra("user_id");
         final int hour = i.getIntExtra("hour", 0);
         final int minute = i.getIntExtra("minute", 0);
+        final String eventType = i.getStringExtra("type");
         final String time = Alarm.getTime(minute, hour);
 
         final TextView header = findViewById(R.id.response_header);
-        header.setText("A Friend just snoozed\ntheir " + time + " alarm");
+        boolean snooze = eventType.equalsIgnoreCase("snooze");
+        header.setText("A Friend just " + (snooze?"snoozed":"overslept") + "\ntheir " + time + " alarm");
         UserDatabase.getUser(other_id, user -> {
-            header.setText(user.getFirst_name() + " " + user.getLast_name() + " just snoozed\ntheir " + time + " alarm");
+            header.setText(user.getFirst_name() + " " + user.getLast_name() +
+                    " just " + (snooze?"snoozed":"overslept") + "\ntheir " + time + " alarm");
         });
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         my_id = prefs.getString("id", null);
