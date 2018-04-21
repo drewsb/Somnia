@@ -9,10 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.socialarm.a350s18_5_socialalarmclock.Database.EventDatabase;
+import com.socialarm.a350s18_5_socialalarmclock.Event.Event;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by liamdugan on 2018/04/03.
@@ -70,9 +73,18 @@ public class LiveFeedFragment extends Fragment {
 
         // fetch events
         EventDatabase.getAllEvents(events -> {
-            Collections.sort(events);
+            List<String> friendsList = user.getFriend_ids();
+            List<Event> filteredEvents = new ArrayList<>();
+            for (Event e : events) {
+                for (String friendId : friendsList) {
+                    if (e.getUser_id().equals(friendId)) {
+                        filteredEvents.add(e);
+                    }
+                }
+            }
+            Collections.sort(filteredEvents);
             // specify an adapter (see also next example)
-            mAdapter = new LiveFeedRowAdapter(events, user);
+            mAdapter = new LiveFeedRowAdapter(filteredEvents, user);
             mRecyclerView.setAdapter(mAdapter);
         });
 
