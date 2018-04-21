@@ -3,6 +3,7 @@ package com.socialarm.a350s18_5_socialalarmclock.Activity.Achievement;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.socialarm.a350s18_5_socialalarmclock.Database.EventDatabase;
@@ -30,6 +31,7 @@ public class Achievement {
     private String name;
     private String description;
     private Boolean is_achieved;
+    private Boolean is_toast = false;
 
     private Consumer<Event> condition;
 
@@ -50,17 +52,21 @@ public class Achievement {
             //check if the entry exists already
             EventDatabase.getAllEvents(events -> {
                 for(Event e : events) {
-                    if(e.getEvent_id().startsWith(eventString())) {
+                    if(e.getEvent_id().contains(eventString())) {
+                        Log.v("HI", e.getAction() + " " + eventString());
                         return;
                     }
                 }
 
                 //draw achievement popup
-                Toast.makeText(context, "You have obtained " + name + " achievement", Toast.LENGTH_SHORT).show();
+                if(!is_toast) {
+                    Toast.makeText(context, "You have obtained " + name + " achievement", Toast.LENGTH_SHORT).show();
 
-                Long tsLong = System.currentTimeMillis() / 1000;
-                Event event = new Event(name, "", user.getId(), user.getId() + "-" + name + "-" + is_achieved.toString(), tsLong);
-                EventDatabase.addEvent(event);
+                    Long tsLong = System.currentTimeMillis() / 1000;
+                    Event event = new Event(name, "", user.getId(), user.getId() + "-" + name + "-" + is_achieved.toString(), tsLong);
+                    EventDatabase.addEvent(event);
+                    is_toast = true;
+                }
             });
         }
     }
