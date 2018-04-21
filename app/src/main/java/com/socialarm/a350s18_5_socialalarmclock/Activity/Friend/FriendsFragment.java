@@ -15,6 +15,7 @@ import com.socialarm.a350s18_5_socialalarmclock.User.User;
 import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class FriendsFragment extends Fragment {
 
@@ -78,6 +79,7 @@ public class FriendsFragment extends Fragment {
         // fetch friends and their most recent alarms
         UserDatabase.getFriends(user, friends -> {
                 // specify an adapter (see also next example)
+            Collections.sort(friends);
             ArrayList<Alarm> alarms = new ArrayList<Alarm>();
             for(User f : friends) {
                 UserDatabase.getMostRecentAlarm(f, alarm -> {
@@ -91,5 +93,13 @@ public class FriendsFragment extends Fragment {
         });
 
         return myView;
+    }
+
+    /**
+     * Get recycler view of friends
+     * @return
+     */
+    public RecyclerView getmRecyclerView() {
+        return this.mRecyclerView;
     }
 }

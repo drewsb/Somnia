@@ -18,6 +18,7 @@ import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -136,28 +137,38 @@ public class UserDatabase {
         FirebaseFirestore db = DatabaseSingleton.getInstance();
         CollectionReference ref = DatabaseSingleton.getInstance().collection("users").document(user_id)
                 .collection("alarms");
+        Log.d("Collection: ", "is " + ref);
         ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (DocumentSnapshot doc : task.getResult()) {
                                 AlarmDatabase.getAlarm(doc.getId(), user_id, alarmResult -> {
+                                    alarmCounter.update();
                                     if (alarmResult == null) {
                                         Log.d(TAG, "Error searching for alarm: " + doc.getId());
-                                        return;
+                                        Log.d(TAG, "User: " + user_id);
+                                    } else {
+                                        Log.d(TAG, "User: " + user_id);
+                                        Log.d(TAG, "Alarm: " + alarmResult.hashCode());
+                                        alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
                                     }
-                                    alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
-                                    alarmCounter.update();
                                     if (alarmCounter.counter == task.getResult().size()) {
-                                        alarmsCallback.callback(alarmMap.get(alarmMap.firstKey()));
+                                        if (!alarmMap.isEmpty()) {
+                                            alarmsCallback.callback(alarmMap.get(alarmMap.firstKey()));
+                                        } else {
+                                            alarmsCallback.callback(null);
+                                        }
                                     }
                                 });
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
+                            alarmsCallback.callback(null);
                         }
                     }
                 });
+        Log.d("Kek: ", "is " + ref);
     }
 
     /**

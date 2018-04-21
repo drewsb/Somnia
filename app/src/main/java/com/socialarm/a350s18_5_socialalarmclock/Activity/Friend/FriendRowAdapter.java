@@ -34,7 +34,7 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         }
     }
 
-    FriendRowAdapter(List<User> users, List<Alarm> alarms) {
+    public FriendRowAdapter(List<User> users, List<Alarm> alarms) {
         this.users = users;
         this.alarms = alarms;
     }
@@ -71,8 +71,12 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         User user  = users.get(position);
         Alarm alarm = alarms.get(position);
         holder.row.setName(user);
-        holder.row.setTime(Alarm.getTime(alarm.getMin(), alarm.getHour()), user);
-        holder.row.setJoinButton(user, alarm);
+        if (alarm != null) {
+            holder.row.setTime(Alarm.getTime(alarm.getMin(), alarm.getHour()), user);
+            holder.row.setJoinButton(user, alarm);
+        } else {
+            holder.row.setTime("No alarms", user);
+        }
     }
 
     /**

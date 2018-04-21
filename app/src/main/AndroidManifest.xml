@@ -64,8 +64,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.SearchFriend.SearchFriendActivity" />
         <activity android:name=".Activity.Alarm.AlarmEditActivity" />
+        <activity android:name=".Activity.Achievement.AchievementActivity"/>
         <activity android:name=".Activity.Alarm.AlarmEvent">
             <intent-filter>
 
@@ -98,7 +98,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".FirebaseMessaging.Response"></activity>
+        <activity android:name=".FirebaseMessaging.Response" />
     </application>
 
 </manifest>
