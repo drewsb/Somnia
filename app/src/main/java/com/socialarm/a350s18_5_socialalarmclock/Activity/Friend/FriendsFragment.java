@@ -87,7 +87,7 @@ public class FriendsFragment extends Fragment {
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 });
-            }
+            }   
         });
 
         return myView;
