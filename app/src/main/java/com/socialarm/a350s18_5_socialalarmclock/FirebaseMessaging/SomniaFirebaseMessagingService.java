@@ -111,7 +111,16 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                             }
 
                             intent.putExtra("days", days);
-                            startActivity(intent);
+
+                            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle("Somnia")
+                                    .setContentText(challenger.getFirst_name() + " " + challenger.getLast_name() + " has challenged you for " + days + " days")
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                            notificationManager.notify(1,builder.build());
                         });
                     });
                 }
