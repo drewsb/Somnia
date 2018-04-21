@@ -197,23 +197,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
+
             UserDatabase.getUser(extras.getString("idFacebook"), user -> {
+
                 Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
 
                 //pass user data to statistics activity
                 intent.putExtra("user", user);
                 intent.putExtra("own_profile", false);
                 startActivity(intent);
+
             });
+
         } else if (id == R.id.nav_achievement) {
+
             UserDatabase.getUser(extras.getString("idFacebook"), user -> {
+
                 Intent intent = new Intent(MainActivity.this, AchievementActivity.class);
 
                 //pass user data to achievement activity
                 intent.putExtra("user", user);
                 intent.putExtra("own_profile", false);
                 startActivity(intent);
+
             });
+
         } else if (id == R.id.nav_disable) {
             DisableAlarmFragment disableAlarmFragment = new DisableAlarmFragment();
             disableAlarmFragment.show(getSupportFragmentManager(), "disable");
