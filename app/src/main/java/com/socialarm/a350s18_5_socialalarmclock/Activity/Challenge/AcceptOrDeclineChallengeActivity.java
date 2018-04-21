@@ -11,14 +11,17 @@ import android.widget.TextView;
 
 import com.socialarm.a350s18_5_socialalarmclock.Database.EventDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.Event.Event;
+import com.socialarm.a350s18_5_socialalarmclock.FirebaseMessaging.MessageSender;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class AcceptOrDeclineChallengeActivity extends AppCompatActivity {
 
-    private User user;
+    private User challenge;
     private User challenger;
     private int days;
 
@@ -31,7 +34,7 @@ public class AcceptOrDeclineChallengeActivity extends AppCompatActivity {
         Bundle extras = i.getExtras();
 
         //set the user
-        user = (User) i.getSerializableExtra("user");
+        challenge = (User) i.getSerializableExtra("user");
 
         //get friend (challenger)
         challenger = (User) i.getSerializableExtra("friend");
@@ -61,20 +64,13 @@ public class AcceptOrDeclineChallengeActivity extends AppCompatActivity {
      */
     public void onClickAcceptChallenge(View v) {
         //send information back to challenger (notify)
-        //challenger.notifychallenge...
-
-        //create event of challenge
-        int hashChallengeEvent = user.hashCode() << Integer.SIZE/2 | challenger.hashCode() & Integer.SIZE/2;
-        Long currentTime = System.currentTimeMillis()/1000;
-        Long finalTime = TimeUnit.DAYS.toMillis(30)/1000;
-
-        //format of eventId is (challengerid - userid - current time - time when challenge ends)
-        Event challengeEvent = new Event("Challenge", "" + hashChallengeEvent,
-                challenger.getId(), challenger.getId() + "-" + user.getId() + "-" + currentTime.toString() + "-" + finalTime.toString(),
-                currentTime);
-
-        //send to database
-        EventDatabase.addEvent(challengeEvent);
+        MessageSender ms = new MessageSender();
+        Map<String, Object> data = new HashMap<>();
+        data.put("days", ""+days);
+        data.put("challenger", challenger.getId());
+        data.put("challengee", challenge.getId());
+        data.put("challengeType", "accept");
+        ms.sendDirect(challenger.getId(), "challenge", data);
 
         finish();
     }
@@ -86,7 +82,14 @@ public class AcceptOrDeclineChallengeActivity extends AppCompatActivity {
      */
     public void onClickDeclineChallenge(View v) {
         //send information back to challenger (notify)
-        //challenger.notifychallenge...
+
+        MessageSender ms = new MessageSender();
+        Map<String, Object> data = new HashMap<>();
+        data.put("days", ""+days);
+        data.put("challenger", challenger.getId());
+        data.put("challengee", challenge.getId());
+        data.put("challengeType", "decline");
+        ms.sendDirect(challenger.getId(), "challenge", data);
 
         finish();
     }
