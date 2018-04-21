@@ -18,10 +18,8 @@ import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by drewboyette on 3/13/18.
