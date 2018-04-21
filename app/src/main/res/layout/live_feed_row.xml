@@ -28,6 +28,7 @@
                         android:id="@+id/live_feed_name_text"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="2dp"
                         android:textStyle="bold"
                         android:textSize="12sp"/>
 
