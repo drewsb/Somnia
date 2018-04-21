@@ -43,6 +43,7 @@ import android.support.v4.app.Fragment;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -258,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onQueryTextChange(String search_string) {
                 viewPager.setCurrentItem(1);
                 UserDatabase.getFriends(current_user, friends -> {
-                    ArrayList<Alarm> alarms = new ArrayList<Alarm>();
+                    HashMap<User, Alarm> alarmMap = new HashMap<>();
 
                     //only store friends that begin with search string
                     ListIterator<User> friend_iterator = friends.listIterator();
@@ -284,9 +285,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     //find the friend's alarms as well
                     for (User f : friends) {
                         UserDatabase.getMostRecentAlarm(f, alarm -> {
-                            alarms.add(alarm);
-                            if (alarms.size() == friends.size()) {
-                                friendsFragment.getmRecyclerView().setAdapter(new FriendRowAdapter(friends, alarms));
+                            alarmMap.put(f, alarm);
+                            if (alarmMap.size() == friends.size()) {
+                                friendsFragment.getmRecyclerView().setAdapter(new FriendRowAdapter(friends, alarmMap));
                             }
                         });
                     }

@@ -46,8 +46,9 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
             } else if (type.equalsIgnoreCase("alarm")) {
                 // Alarm notifications are sent in response to a snooze event.
                 // They reopen the alarm activity.
-                String audio;
+                String audio, message;
                 if ((audio = data.get("audio")) != null) {
+                    // If there is audio attached, we want to download it before triggering an alarm.
                     FirebaseStorage storage = FirebaseStorage.getInstance();
                     StorageReference ref = storage.getReference(audio);
                     try {
@@ -64,7 +65,12 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                     } catch (IOException e){
                         retriggerDefault();
                     }
-
+                } else if ((message = data.get("message")) != null) {
+                    // If there is a message attached, send it to the alarm event.
+                    Intent i = new Intent(this, AlarmEvent.class);
+                    i.putExtra("message", message);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
                 } else {
                     retriggerDefault();
                 }
@@ -72,6 +78,9 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
+    /**
+     * Creates a basic AlarmEvent with no special features.
+     */
     private void retriggerDefault() {
         Intent i = new Intent(this, AlarmEvent.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
