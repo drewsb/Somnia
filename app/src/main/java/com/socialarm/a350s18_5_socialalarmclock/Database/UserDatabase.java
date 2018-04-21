@@ -65,6 +65,8 @@ public class UserDatabase {
                     DocumentSnapshot document = task.getResult();
                     if (!document.exists()) {
                         addUser(user);
+                    } else {
+                        updateFriends(user); // If the user already exists, just push new friends data.
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -120,6 +122,15 @@ public class UserDatabase {
      */
     public static void addUser(User user) {
         DatabaseSingleton.getInstance().collection("users").document(user.getId()).set(user);
+    }
+
+    /**
+     * Update a given user in firebase.
+     *
+     * @param user the user to update
+     */
+    private static void updateFriends(User user) {
+        DatabaseSingleton.getInstance().collection("users").document(user.getId()).update("friend_ids", user.getFriend_ids());
     }
 
     /**
