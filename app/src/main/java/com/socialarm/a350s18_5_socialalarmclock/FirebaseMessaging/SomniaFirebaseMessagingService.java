@@ -123,8 +123,16 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                     UserDatabase.getUser(challenger_id, challenger -> {
                         UserDatabase.getUser(challengee_id, challengee -> {
                             //display to user that user has accepted challenge
-                            String challengee_fullname = challengee.getFirst_name() + " " + challengee.getLast_name();
-                            Toast.makeText(getApplicationContext(), challengee_fullname, Toast.LENGTH_LONG).show();
+                            String response = challengee.getFirst_name() + " " + challengee.getLast_name() + " has accepted your challenge";
+                            Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle("Somnia")
+                                    .setContentText(response)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                            notificationManager.notify(1,builder.build());
 
                             //send challenge event to db
                             ChallengeDatabase.SendChallengeToDB(challengee, challenger, "accept");
@@ -136,8 +144,16 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                     UserDatabase.getUser(challenger_id, challenger -> {
                         UserDatabase.getUser(challengee_id, challengee -> {
                             //display to user that user has declined challenge
-                            String challengee_fullname = challengee.getFirst_name() + " " + challengee.getLast_name();
-                            Toast.makeText(getApplicationContext(), challengee_fullname, Toast.LENGTH_LONG).show();
+                            String response = challengee.getFirst_name() + " " + challengee.getLast_name() + " has declined your challenge";
+                            Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle("Somnia")
+                                    .setContentText(response)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                            notificationManager.notify(1,builder.build());
 
                             //send challenge event to db
                             ChallengeDatabase.SendChallengeToDB(challengee, challenger, "decline");
