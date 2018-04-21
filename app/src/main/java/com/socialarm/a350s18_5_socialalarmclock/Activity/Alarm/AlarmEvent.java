@@ -105,7 +105,7 @@ public class AlarmEvent extends AppCompatActivity {
 
         }.start();
 
-        if (message != "") {
+        if (message != null && !message.equals("")) {
             TextView message_view = findViewById(R.id.message_view);
             message_view.setText(message);
         }
