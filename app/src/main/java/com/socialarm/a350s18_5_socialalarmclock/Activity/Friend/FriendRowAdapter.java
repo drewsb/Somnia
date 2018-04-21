@@ -10,6 +10,7 @@ import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The adapter to be hooked into FriendRow (Similar to LeaderboardRow)
@@ -25,7 +26,7 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
      * A list of users to be displayed on the friends page (canonically the logged in user's friends list)
      */
     private List<User> users;
-    private List<Alarm> alarms;
+    private Map<User, Alarm> alarmMap;
 
     /**
      * Static inner view holder class
@@ -39,10 +40,10 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         }
     }
 
-    public FriendRowAdapter(User current_user, List<User> users, List<Alarm> alarms) {
+    public FriendRowAdapter(User current_user, List<User> users, Map<User, Alarm> alarmMap) {
         this.current_user = current_user;
         this.users = users;
-        this.alarms = alarms;
+        this.alarmMap = alarmMap;
     }
 
     /**
@@ -75,12 +76,14 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         User user  = users.get(position);
-        Alarm alarm = alarms.get(position);
+        Alarm alarm = alarmMap.get(user);
         holder.row.setName(user);
         if (alarm != null) {
             holder.row.setChallenge(current_user, user);
             holder.row.setTime(Alarm.getTime(alarm.getMin(), alarm.getHour()), user);
             holder.row.setJoinButton(user, alarm);
+        } else {
+            holder.row.setTime("No alarms", user);
         }
     }
 

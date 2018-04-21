@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
 import com.socialarm.a350s18_5_socialalarmclock.Database.AlarmDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.Event.Event;
 import com.socialarm.a350s18_5_socialalarmclock.R;
@@ -73,8 +74,7 @@ public class LiveFeedRow extends LinearLayout {
                 Log.d("LiveFeedRow", "Error finding alarm: " + event.getUser_id() + event.getAlarm_id());
                 return;
             }
-            String alarmText = alarm.getHour() + ":" + alarm.getMin();
-            alarmView.setText(alarmText);
+            alarmView.setText(Alarm.getTime(alarm.getMin(), alarm.getHour()));
         });
 
         // get the date of the event's timestamp and put it in

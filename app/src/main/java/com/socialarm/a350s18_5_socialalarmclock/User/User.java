@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Holds information for every user in the database
  */
-public class User implements Serializable {
+public class User implements Serializable, Comparable<User> {
 
     private String id;
     private String first_name;
@@ -68,5 +68,14 @@ public class User implements Serializable {
 
     String getFirebase_id() {
         return firebase_id;
+    }
+
+    @Override
+    public int compareTo(User other){
+        // compareTo should return < 0 if this is supposed to be
+        // less than other, > 0 if this is supposed to be greater than
+        // other and 0 if they are supposed to be equal
+        int first = this.first_name.compareTo(other.first_name);
+        return first == 0 ? this.last_name.compareTo(other.last_name) : first;
     }
 }
