@@ -110,10 +110,10 @@ public class Alarm {
     @Override
     public int hashCode() {
         int result = getUser_id().hashCode();
-        result = 7 * result + getMin();
-        result = 7 * result + getHour();
-        result = 7 * result + getDay_of_week().hashCode();
-        result = 7 * result + getVolume();
+        result = 31 * result + getMin();
+        result = 31 * result + getHour();
+        result = 31 * result + getDay_of_week().hashCode();
+        result = 31 * result + getVolume();
         return result;
     }
 

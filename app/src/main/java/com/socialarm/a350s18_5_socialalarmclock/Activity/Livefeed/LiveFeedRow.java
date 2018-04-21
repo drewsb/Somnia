@@ -25,6 +25,8 @@ import java.util.List;
 
 public class LiveFeedRow extends LinearLayout {
 
+    final String SLEEP_EMOJI = "😴";
+
     private LinearLayout myView;
 
     /**
@@ -97,23 +99,23 @@ public class LiveFeedRow extends LinearLayout {
      */
     private void setLikeText(TextView v, List<String> likedBy) {
         if (likedBy == null || likedBy.size() == 0) {
-            String likesNewText = "Send a \uD83D\uDE34";
+            String likesNewText = "Send a " + SLEEP_EMOJI;
             v.setText(likesNewText);
         } else {
             if (likedBy.size() == 1) {
                 UserDatabase.getUser(likedBy.get(0), user -> {
-                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name();
+                    String likesText = SLEEP_EMOJI + " sent by " + user.getFirst_name();
                     v.setText(likesText);
                 });
             } else if (likedBy.size() == 2 ){
                 UserDatabase.getUser(likedBy.get(0), user -> {
-                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name() +
+                    String likesText = SLEEP_EMOJI + " sent by " + user.getFirst_name() +
                             " and " + Integer.toString(likedBy.size() - 1) + " other";
                     v.setText(likesText);
                 });
             } else {
                 UserDatabase.getUser(likedBy.get(0), user -> {
-                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name() +
+                    String likesText = SLEEP_EMOJI + " sent by " + user.getFirst_name() +
                             " and " + Integer.toString(likedBy.size() - 1) + " others";
                     v.setText(likesText);
                 });

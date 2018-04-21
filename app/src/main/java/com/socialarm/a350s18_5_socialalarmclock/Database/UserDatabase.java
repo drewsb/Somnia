@@ -146,6 +146,7 @@ public class UserDatabase {
                                     if (alarmResult == null) {
                                         Log.d(TAG, "Error searching for alarm: ");
                                         alarmsCallback.callback(null);
+                                        return;
                                     }
                                     alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
                                     alarmCounter.update();
