@@ -90,6 +90,11 @@ public class LiveFeedRow extends LinearLayout {
         });
     }
 
+    /**
+     * setLikeText updates the text that is displayed on the like button depending on how many people likes the event
+     * @param v the text view of the event
+     * @param likedBy the list of users who have liked the event
+     */
     private void setLikeText(TextView v, List<String> likedBy) {
         if (likedBy == null || likedBy.size() == 0) {
             String likesNewText = "Send a \uD83D\uDE34";

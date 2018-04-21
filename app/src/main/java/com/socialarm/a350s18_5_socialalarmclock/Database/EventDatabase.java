@@ -258,8 +258,8 @@ public final class EventDatabase {
     }
 
     /**
-     * Update given user's firebase id
-     * @param thisEvent
+     * Update the list of people who have liked an event
+     * @param thisEvent the event in question
      */
     public static void updateLikedBy(Event thisEvent) {
         DatabaseSingleton.getInstance().collection("events").document(thisEvent.getEvent_id()).update("likedBy", thisEvent.getLikedBy());
