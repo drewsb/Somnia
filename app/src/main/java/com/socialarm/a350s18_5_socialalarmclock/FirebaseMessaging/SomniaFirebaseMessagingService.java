@@ -128,6 +128,8 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 //send response back to challenger that challengee has responded to accepting
                 else if(challengeType.equals("accept")) {
+                    int days = Integer.parseInt(data.get("days"));
+                    ChallengeReceiver.setAlarm(this, days, challengee_id, challenger_id);
                     UserDatabase.getUser(challenger_id, challenger -> {
                         UserDatabase.getUser(challengee_id, challengee -> {
                             //display to user that user has accepted challenge

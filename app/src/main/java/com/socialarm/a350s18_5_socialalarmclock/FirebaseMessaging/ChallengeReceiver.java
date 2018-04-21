@@ -41,7 +41,7 @@ public class ChallengeReceiver extends BroadcastReceiver {
      * Set challenge alarm to a specific number of days in advance
      * @param context
      */
-    public void setAlarm(Context context, int days, String challengeeID, String challengerID) {
+    public static void setAlarm(Context context, int days, String challengeeID, String challengerID) {
         Log.d("ChallengeReceiver", "Setting Challenge");
 
         Intent i = new Intent(context, com.socialarm.a350s18_5_socialalarmclock.Achievement.AchievementReceiver.class);
