@@ -27,4 +27,11 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"
         android:text="Stop Playing" />
+    <Button
+        android:id="@+id/goBackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="120dp"
+        android:text="Go back" />
 </LinearLayout>

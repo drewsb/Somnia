@@ -7,10 +7,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
+
+import org.w3c.dom.Text;
 
 /**
  * Activity for sending a challenge to a friend
@@ -40,6 +43,10 @@ public class ChallengeActivity extends AppCompatActivity {
         challengeDaysEditText = findViewById(R.id.challengeDaysEditText);
     }
 
+    /**
+     * Is called when user wants to challenge a friend by clicking button
+     * @param v
+     */
     public void onClickChallenge(View v)
     {
         //attempt to parse user input

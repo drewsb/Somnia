@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/com_smart_login_code"
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.Activity.Challenge.AcceptOrDeclineChallengeActivity">
+
+    <TextView
+        android:id="@+id/acceptDeclineTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="32dp"
+        android:layout_weight="1"
+        android:fontFamily="monospace"
+        android:gravity="center"
+        android:text="A challenger has appeared!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@android:color/holo_green_dark" />
+
+    <ImageView
+        android:id="@+id/challengerApproachesImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/acceptDeclineTextView"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/acceptChallengeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:backgroundTint="@android:color/holo_green_light"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:onClick="onClickAcceptChallenge"
+            android:text="Accept challenge"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="16dp" />
+
+        <Button
+            android:id="@+id/declineChallengeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:onClick="onClickDeclineChallenge"
+            android:text="Decline challenge"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="16dp" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

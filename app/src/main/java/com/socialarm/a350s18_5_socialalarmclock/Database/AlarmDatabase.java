@@ -34,7 +34,7 @@ public class AlarmDatabase {
         String alarmID = "" + alarm.hashCode();
         getAlarm(alarmID, userID, alarmResult -> {
             if (alarmResult == null) {
-                Log.d(TAG, "Successfully added alarm to database.");
+                Log.d(TAG, "Successfully added alarm with ID " + alarmID + " to database.");
                 HashMap<String, Object> data = new HashMap<String, Object>();
                 data.put("On", true);
                 db.collection("alarms").document(userID + alarmID).set(alarm);

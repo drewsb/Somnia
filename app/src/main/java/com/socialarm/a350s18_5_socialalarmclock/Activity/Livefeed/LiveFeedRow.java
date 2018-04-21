@@ -25,6 +25,8 @@ import java.util.List;
 
 public class LiveFeedRow extends LinearLayout {
 
+    final String SLEEP_EMOJI = "😴";
+
     private LinearLayout myView;
 
     /**
@@ -66,12 +68,13 @@ public class LiveFeedRow extends LinearLayout {
 
         // get the time of this alarm and put it in
         AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
+            TextView alarmView = myView.findViewById(R.id.live_feed_alarm_text);
             if (alarm == null) {
-                Log.d("LiveFeedRow", "Error finding alarm: " + event.getAlarm_id());
+                Log.d("LiveFeedRow", "Error finding alarm: " + event.getUser_id() + event.getAlarm_id());
                 return;
             }
             String alarmText = alarm.getHour() + ":" + alarm.getMin();
-            eventTextView.setText(alarmText);
+            alarmView.setText(alarmText);
         });
 
         // get the date of the event's timestamp and put it in
@@ -89,25 +92,30 @@ public class LiveFeedRow extends LinearLayout {
         });
     }
 
+    /**
+     * setLikeText updates the text that is displayed on the like button depending on how many people likes the event
+     * @param v the text view of the event
+     * @param likedBy the list of users who have liked the event
+     */
     private void setLikeText(TextView v, List<String> likedBy) {
         if (likedBy == null || likedBy.size() == 0) {
-            String likesNewText = "Send a \uD83D\uDE34";
+            String likesNewText = "Send a " + SLEEP_EMOJI;
             v.setText(likesNewText);
         } else {
             if (likedBy.size() == 1) {
                 UserDatabase.getUser(likedBy.get(0), user -> {
-                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name();
+                    String likesText = SLEEP_EMOJI + " sent by " + user.getFirst_name();
                     v.setText(likesText);
                 });
             } else if (likedBy.size() == 2 ){
                 UserDatabase.getUser(likedBy.get(0), user -> {
-                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name() +
+                    String likesText = SLEEP_EMOJI + " sent by " + user.getFirst_name() +
                             " and " + Integer.toString(likedBy.size() - 1) + " other";
                     v.setText(likesText);
                 });
             } else {
                 UserDatabase.getUser(likedBy.get(0), user -> {
-                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name() +
+                    String likesText = SLEEP_EMOJI + " sent by " + user.getFirst_name() +
                             " and " + Integer.toString(likedBy.size() - 1) + " others";
                     v.setText(likesText);
                 });
