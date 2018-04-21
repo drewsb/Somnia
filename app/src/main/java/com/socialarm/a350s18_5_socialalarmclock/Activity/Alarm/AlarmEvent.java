@@ -70,7 +70,6 @@ public class AlarmEvent extends AppCompatActivity {
             snooze.setVisibility(View.INVISIBLE);
         }
 
-
         //get alarm id and fetch path to ringtone
         Intent i = getIntent();
         int alarm_id = i.getIntExtra("Alarm", -1);

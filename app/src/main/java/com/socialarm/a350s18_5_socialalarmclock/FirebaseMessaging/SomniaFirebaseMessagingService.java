@@ -14,11 +14,17 @@ import java.util.Map;
 
 public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
 
+    /**
+     * This is called whenever a push notification comes in from firebase.
+     * @param remoteMessage The message recieved.
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0) {
             String type = remoteMessage.getData().get("type");
             if (type.equalsIgnoreCase("snooze")) {
+                // Snooze events are sent to a phone when a friend snoozes an alarm.
+                // They create a notification to the response page.
                 Intent response = new Intent(this, Response.class);
                 Map<String, String> data = remoteMessage.getData();
                 response.putExtra("user_id", data.get("id"));
@@ -34,6 +40,8 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                 notificationManager.notify(1,builder.build());
             } else if (type.equalsIgnoreCase("alarm")) {
+                // Alarm notifications are sent in response to a snooze event.
+                // They reopen the alarm activity.
                 Intent i = new Intent(this, AlarmEvent.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
