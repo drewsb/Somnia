@@ -12,6 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +60,56 @@ public class Response extends AppCompatActivity {
         my_id = prefs.getString("id", null);
         RadioGroup rg = findViewById(R.id.response_type);
         rg.check(R.id.basic_retrigger);
+
+        // Set the visible options depending on which check box is selected.
+        rg.setOnCheckedChangeListener((RadioGroup radioGroup, int checkedId) -> {
+            Button select = findViewById(R.id.select_response);
+            Button record = findViewById(R.id.record_response);
+            EditText message = findViewById(R.id.message_response);
+            switch (checkedId) {
+                case R.id.basic_retrigger:
+                    setVisibility(select, false);
+                    setVisibility(record, false);
+                    setVisibility(message, false);
+                    break;
+                case R.id.voice_retrigger:
+                    setVisibility(select, true);
+                    setVisibility(record, true);
+                    setVisibility(message, false);
+                    break;
+                case R.id.message_retrigger:
+                    setVisibility(select, false);
+                    setVisibility(record, false);
+                    setVisibility(message, true);
+                    break;
+            }
+        });
+
+        Button select = findViewById(R.id.select_response);
+        Button record = findViewById(R.id.record_response);
+        EditText message = findViewById(R.id.message_response);
+
+        setVisibility(select, false);
+        setVisibility(record, false);
+        setVisibility(message, false);
+    }
+
+    /**
+     * Sets whether a givin view should be available for interaction.
+     * Hides and disables it.
+     * @param v The view to affect
+     * @param should_show Whether to enable or disable the view.
+     */
+    private void setVisibility(View v, boolean should_show) {
+        if (should_show) {
+            v.setVisibility(View.VISIBLE);
+            v.setClickable(true);
+            v.setFocusableInTouchMode(true);
+        } else {
+            v.setVisibility(View.INVISIBLE);
+            v.setClickable(false);
+            v.setFocusable(false);
+        }
     }
 
     /**
@@ -109,6 +161,13 @@ public class Response extends AppCompatActivity {
                 uploadTask.addOnFailureListener((Exception exception) -> {
                     Toast.makeText(this, "Failed to upload file", Toast.LENGTH_SHORT).show();
                 });
+                break;
+            case R.id.message_retrigger:
+                EditText editText = findViewById(R.id.message_response);
+                String message = editText.getText().toString();
+                Map<String, Object> extra_data = new HashMap<>();
+                extra_data.put("message", message);
+                sendMessage(extra_data);
                 break;
         }
 
