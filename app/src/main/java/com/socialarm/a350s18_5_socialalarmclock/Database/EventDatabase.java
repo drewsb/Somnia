@@ -19,16 +19,6 @@ public final class EventDatabase {
     //private constructor
     private EventDatabase() {}
 
-    public interface EventCallback
-    {
-        void callback(List<Event> events);
-    }
-
-    public interface LeaderboardEntryCallback
-    {
-        void callback(List<LeaderboardEntry> events);
-    }
-
     /**
      * Enum for Duration
      */
@@ -42,9 +32,9 @@ public final class EventDatabase {
     /**
      * Get all events since beginning
      *
-     * @param eventCallback the function to run once the call is complete
+     * @param consumer the function to run once the call is complete
      */
-    public static void getAllEvents(final EventCallback eventCallback) {
+    public static void getAllEvents(final Consumer<List<Event>> consumer) {
 
         DatabaseSingleton.getInstance().collection("events").get()
                 .addOnSuccessListener(documentSnapshots -> {
@@ -53,7 +43,7 @@ public final class EventDatabase {
                         List<Event> events = documentSnapshots.toObjects(Event.class);
 
                         //callback
-                        eventCallback.callback(events);
+                        consumer.callback(events);
                     }
                 })
                 .addOnFailureListener(e -> Log.d("Event", "Error getting events"));
@@ -68,13 +58,13 @@ public final class EventDatabase {
      * @param duration the timeframe we want to filter for
      * @param type the type of event we want to recieve
      * @param direction the sort direction of the resulting list
-     * @param lbeCallback the function to run once the call is complete
+     * @param consumer the function to run once the call is complete
      */
     public static void getLeaderboardEventsSince(List<String> friends_list,
                                                  Duration duration,
                                                  SleepStatType type,
                                                  SortDirection direction,
-                                                 final LeaderboardEntryCallback lbeCallback) {
+                                                 final Consumer<List<LeaderboardEntry>> consumer) {
         List<LeaderboardEntry> entryList = new ArrayList<>();
 
         getAllEvents(events -> {
@@ -99,7 +89,7 @@ public final class EventDatabase {
                     Collections.sort(entryList);
 
                     if (entryList.size() == friends_list.size()) {
-                        lbeCallback.callback(entryList);
+                        consumer.callback(entryList);
                     }
                 });
             }
