@@ -13,10 +13,10 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("BootReceiver", "Setting alarm");
+        Log.w("BootReceiver", "Setting alarm");
 
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            Log.d("BootReceiver", "Setting alarm!");
+            Log.w("BootReceiver", "Setting alarm!");
             AchievementUtil.setWeeklyAlarm(context);
         }
     }

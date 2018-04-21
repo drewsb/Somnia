@@ -143,7 +143,7 @@ public class UserDatabase {
                             for (DocumentSnapshot doc : task.getResult()) {
                                 AlarmDatabase.getAlarm(doc.getId(), user_id, alarmResult -> {
                                     if (alarmResult == null) {
-                                        Log.d(TAG, "Error searching for alarm: " + alarmResult.hashCode());
+                                        Log.d(TAG, "Error searching for alarm: " + doc.getId());
                                         return;
                                     }
                                     alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);

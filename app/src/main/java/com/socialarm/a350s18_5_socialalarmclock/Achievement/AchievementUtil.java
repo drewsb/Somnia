@@ -31,7 +31,6 @@ public class AchievementUtil {
         Intent i = new Intent(context, BootReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, 0, i, 0);
 
-
         // With setInexactRepeating(), you have to use one of the AlarmManager interval
         // constants--in this case, AlarmManager.INTERVAL_DAY.
         alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),

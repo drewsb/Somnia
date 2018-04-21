@@ -2,8 +2,6 @@ package com.socialarm.a350s18_5_socialalarmclock.User;
 
 import android.os.Bundle;
 
-import com.socialarm.a350s18_5_socialalarmclock.Achievement.Achievement;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
