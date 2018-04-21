@@ -61,6 +61,20 @@ public class FriendRow extends LinearLayout {
         });
     }
 
+    public void setChallenge(final User user) {
+        Button challengeBtn = myView.findViewById(R.id.friend_challenge_button);
+        challengeBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), StatisticsActivity.class);
+
+                //pass facebook data to challenge activity
+                intent.putExtra("user", user);
+                getContext().startActivity(intent);
+            }
+        });
+    }
+
     /**
      * Set the time of the most recent alarm belonging to the user
      * @param time
