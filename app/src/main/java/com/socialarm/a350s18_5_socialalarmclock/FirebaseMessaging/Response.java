@@ -160,6 +160,13 @@ public class Response extends AppCompatActivity {
                     Toast.makeText(this, "Failed to upload file", Toast.LENGTH_SHORT).show();
                 });
                 break;
+            case R.id.message_retrigger:
+                EditText editText = findViewById(R.id.message_response);
+                String message = editText.getText().toString();
+                Map<String, Object> extra_data = new HashMap<>();
+                extra_data.put("message", message);
+                sendMessage(extra_data);
+                break;
         }
 
     }

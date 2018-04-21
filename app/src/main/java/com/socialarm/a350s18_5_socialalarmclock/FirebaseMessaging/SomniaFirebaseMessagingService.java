@@ -38,7 +38,7 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                 notificationManager.notify(1,builder.build());
             } else if (type.equalsIgnoreCase("alarm")) {
-                String audio;
+                String audio, message;
                 if ((audio = data.get("audio")) != null) {
                     FirebaseStorage storage = FirebaseStorage.getInstance();
                     StorageReference ref = storage.getReference(audio);
@@ -56,7 +56,11 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                     } catch (IOException e){
                         retriggerDefault();
                     }
-
+                } else if ((message = data.get("message")) != null) {
+                    Intent i = new Intent(this, AlarmEvent.class);
+                    i.putExtra("message", message);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
                 } else {
                     retriggerDefault();
                 }

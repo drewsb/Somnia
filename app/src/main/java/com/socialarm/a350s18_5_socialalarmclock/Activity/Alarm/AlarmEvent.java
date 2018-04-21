@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.socialarm.a350s18_5_socialalarmclock.Alarm.Alarm;
@@ -49,6 +50,7 @@ public class AlarmEvent extends AppCompatActivity {
 
     private int volume;
     private String ringtone_path;
+    private String message;
 
     AlarmsOpenHelper dbHelper;
     private SharedPreferences prefs;
@@ -69,6 +71,11 @@ public class AlarmEvent extends AppCompatActivity {
             snooze.setClickable(false);
             snooze.setFocusable(false);
             snooze.setVisibility(View.INVISIBLE);
+        }
+
+        if (message != "") {
+            TextView message_view = findViewById(R.id.message_view);
+            message_view.setText(message);
         }
 
         Context applicationContext = LoginActivity.getContextOfApplication();
@@ -116,6 +123,10 @@ public class AlarmEvent extends AppCompatActivity {
             ringtone_path = i.getStringExtra("audio");
             if (ringtone_path == null) {
                 ringtone_path = "";
+            }
+            message = i.getStringExtra("message");
+            if (message == null) {
+                message = "";
             }
             volume = 10;
         }
