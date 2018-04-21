@@ -12,6 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +59,65 @@ public class Response extends AppCompatActivity {
         my_id = prefs.getString("id", null);
         RadioGroup rg = findViewById(R.id.response_type);
         rg.check(R.id.basic_retrigger);
+        rg.setOnCheckedChangeListener((RadioGroup radioGroup, int checkedId) -> {
+            Button select = findViewById(R.id.select_response);
+            Button record = findViewById(R.id.record_response);
+            EditText message = findViewById(R.id.message_response);
+            switch (checkedId) {
+                case R.id.basic_retrigger:
+                    select.setVisibility(View.INVISIBLE);
+                    select.setClickable(false);
+                    select.setFocusable(false);
+
+                    record.setVisibility(View.INVISIBLE);
+                    record.setClickable(false);
+                    record.setFocusable(false);
+
+                    message.setVisibility(View.INVISIBLE);
+                    message.setClickable(false);
+                    message.setFocusableInTouchMode(false);
+                    break;
+                case R.id.voice_retrigger:
+                    select.setVisibility(View.VISIBLE);
+                    select.setClickable(true);
+                    select.setFocusable(true);
+
+                    record.setVisibility(View.VISIBLE);
+                    record.setClickable(true);
+                    record.setFocusable(true);
+
+                    message.setVisibility(View.INVISIBLE);
+                    message.setClickable(false);
+                    message.setFocusableInTouchMode(false);
+                    break;
+                case R.id.message_retrigger:
+                    select.setVisibility(View.INVISIBLE);
+                    select.setClickable(false);
+                    select.setFocusable(false);
+
+                    record.setVisibility(View.INVISIBLE);
+                    record.setClickable(false);
+                    record.setFocusable(false);
+
+                    message.setVisibility(View.VISIBLE);
+                    message.setClickable(true);
+                    message.setFocusableInTouchMode(true);
+                    break;
+            }
+        });
+
+        Button select = findViewById(R.id.select_response);
+        select.setVisibility(View.INVISIBLE);
+        select.setClickable(false);
+        select.setFocusable(false);
+        Button record = findViewById(R.id.record_response);
+        record.setVisibility(View.INVISIBLE);
+        record.setClickable(false);
+        record.setFocusable(false);
+        EditText message = findViewById(R.id.message_response);
+        message.setVisibility(View.INVISIBLE);
+        message.setClickable(false);
+        message.setFocusableInTouchMode(false);
     }
 
     public void sendWakeup(View view) {
