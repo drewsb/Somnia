@@ -47,11 +47,6 @@ public class AcceptOrDeclineChallengeActivity extends AppCompatActivity {
                 challenger.getFirst_name() + " " + challenger.getLast_name() + " wishes to challenge you to "
                 + days +  " days of waking up on time");
 
-        //setup mewtwo image
-        ImageView challengerApproachesImageView = findViewById(R.id.challengerApproachesImageView);
-        Drawable mewtwoDrawable = getResources().getDrawable(R.drawable.challenger_approaching_mewtwo);
-        challengerApproachesImageView.setImageDrawable(mewtwoDrawable);
-
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.super_smash_challenger_approaches);
         mediaPlayer.start();
     }
