@@ -75,14 +75,20 @@ public class LiveFeedRow extends LinearLayout {
         eventTextView.setText(eventText);
 
         // get the time of this alarm and put it in
-        AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
+
+        if (event.getAlarm_id().equals("-1")) {
             TextView alarmView = myView.findViewById(R.id.live_feed_alarm_text);
-            if (alarm == null) {
-                Log.d("LiveFeedRow", "Error finding alarm: " + event.getUser_id() + event.getAlarm_id());
-                return;
-            }
-            alarmView.setText(Alarm.getTime(alarm.getMin(), alarm.getHour()));
-        });
+            alarmView.setText("retriggered");
+        } else {
+            AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
+                TextView alarmView = myView.findViewById(R.id.live_feed_alarm_text);
+                if (alarm == null) {
+                    Log.d("LiveFeedRow", "Error finding alarm: " + event.getUser_id() + event.getAlarm_id());
+                    return;
+                }
+                alarmView.setText(Alarm.getTime(alarm.getMin(), alarm.getHour()));
+            });
+        }
 
         // get the date of the event's timestamp and put it in
         TextView timestampView = myView.findViewById(R.id.live_feed_timestamp_text);
