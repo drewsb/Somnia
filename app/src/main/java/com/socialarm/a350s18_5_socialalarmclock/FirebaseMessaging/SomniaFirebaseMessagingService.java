@@ -4,10 +4,13 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.AlarmEvent;
+import com.socialarm.a350s18_5_socialalarmclock.Activity.Challenge.AcceptOrDeclineChallengeActivity;
+import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.R;
 
 import java.util.Map;
@@ -45,6 +48,34 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                 Intent i = new Intent(this, AlarmEvent.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
+            } else if (type.equalsIgnoreCase("challenge")) {
+                // Get challenge type
+                Map<String, String> data = remoteMessage.getData();
+                String challengeType = data.get("challengeType");
+                String challenger_id = data.get("challenger");
+                String challengee_id = data.get("challengee");
+
+                //sending request to challenge to another user (we are being challenged)
+                if(challengeType.equals("send")) {
+                    //fetch users
+                    UserDatabase.getUser(challenger_id, challenger -> {
+                        UserDatabase.getUser(challengee_id, challengee -> {
+                            Intent intent = new Intent(this, AcceptOrDeclineChallengeActivity.class);
+                            intent.putExtra("user", challengee);
+                            intent.putExtra("friend", challenger);
+
+                            int days = 0;
+                            try {
+                                days = Integer.parseInt(data.get("days"));
+                            } catch (Exception e) {
+                                Log.v("Somnia firebase", e.toString());
+                            }
+
+                            intent.putExtra("days", days);
+                            startActivity(intent);
+                        });
+                    });
+                }
             }
         }
     }
