@@ -60,8 +60,10 @@ public class LiveFeedRow extends LinearLayout {
         String eventText = "";
         if (eventAction.equalsIgnoreCase("snooze")) {
             eventText = " snoozed their ";
-        } else if (eventAction.equalsIgnoreCase("overslept")) {
+        } else if (eventAction.equalsIgnoreCase("oversleep")) {
             eventText = " overslept their ";
+        } else if (eventAction.equalsIgnoreCase("wakeup")) {
+            eventText = " woke up to their ";
         } else {
             eventText = eventAction;
         }
