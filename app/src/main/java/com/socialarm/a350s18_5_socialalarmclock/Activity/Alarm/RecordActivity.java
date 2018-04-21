@@ -41,6 +41,9 @@ public class RecordActivity extends AppCompatActivity {
     private static String mFileName = null;
     public static final int REQUEST_AUDIO_PERMISSION_CODE = 1;
 
+    public static int RECORD_SUCCESS = 2979;
+    public static String RECORDING_PATH_STRING = "recording_path";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,12 @@ public class RecordActivity extends AppCompatActivity {
         stopplay.setEnabled(false);
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/SomniaAudioRecording.3gp";
+
+        //return filepath
+        Intent i = new Intent();
+        i.putExtra(RECORDING_PATH_STRING, mFileName);
+        setResult(Activity.RESULT_OK, i);
+
         setupButtons();
     }
 
