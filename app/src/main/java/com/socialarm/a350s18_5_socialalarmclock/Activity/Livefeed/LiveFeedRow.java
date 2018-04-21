@@ -81,25 +81,37 @@ public class LiveFeedRow extends LinearLayout {
 
         // get the like button and get the number of likes and put it in
         Button likeButton = myView.findViewById(R.id.like_button);
-        List<String> likedBy = event.getLikedBy();
-        String likes = "\uD83D\uDE34 ";
-        if (likedBy == null) {
-            likes += "0";
-        } else {
-            likes += likedBy.size();
-        }
-        likeButton.setText(likes);
+        setLikeText(likeButton, event.getLikedBy());
         likeButton.setOnClickListener(v -> {
             TextView textView = (TextView) v;
             event.addToLiked(currentUser.getId());
-            List<String> likedByList = event.getLikedBy();
-            String likesNewText = "\uD83D\uDE34 ";
-            if (likedBy == null) {
-                likesNewText += "0";
-            } else {
-                likesNewText += likedBy.size();
-            }
-            textView.setText(likesNewText);
+            setLikeText(textView, event.getLikedBy());
         });
+    }
+
+    private void setLikeText(TextView v, List<String> likedBy) {
+        if (likedBy == null || likedBy.size() == 0) {
+            String likesNewText = "Send a \uD83D\uDE34";
+            v.setText(likesNewText);
+        } else {
+            if (likedBy.size() == 1) {
+                UserDatabase.getUser(likedBy.get(0), user -> {
+                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name();
+                    v.setText(likesText);
+                });
+            } else if (likedBy.size() == 2 ){
+                UserDatabase.getUser(likedBy.get(0), user -> {
+                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name() +
+                            " and " + Integer.toString(likedBy.size() - 1) + " other";
+                    v.setText(likesText);
+                });
+            } else {
+                UserDatabase.getUser(likedBy.get(0), user -> {
+                    String likesText = "\uD83D\uDE34 sent by " + user.getFirst_name() +
+                            " and " + Integer.toString(likedBy.size() - 1) + " others";
+                    v.setText(likesText);
+                });
+            }
+        }
     }
 }
