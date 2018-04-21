@@ -14,6 +14,10 @@
             android:icon="@drawable/settings"
             android:title="Settings" />
         <item
+            android:id="@+id/nav_achievement"
+            android:icon="@drawable/achievement_badge"
+            android:title="Achievements" />
+        <item
             android:id="@+id/nav_disable"
             android:icon="@android:drawable/ic_media_pause"
             android:title="Disable Alarms" />

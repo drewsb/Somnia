@@ -165,6 +165,12 @@ public final class EventDatabase {
                 return event.getAction().equalsIgnoreCase("Snooze");
             case OVERSLEEP:
                 return event.getAction().equalsIgnoreCase("Overslept");
+            case CHALLENGE:
+                return event.getAction().equalsIgnoreCase("Challenge");
+            case WAKE_UP:
+                return event.getAction().equalsIgnoreCase("Wakeup");
+            case CHALLENGE_SUCCESS:
+                return event.getAction().equalsIgnoreCase("ChallengeSuccess");
             default:
                 return event.getAction().equalsIgnoreCase("Overslept");
         }
@@ -249,5 +255,13 @@ public final class EventDatabase {
     public static void addEvent(final Event event) {
         String userID = event.getUser_id();
         DatabaseSingleton.getInstance().collection("events").document(userID + event.getTimestamp()).set(event);
+    }
+
+    /**
+     * Update the list of people who have liked an event
+     * @param thisEvent the event in question
+     */
+    public static void updateLikedBy(Event thisEvent) {
+        DatabaseSingleton.getInstance().collection("events").document(thisEvent.getEvent_id()).update("likedBy", thisEvent.getLikedBy());
     }
 }
