@@ -21,12 +21,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".Achievement.BootReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            </intent-filter>
-        </receiver>
         <activity
             android:name=".Activity.Main.MainActivity"
             android:label="@string/app_name"
@@ -99,6 +93,7 @@
         </service>
 
         <activity android:name=".FirebaseMessaging.Response" />
+        <receiver  android:process=":remote" android:name=".Achievement.AchievementReceiver"></receiver>
     </application>
 
 </manifest>

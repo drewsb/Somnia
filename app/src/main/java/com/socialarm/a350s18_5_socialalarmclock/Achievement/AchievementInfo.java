@@ -74,10 +74,11 @@ public class AchievementInfo {
      * Log user data to the console for testing purposes.
      */
     public void getMostRecentAchievement(String user_id, Consumer<Achievement> consumer) {
+        Log.d("AchievementInfo", "GETTING MOST RECENT");
         EventDatabase.getEventsSince(EventDatabase.TimeDifference.WEEK, user_id, eventList -> {
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Calendar cal = Calendar.getInstance();
-            String week = dateFormat.format(cal);
+            String week = dateFormat.format(cal.getTime());
 
             double percentage = getAlarmPercentage(eventList);
             Achievement a = new Achievement(week, Achievement.Metal.NONE);

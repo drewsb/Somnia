@@ -4,7 +4,7 @@ import com.socialarm.a350s18_5_socialalarmclock.Database.EventDatabase;
 
 import java.util.ArrayList;
 
-public class Event {
+public class Event implements Comparable<Event> {
 
     private String action;
     private String alarm_id;
@@ -57,5 +57,10 @@ public class Event {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public int compareTo(Event e) {
+        return Long.compare(e.timestamp, this.timestamp);
     }
 }

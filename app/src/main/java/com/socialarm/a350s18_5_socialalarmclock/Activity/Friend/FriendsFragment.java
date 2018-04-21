@@ -14,8 +14,8 @@ import com.socialarm.a350s18_5_socialalarmclock.R;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
 import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class FriendsFragment extends Fragment {
 
@@ -80,12 +80,12 @@ public class FriendsFragment extends Fragment {
         UserDatabase.getFriends(user, friends -> {
                 // specify an adapter (see also next example)
             Collections.sort(friends);
-            ArrayList<Alarm> alarms = new ArrayList<Alarm>();
+            HashMap<User, Alarm> alarmMap = new HashMap<>();
             for(User f : friends) {
                 UserDatabase.getMostRecentAlarm(f, alarm -> {
-                    alarms.add(alarm);
-                    if (alarms.size() == friends.size()) {
-                        mAdapter = new FriendRowAdapter(friends, alarms);
+                    alarmMap.put(f, alarm);
+                    if (alarmMap.size() == friends.size()) {
+                        mAdapter = new FriendRowAdapter(friends, alarmMap);
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 });

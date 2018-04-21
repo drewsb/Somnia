@@ -77,8 +77,8 @@ public final class EventDatabase {
                                                  final LeaderboardEntryCallback lbeCallback) {
         List<LeaderboardEntry> entryList = new ArrayList<>();
 
-        for (String friend_id : friends_list) {
-            getAllEvents(events -> {
+        getAllEvents(events -> {
+            for (String friend_id : friends_list) {
                 UserDatabase.getUser(friend_id, friend -> {
                     Calendar calendar = Calendar.getInstance();
 
@@ -102,8 +102,8 @@ public final class EventDatabase {
                         lbeCallback.callback(entryList);
                     }
                 });
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -185,6 +185,21 @@ public final class EventDatabase {
      */
     private static boolean isCorrectUser(Event event, String user_id) {
         return event.getUser_id().equals(user_id);
+    }
+
+    /**
+     * Helper function that determines if an event is from any one of a specified list of users
+     *
+     * @param event the event to check
+     * @param userIdList the list of users to check for
+     * @return true if the event is by that user otherwise false
+     */
+    private static boolean isCorrectUserList(Event event, List<String> userIdList) {
+        boolean isInList = false;
+        for (String id : userIdList) {
+            isInList |= event.getUser_id().equals(id);
+        }
+        return isInList;
     }
 
     /**

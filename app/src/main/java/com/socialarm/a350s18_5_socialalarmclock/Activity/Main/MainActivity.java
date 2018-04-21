@@ -1,9 +1,7 @@
 package com.socialarm.a350s18_5_socialalarmclock.Activity.Main;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
@@ -23,6 +21,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
+import com.socialarm.a350s18_5_socialalarmclock.Achievement.AchievementReceiver;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Achievement.AchievementActivity;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.DisableAlarmFragment;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Alarm.MyAlarms;
@@ -41,9 +40,9 @@ import com.socialarm.a350s18_5_socialalarmclock.Database.UserDatabase;
 import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import android.support.v4.app.Fragment;
-import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -164,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         setupScreen();
+        AchievementReceiver.setAlarm(this);
     }
 
     /**
@@ -259,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onQueryTextChange(String search_string) {
                 viewPager.setCurrentItem(1);
                 UserDatabase.getFriends(current_user, friends -> {
-                    ArrayList<Alarm> alarms = new ArrayList<Alarm>();
+                    HashMap<User, Alarm> alarmMap = new HashMap<>();
 
                     //only store friends that begin with search string
                     ListIterator<User> friend_iterator = friends.listIterator();
@@ -285,9 +284,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     //find the friend's alarms as well
                     for (User f : friends) {
                         UserDatabase.getMostRecentAlarm(f, alarm -> {
-                            alarms.add(alarm);
-                            if (alarms.size() == friends.size()) {
-                                friendsFragment.getmRecyclerView().setAdapter(new FriendRowAdapter(friends, alarms));
+                            alarmMap.put(f, alarm);
+                            if (alarmMap.size() == friends.size()) {
+                                friendsFragment.getmRecyclerView().setAdapter(new FriendRowAdapter(friends, alarmMap));
                             }
                         });
                     }

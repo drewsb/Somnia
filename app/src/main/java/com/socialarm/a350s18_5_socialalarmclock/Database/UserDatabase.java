@@ -18,10 +18,8 @@ import com.socialarm.a350s18_5_socialalarmclock.User.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by drewboyette on 3/13/18.
@@ -147,10 +145,7 @@ public class UserDatabase {
                                     alarmCounter.update();
                                     if (alarmResult == null) {
                                         Log.d(TAG, "Error searching for alarm: " + doc.getId());
-                                        Log.d(TAG, "User: " + user_id);
                                     } else {
-                                        Log.d(TAG, "User: " + user_id);
-                                        Log.d(TAG, "Alarm: " + alarmResult.hashCode());
                                         alarmMap.put(alarmResult.getTimeUntilAlarm(), alarmResult);
                                     }
                                     if (alarmCounter.counter == task.getResult().size()) {
