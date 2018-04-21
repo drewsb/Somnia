@@ -1,5 +1,6 @@
 package com.socialarm.a350s18_5_socialalarmclock.Activity.Achievement;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -35,7 +36,6 @@ public class AchievementActivity extends AppCompatActivity {
     private Drawable silver_star;
     private Drawable gold_star;
     private GridView achievementGrid;
-    private User user;
 
     final double BRONZE_THRESHOLD = 0.75;
     final double SILVER_THRESHOLD = 0.90;
@@ -43,42 +43,46 @@ public class AchievementActivity extends AppCompatActivity {
 
     final long WEEK = 1000 * 60 * 60 * 24 * 7;
 
-    List<Achievement> achievements;
+    private static List<Achievement> achievements;
+    public static Boolean displayAchievements = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement);
 
-        Intent i = getIntent();
-        Bundle extras = i.getExtras();
-
-        //set the user
-        user = (User) i.getSerializableExtra("user");
-
         achievementGrid = findViewById(R.id.achievementGrid);
 
-        EventDatabase.getAllEvents(events -> {
-            //find all achievements
-            setupAchievements(events);
+        //set the grid adapter
+        AchievementGridAdapter gridAdapter = new AchievementGridAdapter(this, achievements);
 
-            //update all achivements
+        displayAchievements = false;
+        achievementGrid.setAdapter(gridAdapter);
+    }
+
+    /**
+     * Call to update all achievements
+     * @param user the current user
+     * @param context context (getApplicationContext)
+     */
+    public static void updateAchievements(final User user, Context context) {
+        EventDatabase.getAllEvents(events -> {
+            //update all achievements
+            setupAchievements(user, context, events);
+
             for(Event e : events) {
                 for (Achievement achievement : achievements) {
                     achievement.getCondition().callback(e);
                 }
             }
-
-            //set the grid adapter
-            AchievementGridAdapter gridAdapter = new AchievementGridAdapter(this, achievements);
-            achievementGrid.setAdapter(gridAdapter);
         });
     }
 
     /**
      * Setups all the achievments and reads from db to see if it has been collected
      */
-    private void setupAchievements(List<Event> events) {
+    public static void setupAchievements(final User user, Context context, List<Event> events) {
+
         //IMAGE CREDITS: https://www.flaticon.com/packs/sleep-time
         int bronze_star = R.drawable.bronze_star;
         int silver_star = R.drawable.silver_star;
@@ -99,82 +103,18 @@ public class AchievementActivity extends AppCompatActivity {
         //initialize achievments
         achievements = new ArrayList<Achievement>();
 
+        //have to initialize this way because callback needs refence to achievement
         Achievement ACHIEVEMENT_FIRST_ACHIEVEMENT = new Achievement(user, alarm_clock, "ACHIEVEMENT_FIRST_ACHIEVEMENT", "First achievement", false);
         ACHIEVEMENT_FIRST_ACHIEVEMENT.setCondition(event -> {
             if(!event.getEvent_id().startsWith(ACHIEVEMENT_FIRST_ACHIEVEMENT.eventString())) {
                 ACHIEVEMENT_FIRST_ACHIEVEMENT.setIs_achieved(true);
-                ACHIEVEMENT_FIRST_ACHIEVEMENT.pushEventToDB(this);
+                ACHIEVEMENT_FIRST_ACHIEVEMENT.pushEventToDB(context);
                 return;
             }
         });
         achievements.add(ACHIEVEMENT_FIRST_ACHIEVEMENT);
 
         //have to initialize this way because callback needs refence to achievement
-        Achievement ACHIEVEMENT_SNOOZE_WEEK_BRONZE = new Achievement(user, bronze_star, "ACHIEVEMENT_WAKE_UP_WEEK_BRONZE", "In the past week, snooze more than 5 times", false);
-        ACHIEVEMENT_SNOOZE_WEEK_BRONZE.setCondition(event -> {
-            if(!event.getEvent_id().startsWith(ACHIEVEMENT_SNOOZE_WEEK_BRONZE.eventString())) {
-                //get all snoozes
-                long snoozes = 0;
-                for(Event e : events) {
-                    if(e.getAlarm_id().equals("Snooze")) {
-                        long now = new Date().getTime();
-                        long previous_week = now - WEEK;
-                        if(e.getTimestamp() < now - previous_week) {
-                            snoozes++;
-                        }
-                    }
-                }
-                if(snoozes > 5) {
-                    ACHIEVEMENT_SNOOZE_WEEK_BRONZE.setIs_achieved(true);
-                    ACHIEVEMENT_SNOOZE_WEEK_BRONZE.pushEventToDB(this);
-                }
-            }
-        });
-        achievements.add(ACHIEVEMENT_SNOOZE_WEEK_BRONZE);
-
-        Achievement ACHIEVEMENT_SNOOZE_WEEK_SILVER = new Achievement(user, silver_star, "ACHIEVEMENT_SNOOZE_WEEK_SILVER", "In the past week, snooze more than 7 times", false);
-        ACHIEVEMENT_SNOOZE_WEEK_SILVER.setCondition(event -> {
-            if(!event.getEvent_id().startsWith(ACHIEVEMENT_SNOOZE_WEEK_SILVER.eventString())) {
-                //get all snoozes
-                long snoozes = 0;
-                for(Event e : events) {
-                    if(e.getAlarm_id().equals("Snooze")) {
-                        long now = new Date().getTime();
-                        long previous_week = now - WEEK;
-                        if(e.getTimestamp() < now - previous_week) {
-                            snoozes++;
-                        }
-                    }
-                }
-                if(snoozes > 7) {
-                    ACHIEVEMENT_SNOOZE_WEEK_SILVER.setIs_achieved(true);
-                    ACHIEVEMENT_SNOOZE_WEEK_SILVER.pushEventToDB(this);
-                }
-            }
-        });
-        achievements.add(ACHIEVEMENT_SNOOZE_WEEK_SILVER);
-
-        Achievement ACHIEVEMENT_SNOOZE_WEEK_GOLD = new Achievement(user, gold_star, "ACHIEVEMENT_SNOOZE_WEEK_GOLD", "In the past week, snooze more than 9 times", false);
-        ACHIEVEMENT_SNOOZE_WEEK_GOLD.setCondition(event -> {
-            if(!event.getEvent_id().startsWith(ACHIEVEMENT_SNOOZE_WEEK_GOLD.eventString())) {
-                //get all snoozes
-                long snoozes = 0;
-                for(Event e : events) {
-                    if(e.getAlarm_id().equals("Snooze")) {
-                        long now = new Date().getTime();
-                        long previous_week = now - WEEK;
-                        if(e.getTimestamp() < now - previous_week) {
-                            snoozes++;
-                        }
-                    }
-                }
-                if(snoozes > 9) {
-                    ACHIEVEMENT_SNOOZE_WEEK_GOLD.setIs_achieved(true);
-                    ACHIEVEMENT_SNOOZE_WEEK_GOLD.pushEventToDB(this);
-                }
-            }
-        });
-        achievements.add(ACHIEVEMENT_SNOOZE_WEEK_GOLD);
 
         Achievement ACHIEVEMENT_COFFEE = new Achievement(user, coffee, "ACHIEVEMENT_COFFEE", "You snoozed before 6am", false);
         ACHIEVEMENT_COFFEE.setCondition(event -> {
@@ -193,7 +133,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(snoozeBefore6am) {
                     ACHIEVEMENT_COFFEE.setIs_achieved(true);
-                    ACHIEVEMENT_COFFEE.pushEventToDB(this);
+                    ACHIEVEMENT_COFFEE.pushEventToDB(context);
                 }
             }
         });
@@ -214,7 +154,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(snoozeBefore6am) {
                     ACHIEVEMENT_SNOOZE_PAST_12PM.setIs_achieved(true);
-                    ACHIEVEMENT_SNOOZE_PAST_12PM.pushEventToDB(this);
+                    ACHIEVEMENT_SNOOZE_PAST_12PM.pushEventToDB(context);
                 }
             }
         });
@@ -232,7 +172,7 @@ public class AchievementActivity extends AppCompatActivity {
                         String challenger = challenge_infos[0];
                         if (user.getId() == challenger) {
                             ACHIEVEMENT_CHALLENGE_FRIEND.setIs_achieved(true);
-                            ACHIEVEMENT_CHALLENGE_FRIEND.pushEventToDB(this);
+                            ACHIEVEMENT_CHALLENGE_FRIEND.pushEventToDB(context);
                         }
                     }
                 }
@@ -252,7 +192,7 @@ public class AchievementActivity extends AppCompatActivity {
                         String challenger = challenge_infos[1];
                         if (user.getId() == challenger) {
                             ACHIEVEMENT_CHALLENGED_BY_FRIEND.setIs_achieved(true);
-                            ACHIEVEMENT_CHALLENGED_BY_FRIEND.pushEventToDB(this);
+                            ACHIEVEMENT_CHALLENGED_BY_FRIEND.pushEventToDB(context);
                         }
                     }
                 }
@@ -278,7 +218,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(challenges > 5) {
                     ACHIEVEMENT_CHALLENGE_MORE_THAN_5_TIMES.setIs_achieved(true);
-                    ACHIEVEMENT_CHALLENGE_MORE_THAN_5_TIMES.pushEventToDB(this);
+                    ACHIEVEMENT_CHALLENGE_MORE_THAN_5_TIMES.pushEventToDB(context);
                 }
             }
         });
@@ -302,7 +242,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(challenges > 20) {
                     ACHIEVEMENT_CHALLENGE_MORE_THAN_20_TIMES.setIs_achieved(true);
-                    ACHIEVEMENT_CHALLENGE_MORE_THAN_20_TIMES.pushEventToDB(this);
+                    ACHIEVEMENT_CHALLENGE_MORE_THAN_20_TIMES.pushEventToDB(context);
                 }
             }
         });
@@ -326,7 +266,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(challenges > 100) {
                     ACHIEVEMENT_CHALLENGE_MORE_THAN_100_TIMES.setIs_achieved(true);
-                    ACHIEVEMENT_CHALLENGE_MORE_THAN_100_TIMES.pushEventToDB(this);
+                    ACHIEVEMENT_CHALLENGE_MORE_THAN_100_TIMES.pushEventToDB(context);
                 }
             }
         });
@@ -350,7 +290,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(challenges > 20) {
                     ACHIEVEMENT_CHALLENGED_BY_FRIENDS_MORE_THAN_20_TIMES.setIs_achieved(true);
-                    ACHIEVEMENT_CHALLENGED_BY_FRIENDS_MORE_THAN_20_TIMES.pushEventToDB(this);
+                    ACHIEVEMENT_CHALLENGED_BY_FRIENDS_MORE_THAN_20_TIMES.pushEventToDB(context);
                 }
             }
         });
@@ -374,7 +314,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(challenges > 100) {
                     ACHIEVEMENT_CHALLENGED_BY_FRIENDS_MORE_THAN_100_TIMES.setIs_achieved(true);
-                    ACHIEVEMENT_CHALLENGED_BY_FRIENDS_MORE_THAN_100_TIMES.pushEventToDB(this);
+                    ACHIEVEMENT_CHALLENGED_BY_FRIENDS_MORE_THAN_100_TIMES.pushEventToDB(context);
                 }
             }
         });
@@ -398,7 +338,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(challenges >= 1) {
                     ACHIEVEMENT_CHALLENGED_WON.setIs_achieved(true);
-                    ACHIEVEMENT_CHALLENGED_WON.pushEventToDB(this);
+                    ACHIEVEMENT_CHALLENGED_WON.pushEventToDB(context);
                 }
             }
         });
@@ -422,7 +362,7 @@ public class AchievementActivity extends AppCompatActivity {
                 }
                 if(challenges > 5) {
                     ACHIEVEMENT_CHALLENGED_WON_5_TIMES.setIs_achieved(true);
-                    ACHIEVEMENT_CHALLENGED_WON_5_TIMES.pushEventToDB(this);
+                    ACHIEVEMENT_CHALLENGED_WON_5_TIMES.pushEventToDB(context);
                 }
             }
         });

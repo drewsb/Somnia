@@ -55,6 +55,9 @@ public class Achievement {
                     }
                 }
 
+                //should now drew achievement
+                AchievementActivity.displayAchievements = true;
+
                 //draw achievement popup
                 Toast.makeText(context, "You have obtained " + name + " achievement", Toast.LENGTH_SHORT).show();
 
