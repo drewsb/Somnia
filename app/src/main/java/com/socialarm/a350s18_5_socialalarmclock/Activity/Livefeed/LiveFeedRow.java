@@ -69,16 +69,50 @@ public class LiveFeedRow extends LinearLayout {
             eventText = " overslept their ";
         } else if (eventAction.equalsIgnoreCase("wakeup")) {
             eventText = " woke up to their ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_FIRST_ACHIEVEMENT")){
+            eventText = " got the first achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_COFFEE")){
+            eventText = " got the coffee achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_SNOOZE_PAST_12PM")){
+            eventText = " got the snooze past 12 achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGE_FRIEND")){
+            eventText = " got the friend challenge achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGED_BY_FRIEND")){
+            eventText = " got the challenge by friend achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGE_MORE_THAN_5_TIMES")){
+            eventText = " got the challenge 5 times achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGE_MORE_THAN_20_TIMES")){
+            eventText = " got the challenge 20 times achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGE_MORE_THAN_100_TIMES")){
+            eventText = " got the challenge 100 times achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGED_BY_FRIENDS_MORE_THAN_20_TIMES")){
+            eventText = " got the be challenged 20 times achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGED_BY_FRIENDS_MORE_THAN_100_TIMES")){
+            eventText = " got the be challenged 100 times achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGED_WON")){
+            eventText = " got the challenge won achievement ";
+        } else if (eventAction.equalsIgnoreCase("ACHIEVEMENT_CHALLENGED_WON_5_TIMES")){
+            eventText = " got the challenge won 5 times achievement ";
+        } else if (eventAction.equalsIgnoreCase("Challenge")) {
+            UserDatabase.getUser(event.getEvent_id().split("-")[1], user -> {
+                String text = " was challenged by " + user.getFirst_name() + " " + user.getLast_name() + " ";
+                eventTextView.setText(text);
+            });
         } else {
             eventText = eventAction;
         }
         eventTextView.setText(eventText);
 
         // get the time of this alarm and put it in
-
         if (event.getAlarm_id().equals("-1")) {
             TextView alarmView = myView.findViewById(R.id.live_feed_alarm_text);
-            alarmView.setText("retriggered");
+            alarmView.setText(" retriggered alarm ");
+        } else if (event.getAlarm_id().equals("")) {
+            TextView alarmView = myView.findViewById(R.id.live_feed_alarm_text);
+            alarmView.setText("");
+        } else if (event.getAction().equalsIgnoreCase("Challenge")) {
+            TextView alarmView = myView.findViewById(R.id.live_feed_alarm_text);
+            alarmView.setText("");
         } else {
             AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
                 TextView alarmView = myView.findViewById(R.id.live_feed_alarm_text);
@@ -86,13 +120,15 @@ public class LiveFeedRow extends LinearLayout {
                     Log.d("LiveFeedRow", "Error finding alarm: " + event.getUser_id() + event.getAlarm_id());
                     return;
                 }
-                alarmView.setText(Alarm.getTime(alarm.getMin(), alarm.getHour()));
+                String alarmViewText = Alarm.getTime(alarm.getMin(), alarm.getHour()) + " alarm ";
+                alarmView.setText(alarmViewText);
             });
         }
 
+
         // get the date of the event's timestamp and put it in
         TextView timestampView = myView.findViewById(R.id.live_feed_timestamp_text);
-        String tsText = " alarm on " + new Date(event.getTimestamp() * 1000).toString().split("E")[0];
+        String tsText = "on " + new Date(event.getTimestamp() * 1000).toString().split("E")[0];
         timestampView.setText(tsText);
 
         // get the like button and get the number of likes and put it in
