@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         UserDatabase.getMostRecentAlarm(f, alarm -> {
                             alarmMap.put(f, alarm);
                             if (alarmMap.size() == friends.size()) {
-                                friendsFragment.getmRecyclerView().setAdapter(new FriendRowAdapter(friends, alarmMap));
+                                friendsFragment.getmRecyclerView().setAdapter(new FriendRowAdapter(current_user, friends, alarmMap));
                             }
                         });
                     }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/com_smart_login_code"
+    android:orientation="vertical"
+    tools:context="com.socialarm.a350s18_5_socialalarmclock.Activity.Challenge.ChallengeActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/challengeDaysText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:layout_weight="1"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:text="Set number of days for the challenge!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@android:color/holo_green_dark" />
+
+        <EditText
+            android:id="@+id/challengeDaysEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/challengeDaysText"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="Insert days here"
+            android:inputType="number"
+            android:padding="15dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/challengeFriendBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/challengeDaysEditText"
+            android:layout_weight="1"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:onClick="onClickChallenge"
+            android:text="Challenge Friend!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            android:textColor="@color/com_facebook_button_send_background_color"
+            android:textSize="40dp" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

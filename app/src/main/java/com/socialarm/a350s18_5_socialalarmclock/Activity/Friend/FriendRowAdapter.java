@@ -18,6 +18,11 @@ import java.util.Map;
 public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.ViewHolder> {
 
     /**
+     * The current user that is using the app
+     */
+    private User current_user;
+
+    /**
      * A list of users to be displayed on the friends page (canonically the logged in user's friends list)
      */
     private List<User> users;
@@ -35,7 +40,8 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         }
     }
 
-    public FriendRowAdapter(List<User> users, Map<User, Alarm> alarmMap) {
+    public FriendRowAdapter(User current_user, List<User> users, Map<User, Alarm> alarmMap) {
+        this.current_user = current_user;
         this.users = users;
         this.alarmMap = alarmMap;
     }
@@ -73,6 +79,7 @@ public class FriendRowAdapter extends RecyclerView.Adapter<FriendRowAdapter.View
         Alarm alarm = alarmMap.get(user);
         holder.row.setName(user);
         if (alarm != null) {
+            holder.row.setChallenge(current_user, user);
             holder.row.setTime(Alarm.getTime(alarm.getMin(), alarm.getHour()), user);
             holder.row.setJoinButton(user, alarm);
         } else {

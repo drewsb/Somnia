@@ -87,11 +87,11 @@ public class FriendsFragment extends Fragment {
                 UserDatabase.getMostRecentAlarm(f, alarm -> {
                     alarmMap.put(f, alarm);
                     if (alarmMap.size() == friends.size()) {
-                        mAdapter = new FriendRowAdapter(friends, alarmMap);
+                        mAdapter = new FriendRowAdapter(user, friends, alarmMap);
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 });
-            }
+            }   
         });
 
         return myView;
