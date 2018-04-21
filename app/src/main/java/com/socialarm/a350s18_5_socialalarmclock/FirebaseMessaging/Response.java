@@ -115,7 +115,7 @@ public class Response extends AppCompatActivity {
      */
     public void onGoToRecordClick(View view) {
         Intent i = new Intent(this, RecordActivity.class);
-        startActivity(i);
+        startActivityForResult(i, RecordActivity.RECORD_SUCCESS);
     }
 
     /**
@@ -132,11 +132,15 @@ public class Response extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //store song url if song is foud
-        if (resultCode == RESULT_OK && requestCode == SELECT_SOUND) {
-            Uri uri = data.getData();
+        //store song url if song is found
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_SOUND) {
+                Uri uri = data.getData();
 
-            ringtone_path = getPathFromURI(getApplicationContext(), uri);
+                ringtone_path = getPathFromURI(getApplicationContext(), uri);
+            } else if (requestCode == RecordActivity.RECORD_SUCCESS) {
+                ringtone_path = data.getStringExtra(RecordActivity.RECORDING_PATH_STRING);
+            }
         }
     }
 

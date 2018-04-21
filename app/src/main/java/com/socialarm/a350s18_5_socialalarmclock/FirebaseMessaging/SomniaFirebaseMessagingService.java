@@ -43,7 +43,7 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
                     FirebaseStorage storage = FirebaseStorage.getInstance();
                     StorageReference ref = storage.getReference(audio);
                     try {
-                        File temp = File.createTempFile("audio", "mp3");
+                        File temp = File.createTempFile("audio", null);
                         ref.getFile(temp).addOnFailureListener(exception -> {
                             retriggerDefault();
                         }).addOnSuccessListener(taskSnapshot -> {
