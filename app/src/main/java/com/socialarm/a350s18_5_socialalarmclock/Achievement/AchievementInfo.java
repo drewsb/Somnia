@@ -55,7 +55,8 @@ public class AchievementInfo {
     }
 
     /**
-     * Log user data to the console for testing purposes.
+     * Get all achievements
+     * @return
      */
     public ArrayList<Achievement> getAchievements() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -71,7 +72,9 @@ public class AchievementInfo {
     }
 
     /**
-     * Log user data to the console for testing purposes.
+     * Get most recent achievement from the past week of events.
+     * @param user_id
+     * @param consumer
      */
     public void getMostRecentAchievement(String user_id, Consumer<Achievement> consumer) {
         Log.d("AchievementInfo", "GETTING MOST RECENT");
@@ -82,7 +85,7 @@ public class AchievementInfo {
 
             double percentage = getAlarmPercentage(eventList);
             Achievement a = new Achievement(week, Achievement.Metal.NONE);
-            percentage = 1.0;
+
             if (percentage == 1.0) {
                 a.setMetal(Achievement.Metal.GOLD);
             } else if (percentage >= .9) {
@@ -98,7 +101,7 @@ public class AchievementInfo {
         double total = eventList.size();
         double wakeupCounter = total;
         for(Event e : eventList) {
-            if (e.getAction().equals("Snooze")){
+            if (e.getAction().equals("Oversleep")){
                 wakeupCounter--;
             }
         }

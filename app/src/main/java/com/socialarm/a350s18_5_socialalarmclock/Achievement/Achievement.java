@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 /**
- * Holds information for every user in the database
+ * Holds information for achievements
  */
 public class Achievement implements Serializable {
 

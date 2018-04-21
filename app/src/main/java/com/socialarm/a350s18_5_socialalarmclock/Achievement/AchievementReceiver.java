@@ -1,6 +1,5 @@
 package com.socialarm.a350s18_5_socialalarmclock.Achievement;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -12,10 +11,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.socialarm.a350s18_5_socialalarmclock.Activity.Main.LoginActivity;
-import com.socialarm.a350s18_5_socialalarmclock.Activity.Main.MainActivity;
 import com.socialarm.a350s18_5_socialalarmclock.Database.DatabaseSingleton;
 
 import java.util.Calendar;
@@ -31,6 +28,7 @@ public class AchievementReceiver extends BroadcastReceiver {
         Log.d("Achievement", "Received achievement!");
         String user_id =  (String) intent.getExtras().get("user_id");
 
+        //Turn off persistence to read data from Firebase from multiple places
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(false)
                 .build();
@@ -46,6 +44,10 @@ public class AchievementReceiver extends BroadcastReceiver {
         });
     }
 
+    /**
+     * Set weekly achievement check to Monday at 12:00PM.
+     * @param context
+     */
     public static void setAlarm(Context context) {
         Log.d("AchievementReceiver", "Setting Alarm");
         Context applicationContext = LoginActivity.getContextOfApplication();
@@ -64,11 +66,8 @@ public class AchievementReceiver extends BroadcastReceiver {
         calendar.set(Calendar.HOUR_OF_DAY, 12);
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmIntent = PendingIntent.getBroadcast(context, 0, i,  PendingIntent.FLAG_UPDATE_CURRENT);
-        // With setInexactRepeating(), you have to use one of the AlarmManager interval
-        // constants--in this case, AlarmManager.INTERVAL_DAY.
         alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 1000 * 60 * 20, alarmIntent);
     }
