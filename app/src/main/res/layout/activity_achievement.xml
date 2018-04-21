@@ -24,21 +24,13 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <GridView
+        android:id="@+id/achievementGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <GridView
-            android:id="@+id/achievementGrid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:numColumns="auto_fit"
-            android:columnWidth="100dp"
-            android:gravity="center">
-
-        </GridView>
-
-    </android.support.v4.widget.NestedScrollView>
+        android:numColumns="auto_fit"
+        android:columnWidth="100dp"
+        android:gravity="center">
+    </GridView>
 
 </android.support.design.widget.CoordinatorLayout>

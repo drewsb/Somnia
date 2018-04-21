@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,8 +72,14 @@ public class AchievementGridAdapter extends BaseAdapter {
                 ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                 image.setColorFilter(filter);
             }
-            Drawable drawable = view.getResources().getDrawable(achievement.getImage());
-            image.setImageDrawable(drawable);
+
+            //out of memory exception can occur...
+            try {
+                Drawable drawable = view.getResources().getDrawable(achievement.getImage());
+                image.setImageDrawable(drawable);
+            } catch (Exception e) {
+                Log.v("AchivementGridAdapter", e.toString());
+            }
 
             //set the name
             TextView name = view.findViewById(R.id.achievementName);
