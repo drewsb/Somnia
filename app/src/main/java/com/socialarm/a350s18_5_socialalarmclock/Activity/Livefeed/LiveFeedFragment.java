@@ -76,10 +76,8 @@ public class LiveFeedFragment extends Fragment {
             List<String> friendsList = user.getFriend_ids();
             List<Event> filteredEvents = new ArrayList<>();
             for (Event e : events) {
-                for (String friendId : friendsList) {
-                    if (e.getUser_id().equals(friendId)) {
-                        filteredEvents.add(e);
-                    }
+                if (friendsList.contains(e.getUser_id())) {
+                    filteredEvents.add(e);
                 }
             }
             Collections.sort(filteredEvents);
