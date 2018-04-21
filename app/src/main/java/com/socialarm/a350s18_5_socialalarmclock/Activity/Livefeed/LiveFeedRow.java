@@ -146,13 +146,15 @@ public class LiveFeedRow extends LinearLayout {
         myView.setOnClickListener(v -> {
 
             // trigger response activity
-            if (event.getAction().equalsIgnoreCase("snooze")) {
+            if ((event.getAction().equalsIgnoreCase("snooze") ||
+                    event.getAction().equalsIgnoreCase("oversleep")) && event.getAlarm_id() != "-1") {
                 Intent intent = new Intent(getContext(), Response.class);
 
                 AlarmDatabase.getAlarm(event.getAlarm_id(), event.getUser_id(), alarm -> {
                     intent.putExtra("user_id", event.getUser_id());
                     intent.putExtra("hour", alarm.getHour());
                     intent.putExtra("minute", alarm.getMin());
+                    intent.putExtra("type", event.getAction());
                     getContext().startActivity(intent);
                 });
             }

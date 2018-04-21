@@ -27,18 +27,20 @@ public class SomniaFirebaseMessagingService extends FirebaseMessagingService {
         Map<String, String> data = remoteMessage.getData();
         if (data.size() > 0) {
             String type = data.get("type");
-            if (type.equalsIgnoreCase("snooze")) {
+            if (type.equalsIgnoreCase("snooze") || type.equalsIgnoreCase("oversleep")) {
                 // Snooze events are sent to a phone when a friend snoozes an alarm.
                 // They create a notification to the response page.
                 Intent response = new Intent(this, Response.class);
                 response.putExtra("user_id", data.get("id"));
                 response.putExtra("hour", Integer.parseInt(data.get("hour")));
                 response.putExtra("minute", Integer.parseInt(data.get("minute")));
+                response.putExtra("type", type);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, response, 0);
+                boolean snooze = type.equalsIgnoreCase("snooze");
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Somnia")
-                        .setContentText("A Friend just snoozed")
+                        .setContentText("A Friend just " + (snooze ? "snoozed" : "overslept"))
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
