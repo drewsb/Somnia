@@ -192,7 +192,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             LoginManager.getInstance().logOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_statistics) { //Go to statisitics page for me
+        }
+        /*else if (id == R.id.nav_statistics) { //Go to statisitics page for me
 
             UserDatabase.getUser(extras.getString("idFacebook"), user -> {
 
@@ -205,7 +206,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             });
 
-        } else if (id == R.id.nav_achievement) {
+        }*/
+        else if (id == R.id.nav_achievement) {
 
             UserDatabase.getUser(extras.getString("idFacebook"), user -> {
 
