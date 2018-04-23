@@ -29,6 +29,7 @@ public class TutorialActivity extends AppIntro2 {
         addSlide(AppIntroFragment.newInstance("Friends", "Check your friends' alarms", R.drawable.friend_tutorial, R.color.lightBlue));
         addSlide(AppIntroFragment.newInstance("Leaderboard", "See who is the worst snoozer", R.drawable.leaderboard_tutorial, R.color.lightBlue));
         addSlide(AppIntroFragment.newInstance("Settings", "Look at your statistics and settings", R.drawable.statistics_tutorial, R.color.lightBlue));
+        addSlide(AppIntroFragment.newInstance("Feed", "Check out what your friends are up to", R.drawable.livefeed_tutorial, R.color.lightBlue));
         addSlide(AppIntroFragment.newInstance("All set!", "Welcome to Social Alarm Clock!?", 0, R.color.lightBlue));
 
         // Override bar/separator color.

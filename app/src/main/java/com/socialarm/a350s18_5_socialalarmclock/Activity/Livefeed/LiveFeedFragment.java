@@ -47,7 +47,7 @@ public class LiveFeedFragment extends Fragment {
     }
 
     /**
-     * TODO: comments
+     * onCreateView creates the live feed view
      *
      * @param inflater the tool to inflate the xml objects
      * @param container the container that is the parent view of this view
