@@ -51,6 +51,8 @@ public class FriendRow extends LinearLayout {
         TextView nameView = myView.findViewById(R.id.friend_row_name_text);
         String name = user.getFirst_name() + " " + user.getLast_name();
         nameView.setText(name);
+
+        /*
         nameView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,6 +63,7 @@ public class FriendRow extends LinearLayout {
                 getContext().startActivity(intent);
             }
         });
+        */
     }
 
     public void setChallenge(final User user, final User friend) {
